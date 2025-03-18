@@ -3,7 +3,7 @@
 ![Vim](https://img.shields.io/badge/VIM-%2311AB00.svg?style=for-the-badge&logo=vim&logoColor=white)
 [![Hits-of-Code](https://hitsofcode.com/github/zhisme/copy_with_context.vim)](https://hitsofcode.com/github/zhisme/copy_with_context.vim/view)
 ![GitHub Tag](https://img.shields.io/github/v/tag/zhisme/copy_with_context.vim)
-![GitHub License](https://img.shields.io/github/zhisme/copy_with_context.vim)
+![GitHub License](https://img.shields.io/github/license/zhisme/copy_with_context.vim)
 
 Copy lines with file path and line number metadata. Perfect for sharing code snippets with context.
 
@@ -106,5 +106,5 @@ Customize mappings by setting g:copy_with_context_mappings in your init.vim:
 Bug reports and pull requests are welcome on GitHub at https://github.com/zhisme/copy_with_context.vim. Ensure to test your solution and provide a clear description of the problem you are solving.
 
 ## License
-The plugin is available as open source under the terms of the (MIT License)[https://opensource.org/licenses/MIT].
+The plugin is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
