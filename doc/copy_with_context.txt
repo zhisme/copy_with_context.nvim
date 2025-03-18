@@ -1,0 +1,62 @@
+*copy_with_context.txt* Copy lines with file context
+
+Author: Evgeny Zhdanov
+Version: 1.0
+
+==============================================================================
+CONTENTS                                 *copy_with_context-contents*
+
+1. Overview .......................... |copy_with_context-overview|
+2. Mappings .......................... |copy_with_context-mappings|
+3. Configuration ..................... |copy_with_context-configuration|
+4. Examples .......................... |copy_with_context-examples|
+
+==============================================================================
+1. OVERVIEW                                   *copy_with_context-overview*
+
+This plugin allows you to copy lines with file path and line number context.
+Useful for sharing code snippets with context for other developers.
+
+==============================================================================
+2. MAPPINGS                                   *copy_with_context-mappings*
+
+By default, the following mappings are provided:
+
+<leader>cy  - Copy with relative path (normal/visual mode)
+<leader>cY  - Copy with absolute path (normal/visual mode)
+
+==============================================================================
+3. CONFIGURATION                        *copy_with_context-configuration*
+
+To customize mappings, add this to your |init.vim|:
+
+>
+  let g:copy_with_context_mappings = {
+        \ 'relative': '<leader>my_custom_mapping',
+        \ 'absolute': '<leader>another_mapping'
+        \ }
+<
+
+==============================================================================
+4. EXAMPLES                                   *copy_with_context-examples*
+
+1. Copy current line with relative path:
+   - Press `<leader>cy` in normal mode.
+
+Output example:
+>
+  <% posts.each do |post| %>
+  # app/views/widgets/show.html.erb:4
+<
+
+2. Copy visual selection with absolute path:
+   - Select lines in visual mode.
+   - Press `<leader>cY`.
+
+Output example:
+>
+  <% posts.each do |post| %>
+    <%= post.title %>
+  <% end %>
+  # app/views/widgets/show.html.erb:4-6
+<
