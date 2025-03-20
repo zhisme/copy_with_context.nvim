@@ -47,7 +47,8 @@ function M.copy_to_clipboard(output, echo_text)
 end
 
 function M.format_output(content, file_path, line_range)
-  local comment_line = string.format('# %s:%s', file_path, line_range)
+  local config = require('copy_with_context.config')
+  local comment_line = string.format(config.options.context_format, file_path, line_range)
 
   return string.format("%s\n%s", content, comment_line)
 end

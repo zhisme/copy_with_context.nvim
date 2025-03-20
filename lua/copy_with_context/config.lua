@@ -6,6 +6,7 @@ M.options = {
     relative = '<leader>cy',
     absolute = '<leader>cY'
   },
+  context_format = '# %s:%s',  -- format for context: "# filepath:line", example: "# /path/to/file:123"
   trim_lines = true,
 }
 
