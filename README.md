@@ -16,16 +16,7 @@ When sharing code snippets, it's often useful to include the file path and line 
 - Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
 
 ```lua
-use {
-  'zhisme/copy_with_context',
-  config = function()
-    -- Optional: Customize mappings (default mappings shown below)
-    vim.g.copy_with_context_mappings = {
-      relative = '<leader>cy',
-      absolute = '<leader>cY'
-    }
-  end
-}
+use 'zhisme/copy_with_context'
 ```
 
 - Using [vim-plug](https://github.com/junegunn/vim-plug):
@@ -93,13 +84,19 @@ Output example:
 
 ## Configuration
 
-Customize mappings by setting g:copy_with_context_mappings in your init.vim:
+There is no need to call setup if you are ok with the defaults.
 
-```vim
-  let g:copy_with_context_mappings = {
-        \ 'relative': '<leader>cy',
-        \ 'absolute': '<leader>cY'
-        \ }
+```lua
+-- default options
+require('copy_with_context').setup({
+    -- Customize mappings
+    mappings = {
+      relative = '<leader>cy',
+      absolute = '<leader>cY'
+    },
+    -- whether to trim lines or not
+    trim_lines = true,
+})
 ```
 
 ## Contributing
@@ -107,4 +104,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/zhisme
 
 ## License
 The plugin is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
