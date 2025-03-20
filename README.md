@@ -1,9 +1,8 @@
-# Copy With Context Plugin for Vim
+# copy_with_context.nvim
 ![Neovim](https://img.shields.io/badge/NeoVim-%2357A143.svg?&style=for-the-badge&logo=neovim&logoColor=white)
-![Vim](https://img.shields.io/badge/VIM-%2311AB00.svg?style=for-the-badge&logo=vim&logoColor=white)
-[![Hits-of-Code](https://hitsofcode.com/github/zhisme/copy_with_context.vim)](https://hitsofcode.com/github/zhisme/copy_with_context.vim/view)
-![GitHub Tag](https://img.shields.io/github/v/tag/zhisme/copy_with_context.vim)
-![GitHub License](https://img.shields.io/github/license/zhisme/copy_with_context.vim)
+[![Hits-of-Code](https://hitsofcode.com/github/zhisme/copy_with_context.nvim)](https://hitsofcode.com/github/zhisme/copy_with_context.nvim/view)
+![GitHub Tag](https://img.shields.io/github/v/tag/zhisme/copy_with_context.nvim)
+![GitHub License](https://img.shields.io/github/license/zhisme/copy_with_context.nvim)
 
 Copy lines with file path and line number metadata. Perfect for sharing code snippets with context.
 
@@ -16,7 +15,9 @@ When sharing code snippets, it's often useful to include the file path and line 
 - Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
 
 ```lua
-use 'zhisme/copy_with_context'
+use({
+  'zhisme/copy_with_context.nvim'
+})
 ```
 
 - Using [vim-plug](https://github.com/junegunn/vim-plug):
@@ -25,7 +26,7 @@ use 'zhisme/copy_with_context'
 call plug#begin()
 
 " Other plugins...
-Plug 'zhisme/copy_with_context.vim'
+Plug 'zhisme/copy_with_context.nvim'
 
 call plug#end()
 ```
@@ -103,7 +104,7 @@ require('copy_with_context').setup({
 ```
 
 ## Contributing
-Bug reports and pull requests are welcome on GitHub at https://github.com/zhisme/copy_with_context.vim. Ensure to test your solution and provide a clear description of the problem you are solving.
+Bug reports and pull requests are welcome on GitHub at https://github.com/zhisme/copy_with_context.nvim. Ensure to test your solution and provide a clear description of the problem you are solving.
 
 ## License
 The plugin is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
