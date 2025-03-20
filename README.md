@@ -96,6 +96,9 @@ require('copy_with_context').setup({
     },
     -- whether to trim lines or not
     trim_lines = true,
+    context_format = '# %s:%s',  -- Default format for context: "# Source file: filepath:line"
+  -- context_format = '# Source file: %s:%s',
+  -- Other format for context: "# Source file: /path/to/file:123"
 })
 ```
 

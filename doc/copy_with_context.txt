@@ -39,6 +39,9 @@ There is no need to call setup if you are ok with the defaults.
     },
     -- whether to trim lines or not
     trim_lines = true,
+    context_format = '# %s:%s',  -- format for context: "# filepath:line", example: "# /path/to/file:123"
+    -- context_format = '# Source file: %s:%s',
+    -- Other format for context: "# Source file: /path/to/file:123"
   })
 <
 
