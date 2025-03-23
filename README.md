@@ -103,6 +103,12 @@ require('copy_with_context').setup({
 })
 ```
 
+## Testing
+After cloning the repository, run the following command to run the tests:
+```
+make test
+```
+
 ## Contributing
 Bug reports and pull requests are welcome on GitHub at https://github.com/zhisme/copy_with_context.nvim. Ensure to test your solution and provide a clear description of the problem you are solving.
 
