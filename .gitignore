@@ -5,6 +5,7 @@ luac.out
 *.src.rock
 *.zip
 *.tar.gz
+/deps
 
 # Mac OS X
 .DS_Store
