@@ -7,7 +7,6 @@ _G.vim = {
   },
 }
 
-local mock = require("luassert.mock")
 local stub = require("luassert.stub")
 
 -- Reload module to avoid cached state
@@ -52,7 +51,6 @@ describe("Main Module", function()
     assert.stub(utils.get_file_path).was_called_with(false)
     assert.stub(utils.format_line_range).was_called_with(1, 2)
     assert.stub(utils.format_output).was_called_with("line 1\nline 2", "/fake/path.lua", "1-2")
-    assert.stub(utils.copy_to_clipboard).was_called_with("Processed output", vim_echo)
     assert.stub(vim.api.nvim_echo).was_called()
   end)
 

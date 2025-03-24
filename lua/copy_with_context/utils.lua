@@ -42,7 +42,7 @@ function M.process_lines(lines)
   return processed
 end
 
-function M.copy_to_clipboard(output, echo_text)
+function M.copy_to_clipboard(output)
   vim.fn.setreg("*", output)
   vim.fn.setreg("+", output)
 end

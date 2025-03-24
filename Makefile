@@ -3,6 +3,7 @@ DEPS_DIR = deps
 TEST_DIR = tests
 ROCKSPEC = copy_with_context-2.1.0-1.rockspec
 BUSTED = $(DEPS_DIR)/bin/busted
+LUACHECK = $(DEPS_DIR)/bin/luacheck
 
 .PHONY: install-stylua
 install-stylua:
@@ -34,6 +35,11 @@ fmt:
 fmt-check:
 	@echo "Checking Lua files with stylua..."
 	@stylua --check lua tests
+
+.PHONY: lint
+lint:
+	@echo "Linting Lua files with luacheck..."
+	@$(LUACHECK) lua tests
 
 # Clean generated files
 .PHONY: clean
