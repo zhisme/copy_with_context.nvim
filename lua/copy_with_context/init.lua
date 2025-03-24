@@ -5,10 +5,10 @@
 local M = {}
 
 function M.setup(opts)
-  local config = require('copy_with_context.config')
+  local config = require("copy_with_context.config")
   config.setup(opts)
 
-  local main = require('copy_with_context.main')
+  local main = require("copy_with_context.main")
   main.setup()
 
   return M

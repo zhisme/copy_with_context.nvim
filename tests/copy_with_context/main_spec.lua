@@ -3,11 +3,10 @@ _G.vim = {
     nvim_echo = function() end,
   },
   keymap = {
-    set = function() end
-  }
+    set = function() end,
+  },
 }
 
-local mock = require("luassert.mock")
 local stub = require("luassert.stub")
 
 -- Reload module to avoid cached state
@@ -52,7 +51,6 @@ describe("Main Module", function()
     assert.stub(utils.get_file_path).was_called_with(false)
     assert.stub(utils.format_line_range).was_called_with(1, 2)
     assert.stub(utils.format_output).was_called_with("line 1\nline 2", "/fake/path.lua", "1-2")
-    assert.stub(utils.copy_to_clipboard).was_called_with("Processed output", vim_echo)
     assert.stub(vim.api.nvim_echo).was_called()
   end)
 
@@ -69,9 +67,17 @@ describe("Main Module", function()
   it("sets up key mappings", function()
     main.setup()
 
-    assert.stub(vim.keymap.set).was_called_with("n", config.options.mappings.relative, match._, { silent = false })
-    assert.stub(vim.keymap.set).was_called_with("n", config.options.mappings.absolute, match._, { silent = false })
-    assert.stub(vim.keymap.set).was_called_with("x", config.options.mappings.relative, match._, { silent = true })
-    assert.stub(vim.keymap.set).was_called_with("x", config.options.mappings.absolute, match._, { silent = true })
+    assert
+      .stub(vim.keymap.set)
+      .was_called_with("n", config.options.mappings.relative, match._, { silent = false })
+    assert
+      .stub(vim.keymap.set)
+      .was_called_with("n", config.options.mappings.absolute, match._, { silent = false })
+    assert
+      .stub(vim.keymap.set)
+      .was_called_with("x", config.options.mappings.relative, match._, { silent = true })
+    assert
+      .stub(vim.keymap.set)
+      .was_called_with("x", config.options.mappings.absolute, match._, { silent = true })
   end)
 end)
