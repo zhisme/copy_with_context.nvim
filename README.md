@@ -12,16 +12,7 @@ When sharing code snippets, it's often useful to include the file path and line 
 
 ## Installation
 
-- Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
-
-```lua
-use({
-  'zhisme/copy_with_context.nvim'
-})
-```
-
 - Using [vim-plug](https://github.com/junegunn/vim-plug):
-
 ```vim
 call plug#begin()
 
@@ -29,6 +20,45 @@ call plug#begin()
 Plug 'zhisme/copy_with_context.nvim'
 
 call plug#end()
+```
+
+
+- Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
+```lua
+use {
+    'zhisme/copy_with_context.nvim',
+    config = function()
+      require('copy_with_context').setup({
+        -- Customize mappings
+        mappings = {
+          relative = '<leader>cy',
+          absolute = '<leader>cY'
+        },
+        -- whether to trim lines or not
+        trim_lines = true,
+        context_format = '# %s:%s', -- Default format for context: "# Source file: filepath:line"
+      })
+    end
+  }
+```
+
+- Using [lazy.nvim](https://github.com/folke/lazy.nvim)
+```lua
+{
+    'zhisme/copy_with_context.nvim',
+    config = function()
+      require('copy_with_context').setup({
+        -- Customize mappings
+        mappings = {
+          relative = '<leader>cy',
+          absolute = '<leader>cY'
+        },
+        -- whether to trim lines or not
+        trim_lines = true,
+        context_format = '# %s:%s', -- Default format for context: "# Source file: filepath:line"
+      })
+    end
+  },
 ```
 
 ## Usage
