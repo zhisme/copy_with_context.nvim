@@ -115,7 +115,7 @@ Want to contribute to `copy_with_context.nvim`? Here's how to set up your local 
 1. Fork the repository
 2. Clone your fork:
 ```sh
-git clone https://github.com/yourusername/marko.nvim
+git clone https://github.com/yourusername/copy_with_context.nvim
 cd copy_with_context.nvim
 ```
 3. Install dependencies with Makefile.
@@ -125,6 +125,7 @@ make deps
 
 ### Tests
 Tests are written in test framework [busted](https://lunarmodules.github.io/busted/)
+
 How to run tests:
 ```sh
 make test
@@ -148,6 +149,51 @@ To check if the code is formatted correctly, run:
 ```sh
 make fmt-check
 ```
+
+### Testing Your Changes Locally
+To test the plugin in your Neovim environment while developing:
+
+With packer.nvim:
+```lua
+use {
+  "~/path/to/copy_with_context.nvim",
+  config = function()
+      require('copy_with_context').setup({
+              -- Customize mappings
+              mappings = {
+              relative = '<leader>cy',
+              absolute = '<leader>cY'
+              },
+              -- whether to trim lines or not
+              trim_lines = true,
+              context_format = '# %s:%s',  -- Default format for context: "# Source file: filepath:line"
+              -- context_format = '# Source file: %s:%s',
+              -- Other format for context: "# Source file: /path/to/file:123"
+              })
+  end
+}
+```
+Then run `:PackerSync` to load the local version
+
+With lazy.nvim:
+```lua
+{
+  dir = "~/path/to/copy_with_context.nvim",
+  dev = true,
+  opts = {
+      mappings = {
+          relative = '<leader>cy',
+          absolute = '<leader>cY'
+      },
+      -- whether to trim lines or not
+      trim_lines = true,
+      context_format = '# %s:%s',  -- Default format for context: "# Source file: filepath:line"
+      -- context_format = '# Source file: %s:%s',
+      -- Other format for context: "# Source file: /path/to/file:123"
+  }
+}
+```
+Then restart Neovim or run `:Lazy` sync to load the local version
 
 ## Contributing
 Bug reports and pull requests are welcome on GitHub at https://github.com/zhisme/copy_with_context.nvim.
