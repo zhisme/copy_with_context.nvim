@@ -3,8 +3,8 @@ _G.vim = {
     nvim_echo = function() end,
   },
   keymap = {
-    set = function() end
-  }
+    set = function() end,
+  },
 }
 
 local mock = require("luassert.mock")
@@ -69,9 +69,17 @@ describe("Main Module", function()
   it("sets up key mappings", function()
     main.setup()
 
-    assert.stub(vim.keymap.set).was_called_with("n", config.options.mappings.relative, match._, { silent = false })
-    assert.stub(vim.keymap.set).was_called_with("n", config.options.mappings.absolute, match._, { silent = false })
-    assert.stub(vim.keymap.set).was_called_with("x", config.options.mappings.relative, match._, { silent = true })
-    assert.stub(vim.keymap.set).was_called_with("x", config.options.mappings.absolute, match._, { silent = true })
+    assert
+      .stub(vim.keymap.set)
+      .was_called_with("n", config.options.mappings.relative, match._, { silent = false })
+    assert
+      .stub(vim.keymap.set)
+      .was_called_with("n", config.options.mappings.absolute, match._, { silent = false })
+    assert
+      .stub(vim.keymap.set)
+      .was_called_with("x", config.options.mappings.relative, match._, { silent = true })
+    assert
+      .stub(vim.keymap.set)
+      .was_called_with("x", config.options.mappings.absolute, match._, { silent = true })
   end)
 end)

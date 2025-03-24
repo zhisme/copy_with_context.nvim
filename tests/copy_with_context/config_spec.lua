@@ -12,7 +12,7 @@ _G.vim = {
       return t1
     end
     return merge(default, user_opts)
-  end
+  end,
 }
 
 -- Ensure fresh module loading
@@ -24,8 +24,8 @@ describe("Config Module", function()
   it("has default options", function()
     assert.same({
       mappings = {
-        relative = '<leader>cy',
-        absolute = '<leader>cY'
+        relative = "<leader>cy",
+        absolute = "<leader>cY",
       },
       context_format = "# %s:%s",
       trim_lines = true,
@@ -35,16 +35,16 @@ describe("Config Module", function()
   it("merges user options with defaults", function()
     config.setup({
       mappings = { relative = "<leader>new" },
-      trim_lines = false
+      trim_lines = false,
     })
 
     assert.same({
       mappings = {
         relative = "<leader>new",
-        absolute = "<leader>cY"
+        absolute = "<leader>cY",
       },
       context_format = "# %s:%s",
-      trim_lines = false
+      trim_lines = false,
     }, config.options)
   end)
 end)

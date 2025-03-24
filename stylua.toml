@@ -1,0 +1,17 @@
+# Stylua Configuration File
+
+# Maximum line width before breaking
+column_width = 100
+
+# Indentation settings
+indent_type = "Spaces"
+indent_width = 2
+
+# Quote style for strings
+quote_style = "AutoPreferDouble"
+
+# How to handle trailing commas
+call_parentheses = "Always"
+
+# Keep spaces around table values
+collapse_simple_statement = "Never"

@@ -103,14 +103,56 @@ require('copy_with_context').setup({
 })
 ```
 
-## Testing
-After cloning the repository, run the following command to run the tests:
+## Development
+Want to contribute to `copy_with_context.nvim`? Here's how to set up your local development environment:
+
+### Prerequisites
+- Neovim (version 0.7.0 or higher)
+- Lua (5.1 or higher)
+- Cargo (Rust build tool for running stylua) [Install](https://www.rust-lang.org/learn/get-started)
+
+### Setup
+1. Fork the repository
+2. Clone your fork:
+```sh
+git clone https://github.com/yourusername/marko.nvim
+cd copy_with_context.nvim
 ```
+3. Install dependencies with Makefile.
+```
+make deps
+```
+
+### Tests
+Tests are written in test framework [busted](https://lunarmodules.github.io/busted/)
+How to run tests:
+```sh
 make test
 ```
 
+### Linting
+Linting is done with [luacheck](https://github.com/mpeterv/luacheck)
+```sh
+make lint
+```
+
+### Formatting
+Formatting is done with [stylua](https://github.com/JohnnyMorganz/StyLua)
+
+To automatically format the code, run:
+```sh
+make fmt
+```
+
+To check if the code is formatted correctly, run:
+```sh
+make fmt-check
+```
+
 ## Contributing
-Bug reports and pull requests are welcome on GitHub at https://github.com/zhisme/copy_with_context.nvim. Ensure to test your solution and provide a clear description of the problem you are solving.
+Bug reports and pull requests are welcome on GitHub at https://github.com/zhisme/copy_with_context.nvim.
+Ensure to test your solution and provide a clear description of the problem you are solving.
+Write new tests for your changes, and make sure the tests pass as well as linters.
 
 ## License
 The plugin is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
