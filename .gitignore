@@ -9,3 +9,6 @@ luac.out
 
 # Mac OS X
 .DS_Store
+
+# luacov
+luacov*
