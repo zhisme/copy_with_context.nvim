@@ -1,6 +1,7 @@
 # copy_with_context.nvim
 ![Neovim](https://img.shields.io/badge/NeoVim-%2357A143.svg?&style=for-the-badge&logo=neovim&logoColor=white)
 ![CI](https://github.com/zhisme/copy_with_context.nvim/actions/workflows/ci.yml/badge.svg)
+[![codecov](https://codecov.io/gh/zhisme/copy_with_context.nvim/graph/badge.svg?token=T9xjbvS1Za)](https://codecov.io/gh/zhisme/copy_with_context.nvim)
 [![Hits-of-Code](https://hitsofcode.com/github/zhisme/copy_with_context.nvim)](https://hitsofcode.com/github/zhisme/copy_with_context.nvim/view)
 ![GitHub Tag](https://img.shields.io/github/v/tag/zhisme/copy_with_context.nvim)
 ![GitHub License](https://img.shields.io/github/license/zhisme/copy_with_context.nvim)
