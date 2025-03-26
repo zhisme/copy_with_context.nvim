@@ -17,17 +17,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: JohnnyMorganz/stylua-action@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          version: latest
-          args: --check .
+      - name: Install Rust (for stylua)
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install stylua
+        run: cargo install stylua
+      - name: Check formatting with stylua
+        run: make fmt-check
 
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: lunarmodules/luacheck@v1
+      - name: Install Lua and Luacheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 luarocks
+          luarocks install luacheck
+      - name: Run Luacheck
+        run: make lint
 
   test:
     runs-on: ubuntu-latest
@@ -36,4 +43,10 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
-      - run: make test
+      - name: Install Lua and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 luarocks
+          luarocks make $(ROCKSPEC)
+      - name: Run tests
+        run: make test
