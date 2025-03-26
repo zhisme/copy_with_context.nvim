@@ -53,6 +53,8 @@ jobs:
       - name: Add local luarocks bin to PATH
         run: echo "${HOME}/.luarocks/bin" >> $GITHUB_PATH
       - name: Run tests with coverage
+        env:
+          LUA_PATH: "./lua/?.lua;./lua/?/init.lua;${LUA_PATH}"
         run: busted tests --coverage
       - name: Generate coverage report
         run: luacov
