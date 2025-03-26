@@ -32,11 +32,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y lua5.1 luarocks
-          luarocks install --local luacheck
-      - name: Add Luarocks to PATH
-        run: echo "${HOME}/.luarocks/bin" >> $GITHUB_PATH
+          sudo luarocks install luacheck
       - name: Run Luacheck
-        run: make lint
+        run: luacheck lua tests plugin
 
   test:
     runs-on: ubuntu-latest
