@@ -43,12 +43,15 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
-      - name: Install Lua, Luarocks, and Dependencies
+      - name: Install Lua and Luarocks Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y lua5.1 luarocks
-          luarocks install busted
-          luarocks install luacov
+          # Install busted and luacov locally
+          luarocks install --local busted
+          luarocks install --local luacov
+      - name: Add local luarocks bin to PATH
+        run: echo "${HOME}/.luarocks/bin" >> $GITHUB_PATH
       - name: Run tests with coverage
         run: busted tests --coverage
       - name: Generate coverage report
