@@ -43,12 +43,23 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
-      - name: Install Lua and dependencies
+      - name: Install Lua and Luarocks Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y lua5.1 luarocks
-          luarocks make --local $(ROCKSPEC)
-      - name: Add Luarocks to PATH
+          # Install busted and luacov locally
+          luarocks install --local busted
+          luarocks install --local luacov
+      - name: Add local luarocks bin to PATH
         run: echo "${HOME}/.luarocks/bin" >> $GITHUB_PATH
-      - name: Run tests
-        run: make test
+      - name: Run tests with coverage
+        env:
+          LUA_PATH: "./lua/?.lua;./lua/?/init.lua;${LUA_PATH}"
+        run: busted tests --coverage
+      - name: Generate coverage report
+        run: luacov
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: zhisme/copy_with_context.nvim
