@@ -32,7 +32,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y lua5.1 luarocks
-          luarocks install luacheck
+          luarocks install --local luacheck
+      - name: Add Luarocks to PATH
+        run: echo "${HOME}/.luarocks/bin" >> $GITHUB_PATH
       - name: Run Luacheck
         run: make lint
 
@@ -47,6 +49,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y lua5.1 luarocks
-          luarocks make $(ROCKSPEC)
+          luarocks make --local $(ROCKSPEC)
+      - name: Add Luarocks to PATH
+        run: echo "${HOME}/.luarocks/bin" >> $GITHUB_PATH
       - name: Run tests
         run: make test
