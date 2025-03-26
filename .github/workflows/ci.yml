@@ -1,0 +1,54 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.actor }}
+  cancel-in-progress: true
+
+jobs:
+  style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust (for stylua)
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install stylua
+        run: cargo install stylua
+      - name: Check formatting with stylua
+        run: make fmt-check
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua and Luacheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 luarocks
+          sudo luarocks install luacheck
+      - name: Run Luacheck
+        run: luacheck lua tests plugin
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 luarocks
+          luarocks make --local $(ROCKSPEC)
+      - name: Add Luarocks to PATH
+        run: echo "${HOME}/.luarocks/bin" >> $GITHUB_PATH
+      - name: Run tests
+        run: make test
