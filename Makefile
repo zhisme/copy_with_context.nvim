@@ -29,17 +29,17 @@ test: deps
 .PHONY: fmt
 fmt:
 	@echo "Formatting Lua files with stylua..."
-	@stylua lua tests
+	@stylua lua tests plugin
 
 .PHONY: fmt
 fmt-check:
 	@echo "Checking Lua files with stylua..."
-	@stylua --check lua tests
+	@stylua --check lua tests plugin
 
 .PHONY: lint
 lint:
 	@echo "Linting Lua files with luacheck..."
-	@$(LUACHECK) lua tests
+	@$(LUACHECK) lua tests plugin
 
 # Clean generated files
 .PHONY: clean
