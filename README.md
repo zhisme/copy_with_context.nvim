@@ -1,4 +1,5 @@
 # copy_with_context.nvim
+![CI](https://github.com/zhisme/copy_with_context.nvim/actions/workflows/ci.yml/badge.svg)
 ![Neovim](https://img.shields.io/badge/NeoVim-%2357A143.svg?&style=for-the-badge&logo=neovim&logoColor=white)
 [![Hits-of-Code](https://hitsofcode.com/github/zhisme/copy_with_context.nvim)](https://hitsofcode.com/github/zhisme/copy_with_context.nvim/view)
 ![GitHub Tag](https://img.shields.io/github/v/tag/zhisme/copy_with_context.nvim)
