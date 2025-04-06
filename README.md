@@ -147,7 +147,7 @@ Want to contribute to `copy_with_context.nvim`? Here's how to set up your local 
 1. Fork the repository
 2. Clone your fork:
 ```sh
-git clone https://github.com/yourusername/copy_with_context.nvim
+git clone https://github.com/zhisme/copy_with_context.nvim
 cd copy_with_context.nvim
 ```
 3. Install dependencies with Makefile.
