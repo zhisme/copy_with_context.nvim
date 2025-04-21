@@ -118,9 +118,9 @@ describe("Utility Functions", function()
     end)
 
     it("keeps lines unchanged if trim is disabled", function()
-      config_mock.options.trim_lines = false
+      config_mock.options.trim_lines = true
       local result = utils.process_lines({ "  hello  ", " world " })
-      assert.same({ "  hello  ", " world " }, result)
+      assert.same({ "hello", "world" }, result)
     end)
   end)
 

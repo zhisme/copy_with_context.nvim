@@ -7,7 +7,7 @@ M.options = {
     absolute = "<leader>cY",
   },
   context_format = "# %s:%s", -- format for context: "# filepath:line", example: "# /path/to/file:123"
-  trim_lines = true,
+  trim_lines = false,
 }
 
 -- Setup function to merge user config with defaults

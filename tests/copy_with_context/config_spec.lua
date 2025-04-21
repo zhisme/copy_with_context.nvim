@@ -35,7 +35,7 @@ describe("Config Module", function()
   it("merges user options with defaults", function()
     config.setup({
       mappings = { relative = "<leader>new" },
-      trim_lines = false,
+      trim_lines = true,
     })
 
     assert.same({
@@ -44,7 +44,7 @@ describe("Config Module", function()
         absolute = "<leader>cY",
       },
       context_format = "# %s:%s",
-      trim_lines = false,
+      trim_lines = true,
     }, config.options)
   end)
 end)
