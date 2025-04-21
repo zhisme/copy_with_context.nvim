@@ -28,7 +28,7 @@ describe("Config Module", function()
         absolute = "<leader>cY",
       },
       context_format = "# %s:%s",
-      trim_lines = true,
+      trim_lines = false,
     }, config.options)
   end)
 
