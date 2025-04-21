@@ -105,22 +105,22 @@ describe("Utility Functions", function()
 
   describe("process_lines", function()
     local config_mock = {
-      options = { trim_lines = true },
+      options = { trim_lines = false },
     }
 
     before_each(function()
       package.loaded["copy_with_context.config"] = config_mock
     end)
 
-    it("trims lines if config option is enabled", function()
-      local result = utils.process_lines({ "  hello  ", " world " })
-      assert.same({ "hello", "world" }, result)
-    end)
-
     it("keeps lines unchanged if trim is disabled", function()
-      config_mock.options.trim_lines = false
       local result = utils.process_lines({ "  hello  ", " world " })
       assert.same({ "  hello  ", " world " }, result)
+    end)
+
+    it("trims lines if config option is enabled", function()
+      config_mock.options.trim_lines = true
+      local result = utils.process_lines({ "  hello  ", " world " })
+      assert.same({ "hello", "world" }, result)
     end)
   end)
 

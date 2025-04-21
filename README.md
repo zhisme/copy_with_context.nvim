@@ -1,6 +1,6 @@
 # copy_with_context.nvim
 ![Neovim](https://img.shields.io/badge/NeoVim-%2357A143.svg?&style=for-the-badge&logo=neovim&logoColor=white)
-![CI](https://github.com/zhisme/copy_with_context.nvim/actions/workflows/ci.yml/badge.svg)
+![Build](https://github.com/zhisme/copy_with_context.nvim/actions/workflows/ci.yml/badge.svg)
 [![codecov](https://codecov.io/gh/zhisme/copy_with_context.nvim/graph/badge.svg?token=T9xjbvS1Za)](https://codecov.io/gh/zhisme/copy_with_context.nvim)
 [![Hits-of-Code](https://hitsofcode.com/github/zhisme/copy_with_context.nvim)](https://hitsofcode.com/github/zhisme/copy_with_context.nvim/view)
 ![GitHub Tag](https://img.shields.io/github/v/tag/zhisme/copy_with_context.nvim)
@@ -37,7 +37,7 @@ use {
           absolute = '<leader>cY'
         },
         -- whether to trim lines or not
-        trim_lines = true,
+        trim_lines = false,
         context_format = '# %s:%s', -- Default format for context: "# Source file: filepath:line"
       })
     end
@@ -56,7 +56,7 @@ use {
           absolute = '<leader>cY'
         },
         -- whether to trim lines or not
-        trim_lines = true,
+        trim_lines = false,
         context_format = '# %s:%s', -- Default format for context: "# Source file: filepath:line"
       })
     end
@@ -128,7 +128,7 @@ require('copy_with_context').setup({
       absolute = '<leader>cY'
     },
     -- whether to trim lines or not
-    trim_lines = true,
+    trim_lines = false,
     context_format = '# %s:%s',  -- Default format for context: "# Source file: filepath:line"
   -- context_format = '# Source file: %s:%s',
   -- Other format for context: "# Source file: /path/to/file:123"
@@ -197,8 +197,8 @@ use {
               absolute = '<leader>cY'
               },
               -- whether to trim lines or not
-              trim_lines = true,
-              context_format = '# %s:%s',  -- Default format for context: "# Source file: filepath:line"
+              trim_lines = false,
+              context_format = '# %s:%s',  -- Default format for context: "# filepath:line"
               -- context_format = '# Source file: %s:%s',
               -- Other format for context: "# Source file: /path/to/file:123"
               })
@@ -218,8 +218,8 @@ With lazy.nvim:
           absolute = '<leader>cY'
       },
       -- whether to trim lines or not
-      trim_lines = true,
-      context_format = '# %s:%s',  -- Default format for context: "# Source file: filepath:line"
+      trim_lines = false,
+      context_format = '# %s:%s',  -- Default format for context: "# filepath:line"
       -- context_format = '# Source file: %s:%s',
       -- Other format for context: "# Source file: /path/to/file:123"
   }
