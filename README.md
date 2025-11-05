@@ -12,6 +12,71 @@ Copy lines with file path and line number metadata. Perfect for sharing code sni
 
 When sharing code snippets, it's often useful to include the file path and line number for context. This plugin makes it easy to copy lines with this metadata. It is easier to understand the context of the code snippet when the file path and line number are included. Otherwise you have to do it manually. Copying snippet, then adding the line number (what if it is long config file? it is boring). We can automate it and do not waste our time.
 
+## 🤖 Perfect for AI-Assisted Development
+
+**This plugin is a game-changer when working with AI assistants on the web** (ChatGPT, Claude, Gemini, etc.). Here's why including line numbers and file paths dramatically improves your AI collaboration:
+
+### 🎯 Precision & Accuracy
+- **Eliminates ambiguity**: AI knows *exactly* which line you're referencing, not just "somewhere in that function"
+- **Prevents mistakes**: When AI suggests changes, it can reference precise locations like "update line 42 in `auth.js`"
+- **Faster iterations**: No back-and-forth asking "which function did you mean?" or "where should this go?"
+
+### 🗺️ Superior Context Understanding
+- **File structure awareness**: AI sees how your files are organized (`src/components/Auth/Login.tsx:15-30`) and understands architectural patterns
+- **Relationship mapping**: AI recognizes connections between files when you share multiple snippets with paths
+- **Better suggestions**: With full context, AI provides solutions that fit your actual project structure, not generic answers
+
+### 💡 Real-World Benefits
+- **Debug faster**: Paste an error with `error_handler.rb:145` and AI instantly understands the exact context
+- **Code reviews**: Share snippets with line numbers for precise discussion points
+- **Large codebases**: Essential when working with configs/long files where "line 847" matters
+- **Team collaboration**: Anyone (human or AI) can jump directly to the referenced code
+
+### ⚡ Why Line Numbers Are Critical for AI
+
+Without line numbers, you're forcing AI to:
+- Guess which part of the file you mean
+- Search through potentially hundreds of lines to find context
+- Make assumptions about code location
+- Provide generic answers because it lacks spatial awareness
+
+**With line numbers**, AI instantly knows:
+- Exact location in the file
+- Surrounding code context (what's before/after)
+- Scope (inside which function/class/block)
+- Relative position in the codebase architecture
+
+**Example**: Compare these two prompts:
+
+❌ **Without context**:
+```
+Here's my login function:
+  def authenticate(user)
+    validate_credentials(user)
+  end
+
+How do I add OAuth?
+```
+
+✅ **With context** (using this plugin):
+```
+Here's my login function:
+  def authenticate(user)
+    validate_credentials(user)
+  end
+  # app/controllers/auth_controller.rb:45-47
+
+How do I add OAuth?
+```
+
+The second prompt gives AI:
+- File location (`app/controllers/auth_controller.rb`)
+- Exact line numbers (45-47)
+- Understanding it's a controller method
+- Project structure insight (Rails convention)
+
+**Result**: AI provides OAuth integration that fits your exact architecture, suggests where to add routes, middleware, and configuration—all because it understands your project structure from that single line of metadata.
+
 ## Installation
 
 - Using [vim-plug](https://github.com/junegunn/vim-plug):
