@@ -12,6 +12,42 @@ Copy lines with file path and line number metadata. Perfect for sharing code sni
 
 When sharing code snippets, it's often useful to include the file path and line number for context. This plugin makes it easy to copy lines with this metadata. It is easier to understand the context of the code snippet when the file path and line number are included. Otherwise you have to do it manually. Copying snippet, then adding the line number (what if it is long config file? it is boring). We can automate it and do not waste our time.
 
+## 🤖 Very Useful for AI-Assisted Development
+
+**Working with AI assistants on the web** (ChatGPT, Claude, Gemini, etc.)? Including line numbers and file paths gives you significantly better results.
+
+### Why It Matters
+
+- **Precise context**: AI knows exactly which line you mean, not "somewhere in that function"
+- **Better suggestions**: File paths like `src/auth/login.ts:42` help AI understand your project structure
+- **Faster workflow**: No back-and-forth clarifying which file or function you're referring to
+- **Accurate responses**: AI provides solutions that fit your actual codebase, not generic answers
+
+### Example
+
+❌ **Without context**:
+```
+Here's my login function:
+  def authenticate(user)
+    validate_credentials(user)
+  end
+
+How do I add OAuth?
+```
+
+✅ **With context** (using this plugin):
+```
+Here's my login function:
+  def authenticate(user)
+    validate_credentials(user)
+  end
+  # app/controllers/auth_controller.rb:45-47
+
+How do I add OAuth?
+```
+
+**Result**: The second prompt gives AI file location, line numbers, and project structure insight. AI provides OAuth integration that fits your exact architecture instead of generic advice.
+
 ## Installation
 
 - Using [vim-plug](https://github.com/junegunn/vim-plug):
