@@ -6,7 +6,7 @@
 ![GitHub Tag](https://img.shields.io/github/v/tag/zhisme/copy_with_context.nvim)
 ![GitHub License](https://img.shields.io/github/license/zhisme/copy_with_context.nvim)
 
-Copy lines with file path and line number metadata. Perfect for sharing code snippets with context.
+Copy lines with file path, line number, and repository URL metadata. Perfect for sharing code snippets with context.
 
 ## Why?
 
@@ -42,11 +42,12 @@ Here's my login function:
     validate_credentials(user)
   end
   # app/controllers/auth_controller.rb:45-47
+  # https://github.com/user/repo/blob/abc123/app/controllers/auth_controller.rb#L45-L47
 
 How do I add OAuth?
 ```
 
-**Result**: The second prompt gives AI file location, line numbers, and project structure insight. AI provides OAuth integration that fits your exact architecture instead of generic advice.
+**Result**: The second prompt gives AI file location, line numbers, project structure insight, and a direct link to the code. AI provides OAuth integration that fits your exact architecture instead of generic advice.
 
 ## Installation
 
@@ -75,6 +76,7 @@ use {
         -- whether to trim lines or not
         trim_lines = false,
         context_format = '# %s:%s', -- Default format for context: "# Source file: filepath:line"
+        include_remote_url = true, -- Include repository URL (GitHub, GitLab, Bitbucket)
       })
     end
   }
@@ -94,6 +96,7 @@ use {
         -- whether to trim lines or not
         trim_lines = false,
         context_format = '# %s:%s', -- Default format for context: "# Source file: filepath:line"
+        include_remote_url = true, -- Include repository URL (GitHub, GitLab, Bitbucket)
       })
     end
   },
@@ -110,6 +113,7 @@ Output example:
 ```
   <% posts.each do |post| %>
   # app/views/widgets/show.html.erb:4
+  # https://github.com/user/repo/blob/abc123def/app/views/widgets/show.html.erb#L4
 ```
 
 2. Copy current line with absolute path:
@@ -121,6 +125,7 @@ Output example:
 ```
   <% posts.each do |post| %>
   # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4
+  # https://github.com/user/repo/blob/abc123def/app/views/widgets/show.html.erb#L4
 ```
 
 3. Copy visual selection with relative path:
@@ -135,6 +140,7 @@ Output example:
     <%= post.title %>
   <% end %>
   # app/views/widgets/show.html.erb:4-6
+  # https://github.com/user/repo/blob/abc123def/app/views/widgets/show.html.erb#L4-L6
 ```
 
 4. Copy visual selection with absolute path:
@@ -149,6 +155,7 @@ Output example:
     <%= post.title %>
   <% end %>
   # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4-6
+  # https://github.com/user/repo/blob/abc123def/app/views/widgets/show.html.erb#L4-L6
 ```
 
 ## Configuration
@@ -168,6 +175,25 @@ require('copy_with_context').setup({
     context_format = '# %s:%s',  -- Default format for context: "# Source file: filepath:line"
   -- context_format = '# Source file: %s:%s',
   -- Other format for context: "# Source file: /path/to/file:123"
+    include_remote_url = true,  -- Include repository URL (GitHub, GitLab, Bitbucket)
+})
+```
+
+### Repository URL Support
+
+When `include_remote_url` is enabled (default), the plugin automatically generates permalink URLs for your code snippets. This feature works with:
+
+- **GitHub** (github.com and GitHub Enterprise)
+- **GitLab** (gitlab.com and self-hosted instances)
+- **Bitbucket** (bitbucket.org and Bitbucket Enterprise)
+
+The URLs always use the current commit SHA for stable permalinks. If you're not in a git repository or the repository is not recognized, the URL will simply be omitted.
+
+To disable repository URLs:
+
+```lua
+require('copy_with_context').setup({
+  include_remote_url = false,
 })
 ```
 
@@ -237,6 +263,7 @@ use {
               context_format = '# %s:%s',  -- Default format for context: "# filepath:line"
               -- context_format = '# Source file: %s:%s',
               -- Other format for context: "# Source file: /path/to/file:123"
+              include_remote_url = true, -- Include repository URL (GitHub, GitLab, Bitbucket)
               })
   end
 }
@@ -258,6 +285,7 @@ With lazy.nvim:
       context_format = '# %s:%s',  -- Default format for context: "# filepath:line"
       -- context_format = '# Source file: %s:%s',
       -- Other format for context: "# Source file: /path/to/file:123"
+      include_remote_url = true, -- Include repository URL (GitHub, GitLab, Bitbucket)
   }
 }
 ```
