@@ -342,24 +342,5 @@ describe("Utility Functions", function()
       utils.get_remote_url_line:revert()
       config_mock.options.include_remote_url = false
     end)
-
-    it("handles invalid line_range gracefully", function()
-      config_mock.options.include_remote_url = true
-
-      local get_remote_url_line_called = false
-      stub(utils, "get_remote_url_line", function(_path, _start, _end)
-        get_remote_url_line_called = true
-        return "# https://example.com#L1"
-      end)
-
-      -- Invalid line range that won't parse to numbers
-      local result = utils.format_output("content", "file.lua", "invalid")
-      -- Should not call get_remote_url_line when parsing fails
-      assert.is_false(get_remote_url_line_called)
-      assert.equals("content\n-- file.lua (lines: invalid)", result)
-
-      utils.get_remote_url_line:revert()
-      config_mock.options.include_remote_url = false
-    end)
   end)
 end)

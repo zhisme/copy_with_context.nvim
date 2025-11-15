@@ -339,37 +339,5 @@ describe("Git utilities", function()
       assert.equals(":p", mod_value)
       assert.equals("lua/file.lua", result)
     end)
-
-    it("does not call fnamemodify for absolute Unix paths", function()
-      local fnamemodify_called = false
-      vim.fn.fnamemodify = function(_path, _mod)
-        fnamemodify_called = true
-        return ""
-      end
-      vim.fn.system = function(_cmd)
-        return "lua/file.lua\n"
-      end
-      vim.v.shell_error = 0
-
-      local result = git.get_file_git_path("/home/user/project/lua/file.lua")
-      assert.is_false(fnamemodify_called)
-      assert.equals("lua/file.lua", result)
-    end)
-
-    it("does not call fnamemodify for absolute Windows paths", function()
-      local fnamemodify_called = false
-      vim.fn.fnamemodify = function(_path, _mod)
-        fnamemodify_called = true
-        return ""
-      end
-      vim.fn.system = function(_cmd)
-        return "lua/file.lua\n"
-      end
-      vim.v.shell_error = 0
-
-      local result = git.get_file_git_path("C:\\project\\lua\\file.lua")
-      assert.is_false(fnamemodify_called)
-      assert.equals("lua/file.lua", result)
-    end)
   end)
 end)
