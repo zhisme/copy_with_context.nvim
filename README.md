@@ -184,10 +184,10 @@ require('copy_with_context').setup({
 When `include_remote_url` is enabled (default), the plugin automatically generates permalink URLs for your code snippets. This feature works with:
 
 - **GitHub** (github.com and GitHub Enterprise)
-- **GitLab** (gitlab.com and self-hosted instances)
-- **Bitbucket** (bitbucket.org and Bitbucket Enterprise)
+- **GitLab** (gitlab.com and self-hosted instances containing "gitlab" in the domain)
+- **Bitbucket** (bitbucket.org and *.bitbucket.org)
 
-The URLs always use the current commit SHA for stable permalinks. If you're not in a git repository or the repository is not recognized, the URL will simply be omitted.
+The URLs always use the current commit SHA for stable permalinks. If you're not in a git repository or the repository provider is not recognized, the URL will simply be omitted (graceful degradation).
 
 To disable repository URLs:
 

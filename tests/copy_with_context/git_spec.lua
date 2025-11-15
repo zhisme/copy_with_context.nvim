@@ -20,12 +20,17 @@ local git = require("copy_with_context.git")
 describe("Git utilities", function()
   before_each(function()
     vim.v.shell_error = 0
-    stub(vim.fn, "system")
+    stub(vim.fn, "system", function(_cmd)
+      return ""
+    end)
     stub(vim.fn, "trim", function(s)
       return s:match("^%s*(.-)%s*$")
     end)
     stub(vim.fn, "shellescape", function(s)
       return "'" .. s:gsub("'", "'\\''") .. "'"
+    end)
+    stub(vim.fn, "fnamemodify", function(path, _mod)
+      return path
     end)
   end)
 
@@ -33,6 +38,7 @@ describe("Git utilities", function()
     vim.fn.system:revert()
     vim.fn.trim:revert()
     vim.fn.shellescape:revert()
+    vim.fn.fnamemodify:revert()
   end)
 
   describe("is_git_repo", function()

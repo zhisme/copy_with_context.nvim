@@ -11,9 +11,9 @@ describe("Bitbucket provider", function()
       assert.is_true(bitbucket.matches("bitbucket.org"))
     end)
 
-    it("matches Bitbucket Enterprise domains", function()
-      assert.is_true(bitbucket.matches("bitbucket.example.com"))
+    it("matches Bitbucket Server domains", function()
       assert.is_true(bitbucket.matches("code.bitbucket.org"))
+      assert.is_true(bitbucket.matches("enterprise.bitbucket.org"))
     end)
 
     it("does not match non-Bitbucket domains", function()

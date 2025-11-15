@@ -34,10 +34,9 @@ describe("Provider detection and factory", function()
       assert.equals("bitbucket", provider.name)
     end)
 
-    it("falls back to GitLab for unknown domains", function()
+    it("returns nil for unknown domains", function()
       local provider = providers.detect_provider("unknown.example.com")
-      assert.is_not_nil(provider)
-      assert.equals("gitlab", provider.name)
+      assert.is_nil(provider)
     end)
 
     it("returns nil for nil domain", function()

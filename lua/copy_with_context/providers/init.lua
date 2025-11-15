@@ -23,12 +23,7 @@ function M.detect_provider(domain)
     end
   end
 
-  -- Fallback to GitLab for unknown domains (assume self-hosted GitLab)
-  local ok, gitlab = pcall(require, "copy_with_context.providers.gitlab")
-  if ok then
-    return gitlab
-  end
-
+  -- Return nil for unknown providers (graceful degradation)
   return nil
 end
 
