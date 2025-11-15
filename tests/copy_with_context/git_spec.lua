@@ -1,12 +1,8 @@
 -- Git utilities tests
 
+-- Set up vim mock before requiring the module
 _G.vim = {
-  fn = {
-    system = function(_cmd) end,
-    trim = function(s) return s:match("^%s*(.-)%s*$") end,
-    shellescape = function(s) return "'" .. s:gsub("'", "'\\''") .. "'" end,
-    fnamemodify = function(path, _mod) return path end,
-  },
+  fn = {},
   v = {
     shell_error = 0,
   },
@@ -18,34 +14,45 @@ package.loaded["copy_with_context.git"] = nil
 local git = require("copy_with_context.git")
 
 describe("Git utilities", function()
+  local original_system, original_trim, original_shellescape, original_fnamemodify
+
   before_each(function()
+    -- Save originals
+    original_system = vim.fn.system
+    original_trim = vim.fn.trim
+    original_shellescape = vim.fn.shellescape
+    original_fnamemodify = vim.fn.fnamemodify
+
+    -- Set defaults
     vim.v.shell_error = 0
-    stub(vim.fn, "system", function(_cmd)
+    vim.fn.system = function(_cmd)
       return ""
-    end)
-    stub(vim.fn, "trim", function(s)
-      return s:match("^%s*(.-)%s*$")
-    end)
-    stub(vim.fn, "shellescape", function(s)
+    end
+    vim.fn.trim = function(s)
+      if not s then return "" end
+      return s:match("^%s*(.-)%s*$") or s
+    end
+    vim.fn.shellescape = function(s)
       return "'" .. s:gsub("'", "'\\''") .. "'"
-    end)
-    stub(vim.fn, "fnamemodify", function(path, _mod)
+    end
+    vim.fn.fnamemodify = function(path, _mod)
       return path
-    end)
+    end
   end)
 
   after_each(function()
-    vim.fn.system:revert()
-    vim.fn.trim:revert()
-    vim.fn.shellescape:revert()
-    vim.fn.fnamemodify:revert()
+    -- Restore originals
+    vim.fn.system = original_system
+    vim.fn.trim = original_trim
+    vim.fn.shellescape = original_shellescape
+    vim.fn.fnamemodify = original_fnamemodify
   end)
 
   describe("is_git_repo", function()
     it("returns true when in a git repository", function()
-      vim.fn.system:invokes(function(_cmd)
+      vim.fn.system = function(_cmd)
         return "true\n"
-      end)
+      end
       vim.v.shell_error = 0
 
       local result = git.is_git_repo()
@@ -53,9 +60,9 @@ describe("Git utilities", function()
     end)
 
     it("returns false when not in a git repository", function()
-      vim.fn.system:invokes(function(_cmd)
+      vim.fn.system = function(_cmd)
         return "fatal: not a git repository\n"
-      end)
+      end
       vim.v.shell_error = 128
 
       local result = git.is_git_repo()
@@ -65,9 +72,9 @@ describe("Git utilities", function()
 
   describe("get_remote_url", function()
     it("returns origin remote URL", function()
-      vim.fn.system:invokes(function(_cmd)
+      vim.fn.system = function(_cmd)
         return "origin\thttps://github.com/user/repo.git (fetch)\norigin\thttps://github.com/user/repo.git (push)\n"
-      end)
+      end
       vim.v.shell_error = 0
 
       local result = git.get_remote_url()
@@ -75,9 +82,9 @@ describe("Git utilities", function()
     end)
 
     it("returns first remote if origin not available", function()
-      vim.fn.system:invokes(function(_cmd)
+      vim.fn.system = function(_cmd)
         return "upstream\thttps://github.com/other/repo.git (fetch)\nupstream\thttps://github.com/other/repo.git (push)\n"
-      end)
+      end
       vim.v.shell_error = 0
 
       local result = git.get_remote_url()
@@ -85,9 +92,9 @@ describe("Git utilities", function()
     end)
 
     it("returns nil when no remotes available", function()
-      vim.fn.system:invokes(function(_cmd)
+      vim.fn.system = function(_cmd)
         return ""
-      end)
+      end
       vim.v.shell_error = 0
 
       local result = git.get_remote_url()
@@ -95,9 +102,9 @@ describe("Git utilities", function()
     end)
 
     it("returns nil on git error", function()
-      vim.fn.system:invokes(function(_cmd)
+      vim.fn.system = function(_cmd)
         return "fatal: not a git repository\n"
-      end)
+      end
       vim.v.shell_error = 128
 
       local result = git.get_remote_url()
@@ -149,9 +156,9 @@ describe("Git utilities", function()
 
   describe("get_current_commit", function()
     it("returns commit SHA", function()
-      vim.fn.system:invokes(function(_cmd)
+      vim.fn.system = function(_cmd)
         return "abc123def456\n"
-      end)
+      end
       vim.v.shell_error = 0
 
       local result = git.get_current_commit()
@@ -159,9 +166,9 @@ describe("Git utilities", function()
     end)
 
     it("returns nil on git error", function()
-      vim.fn.system:invokes(function(_cmd)
+      vim.fn.system = function(_cmd)
         return "fatal: not a git repository\n"
-      end)
+      end
       vim.v.shell_error = 128
 
       local result = git.get_current_commit()
@@ -171,9 +178,9 @@ describe("Git utilities", function()
 
   describe("get_file_git_path", function()
     it("returns repo-relative path", function()
-      vim.fn.system:invokes(function(_cmd)
+      vim.fn.system = function(_cmd)
         return "lua/copy_with_context/git.lua\n"
-      end)
+      end
       vim.v.shell_error = 0
 
       local result = git.get_file_git_path("/home/user/project/lua/copy_with_context/git.lua")
@@ -181,9 +188,9 @@ describe("Git utilities", function()
     end)
 
     it("converts Windows backslashes to forward slashes", function()
-      vim.fn.system:invokes(function(_cmd)
+      vim.fn.system = function(_cmd)
         return "lua\\copy_with_context\\git.lua\n"
-      end)
+      end
       vim.v.shell_error = 0
 
       local result = git.get_file_git_path("C:\\project\\lua\\copy_with_context\\git.lua")
@@ -191,9 +198,9 @@ describe("Git utilities", function()
     end)
 
     it("returns nil for untracked file", function()
-      vim.fn.system:invokes(function(_cmd)
+      vim.fn.system = function(_cmd)
         return ""
-      end)
+      end
       vim.v.shell_error = 128
 
       local result = git.get_file_git_path("/home/user/project/untracked.lua")
@@ -202,26 +209,38 @@ describe("Git utilities", function()
   end)
 
   describe("get_git_info", function()
+    local orig_is_git_repo, orig_get_remote_url, orig_get_current_commit, orig_get_file_git_path
+
+    before_each(function()
+      -- Save originals
+      orig_is_git_repo = git.is_git_repo
+      orig_get_remote_url = git.get_remote_url
+      orig_get_current_commit = git.get_current_commit
+      orig_get_file_git_path = git.get_file_git_path
+    end)
+
+    after_each(function()
+      -- Restore originals
+      git.is_git_repo = orig_is_git_repo
+      git.get_remote_url = orig_get_remote_url
+      git.get_current_commit = orig_get_current_commit
+      git.get_file_git_path = orig_get_file_git_path
+    end)
+
     it("returns complete git info", function()
-      -- Mock is_git_repo
-      stub(git, "is_git_repo", function()
+      -- Mock functions
+      git.is_git_repo = function()
         return true
-      end)
-
-      -- Mock get_remote_url
-      stub(git, "get_remote_url", function()
+      end
+      git.get_remote_url = function()
         return "https://github.com/user/repo.git"
-      end)
-
-      -- Mock get_current_commit
-      stub(git, "get_current_commit", function()
+      end
+      git.get_current_commit = function()
         return "abc123def456"
-      end)
-
-      -- Mock get_file_git_path
-      stub(git, "get_file_git_path", function(_path)
+      end
+      git.get_file_git_path = function(_path)
         return "lua/file.lua"
-      end)
+      end
 
       local result = git.get_git_info("/home/user/project/lua/file.lua")
 
@@ -232,37 +251,27 @@ describe("Git utilities", function()
         commit = "abc123def456",
         file_path = "lua/file.lua",
       }, result)
-
-      git.is_git_repo:revert()
-      git.get_remote_url:revert()
-      git.get_current_commit:revert()
-      git.get_file_git_path:revert()
     end)
 
     it("returns nil when not in git repo", function()
-      stub(git, "is_git_repo", function()
+      git.is_git_repo = function()
         return false
-      end)
+      end
 
       local result = git.get_git_info("/home/user/project/file.lua")
       assert.is_nil(result)
-
-      git.is_git_repo:revert()
     end)
 
     it("returns nil when remote URL not available", function()
-      stub(git, "is_git_repo", function()
+      git.is_git_repo = function()
         return true
-      end)
-      stub(git, "get_remote_url", function()
+      end
+      git.get_remote_url = function()
         return nil
-      end)
+      end
 
       local result = git.get_git_info("/home/user/project/file.lua")
       assert.is_nil(result)
-
-      git.is_git_repo:revert()
-      git.get_remote_url:revert()
     end)
   end)
 end)

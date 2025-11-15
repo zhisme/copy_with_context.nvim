@@ -13,7 +13,7 @@ describe("GitLab provider", function()
 
     it("matches self-hosted GitLab domains", function()
       assert.is_true(gitlab.matches("gitlab.example.com"))
-      assert.is_true(gitlab.matches("git.mycompany.com"))
+      assert.is_true(gitlab.matches("mygitlab.company.com"))
     end)
   end)
 

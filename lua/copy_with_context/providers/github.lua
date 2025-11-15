@@ -6,7 +6,7 @@ M.name = "github"
 
 -- Check if this provider handles the given domain
 function M.matches(domain)
-  return domain == "github.com" or domain:match("%.github%.com$") ~= nil
+  return domain == "github.com" or domain:match("github") ~= nil
 end
 
 -- Build URL for GitHub
