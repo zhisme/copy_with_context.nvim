@@ -308,13 +308,16 @@ describe("Utility Functions", function()
     it("parses single line number from line_range", function()
       config_mock.options.include_remote_url = true
 
+      local captured_start, captured_end
       stub(utils, "get_remote_url_line", function(_path, start, _end)
-        assert.equals(42, start)
-        assert.equals(42, _end)
+        captured_start = start
+        captured_end = _end
         return "# https://example.com#L42"
       end)
 
       local result = utils.format_output("content", "file.lua", "42")
+      assert.equals(42, captured_start)
+      assert.equals(42, captured_end)
       assert.truthy(result:match("https://example.com#L42"))
 
       utils.get_remote_url_line:revert()
@@ -324,13 +327,16 @@ describe("Utility Functions", function()
     it("parses line range from line_range", function()
       config_mock.options.include_remote_url = true
 
+      local captured_start, captured_end
       stub(utils, "get_remote_url_line", function(_path, start, _end)
-        assert.equals(10, start)
-        assert.equals(20, _end)
+        captured_start = start
+        captured_end = _end
         return "# https://example.com#L10-L20"
       end)
 
       local result = utils.format_output("content", "file.lua", "10-20")
+      assert.equals(10, captured_start)
+      assert.equals(20, captured_end)
       assert.truthy(result:match("https://example.com#L10%-L20"))
 
       utils.get_remote_url_line:revert()
