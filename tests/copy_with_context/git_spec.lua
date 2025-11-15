@@ -273,5 +273,69 @@ describe("Git utilities", function()
       local result = git.get_git_info("/home/user/project/file.lua")
       assert.is_nil(result)
     end)
+
+    it("returns nil when remote URL cannot be parsed", function()
+      git.is_git_repo = function()
+        return true
+      end
+      git.get_remote_url = function()
+        return "invalid-url-format"
+      end
+
+      local result = git.get_git_info("/home/user/project/file.lua")
+      assert.is_nil(result)
+    end)
+
+    it("returns nil when commit is not available", function()
+      git.is_git_repo = function()
+        return true
+      end
+      git.get_remote_url = function()
+        return "https://github.com/user/repo.git"
+      end
+      git.get_current_commit = function()
+        return nil
+      end
+
+      local result = git.get_git_info("/home/user/project/file.lua")
+      assert.is_nil(result)
+    end)
+
+    it("returns nil when file git path is not available", function()
+      git.is_git_repo = function()
+        return true
+      end
+      git.get_remote_url = function()
+        return "https://github.com/user/repo.git"
+      end
+      git.get_current_commit = function()
+        return "abc123"
+      end
+      git.get_file_git_path = function(_path)
+        return nil
+      end
+
+      local result = git.get_git_info("/home/user/project/file.lua")
+      assert.is_nil(result)
+    end)
+  end)
+
+  describe("get_file_git_path with relative paths", function()
+    it("converts relative path to absolute before calling git", function()
+      local fnamemodify_called = false
+      vim.fn.fnamemodify = function(path, mod)
+        fnamemodify_called = true
+        assert.equals(":p", mod)
+        return "/home/user/project/" .. path
+      end
+      vim.fn.system = function(_cmd)
+        return "lua/file.lua\n"
+      end
+      vim.v.shell_error = 0
+
+      local result = git.get_file_git_path("lua/file.lua")
+      assert.is_true(fnamemodify_called)
+      assert.equals("lua/file.lua", result)
+    end)
   end)
 end)

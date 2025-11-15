@@ -225,6 +225,36 @@ describe("Utility Functions", function()
       local result = utils.get_remote_url_line("/path/to/file.lua", 42, 42)
       assert.is_nil(result)
     end)
+
+    it("returns nil when build_url returns nil", function()
+      local git_mock = {
+        get_git_info = function(_path)
+          return {
+            provider = "github.com",
+            owner = "user",
+            repo = "repo",
+            commit = "abc123",
+            file_path = "lua/file.lua",
+          }
+        end,
+      }
+      package.loaded["copy_with_context.git"] = git_mock
+
+      local provider_mock = {
+        build_url = function(_git_info, _start, _end)
+          return nil
+        end,
+      }
+      local providers_mock = {
+        get_provider = function(_git_info)
+          return provider_mock
+        end,
+      }
+      package.loaded["copy_with_context.providers"] = providers_mock
+
+      local result = utils.get_remote_url_line("/path/to/file.lua", 42, 42)
+      assert.is_nil(result)
+    end)
   end)
 
   describe("format_output", function()
@@ -302,6 +332,25 @@ describe("Utility Functions", function()
 
       local result = utils.format_output("content", "file.lua", "10-20")
       assert.truthy(result:match("https://example.com#L10%-L20"))
+
+      utils.get_remote_url_line:revert()
+      config_mock.options.include_remote_url = false
+    end)
+
+    it("handles invalid line_range gracefully", function()
+      config_mock.options.include_remote_url = true
+
+      local get_remote_url_line_called = false
+      stub(utils, "get_remote_url_line", function(_path, _start, _end)
+        get_remote_url_line_called = true
+        return "# https://example.com#L1"
+      end)
+
+      -- Invalid line range that won't parse to numbers
+      local result = utils.format_output("content", "file.lua", "invalid")
+      -- Should not call get_remote_url_line when parsing fails
+      assert.is_false(get_remote_url_line_called)
+      assert.equals("content\n-- file.lua (lines: invalid)", result)
 
       utils.get_remote_url_line:revert()
       config_mock.options.include_remote_url = false
