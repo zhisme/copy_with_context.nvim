@@ -30,7 +30,9 @@ describe("Git utilities", function()
       return ""
     end
     vim.fn.trim = function(s)
-      if not s then return "" end
+      if not s then
+        return ""
+      end
       return s:match("^%s*(.-)%s*$") or s
     end
     vim.fn.shellescape = function(s)

@@ -93,7 +93,9 @@ function M.get_file_git_path(file_path)
     abs_path = vim.fn.fnamemodify(file_path, ":p")
   end
 
-  local result = vim.fn.system(string.format("git ls-files --full-name %s 2>/dev/null", vim.fn.shellescape(abs_path)))
+  local result = vim.fn.system(
+    string.format("git ls-files --full-name %s 2>/dev/null", vim.fn.shellescape(abs_path))
+  )
   if vim.v.shell_error ~= 0 or result == "" then
     return nil
   end

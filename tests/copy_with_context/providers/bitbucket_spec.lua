@@ -39,7 +39,10 @@ describe("Bitbucket provider", function()
 
     it("builds URL for multiple lines", function()
       local url = bitbucket.build_url(git_info, 10, 20)
-      assert.equals("https://bitbucket.org/user/repo/src/abc123def456/lua/file.lua#lines-10:20", url)
+      assert.equals(
+        "https://bitbucket.org/user/repo/src/abc123def456/lua/file.lua#lines-10:20",
+        url
+      )
     end)
 
     it("builds URL for Bitbucket Enterprise", function()
@@ -51,7 +54,10 @@ describe("Bitbucket provider", function()
         file_path = "src/main.rb",
       }
       local url = bitbucket.build_url(enterprise_info, 5, 5)
-      assert.equals("https://bitbucket.example.com/team/project/src/xyz789/src/main.rb#lines-5", url)
+      assert.equals(
+        "https://bitbucket.example.com/team/project/src/xyz789/src/main.rb#lines-5",
+        url
+      )
     end)
   end)
 end)
