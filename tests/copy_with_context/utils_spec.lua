@@ -309,9 +309,9 @@ describe("Utility Functions", function()
       config_mock.options.include_remote_url = true
 
       local captured_start, captured_end
-      stub(utils, "get_remote_url_line", function(_path, start, _end)
+      stub(utils, "get_remote_url_line", function(_path, start, end_line)
         captured_start = start
-        captured_end = _end
+        captured_end = end_line
         return "# https://example.com#L42"
       end)
 
@@ -328,9 +328,9 @@ describe("Utility Functions", function()
       config_mock.options.include_remote_url = true
 
       local captured_start, captured_end
-      stub(utils, "get_remote_url_line", function(_path, start, _end)
+      stub(utils, "get_remote_url_line", function(_path, start, end_line)
         captured_start = start
-        captured_end = _end
+        captured_end = end_line
         return "# https://example.com#L10-L20"
       end)
 

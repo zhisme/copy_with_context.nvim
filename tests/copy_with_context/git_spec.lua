@@ -1,4 +1,5 @@
 -- Git utilities tests
+-- luacheck: globals vim
 
 -- Set up vim mock before requiring the module
 _G.vim = {
@@ -83,7 +84,8 @@ describe("Git utilities", function()
 
     it("returns first remote if origin not available", function()
       vim.fn.system = function(_cmd)
-        return "upstream\thttps://github.com/other/repo.git (fetch)\nupstream\thttps://github.com/other/repo.git (push)\n"
+        return "upstream\thttps://github.com/other/repo.git (fetch)\n"
+          .. "upstream\thttps://github.com/other/repo.git (push)\n"
       end
       vim.v.shell_error = 0
 
