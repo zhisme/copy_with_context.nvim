@@ -29,6 +29,7 @@ describe("Config Module", function()
       },
       context_format = "# %s:%s",
       trim_lines = false,
+      include_remote_url = true,
     }, config.options)
   end)
 
@@ -45,6 +46,7 @@ describe("Config Module", function()
       },
       context_format = "# %s:%s",
       trim_lines = true,
+      include_remote_url = true,
     }, config.options)
   end)
 end)
