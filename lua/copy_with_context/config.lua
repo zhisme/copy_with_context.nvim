@@ -8,7 +8,7 @@ M.options = {
   },
   context_format = "# %s:%s", -- format for context: "# filepath:line", example: "# /path/to/file:123"
   trim_lines = false,
-  include_remote_url = true, -- include repository URL in output
+  include_remote_url = false, -- include repository URL in output (opt-in feature)
 }
 
 -- Setup function to merge user config with defaults

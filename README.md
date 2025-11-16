@@ -76,7 +76,7 @@ use {
         -- whether to trim lines or not
         trim_lines = false,
         context_format = '# %s:%s', -- Default format for context: "# Source file: filepath:line"
-        include_remote_url = true, -- Include repository URL (GitHub, GitLab, Bitbucket)
+        include_remote_url = true, -- Optional: Include repository URL (GitHub, GitLab, Bitbucket)
       })
     end
   }
@@ -96,7 +96,7 @@ use {
         -- whether to trim lines or not
         trim_lines = false,
         context_format = '# %s:%s', -- Default format for context: "# Source file: filepath:line"
-        include_remote_url = true, -- Include repository URL (GitHub, GitLab, Bitbucket)
+        include_remote_url = true, -- Optional: Include repository URL (GitHub, GitLab, Bitbucket)
       })
     end
   },
@@ -175,13 +175,13 @@ require('copy_with_context').setup({
     context_format = '# %s:%s',  -- Default format for context: "# Source file: filepath:line"
   -- context_format = '# Source file: %s:%s',
   -- Other format for context: "# Source file: /path/to/file:123"
-    include_remote_url = true,  -- Include repository URL (GitHub, GitLab, Bitbucket)
+    include_remote_url = false,  -- Include repository URL (GitHub, GitLab, Bitbucket) - disabled by default
 })
 ```
 
 ### Repository URL Support
 
-When `include_remote_url` is enabled (default), the plugin automatically generates permalink URLs for your code snippets. This feature works with:
+When `include_remote_url` is enabled, the plugin automatically generates permalink URLs for your code snippets. This feature works with:
 
 - **GitHub** (github.com and GitHub Enterprise)
 - **GitLab** (gitlab.com and self-hosted instances containing "gitlab" in the domain)
@@ -189,11 +189,11 @@ When `include_remote_url` is enabled (default), the plugin automatically generat
 
 The URLs always use the current commit SHA for stable permalinks. If you're not in a git repository or the repository provider is not recognized, the URL will simply be omitted (graceful degradation).
 
-To disable repository URLs:
+To enable repository URLs:
 
 ```lua
 require('copy_with_context').setup({
-  include_remote_url = false,
+  include_remote_url = true,
 })
 ```
 
@@ -263,7 +263,7 @@ use {
               context_format = '# %s:%s',  -- Default format for context: "# filepath:line"
               -- context_format = '# Source file: %s:%s',
               -- Other format for context: "# Source file: /path/to/file:123"
-              include_remote_url = true, -- Include repository URL (GitHub, GitLab, Bitbucket)
+              include_remote_url = true, -- Optional: Include repository URL (GitHub, GitLab, Bitbucket)
               })
   end
 }
@@ -285,7 +285,7 @@ With lazy.nvim:
       context_format = '# %s:%s',  -- Default format for context: "# filepath:line"
       -- context_format = '# Source file: %s:%s',
       -- Other format for context: "# Source file: /path/to/file:123"
-      include_remote_url = true, -- Include repository URL (GitHub, GitLab, Bitbucket)
+      include_remote_url = true, -- Optional: Include repository URL (GitHub, GitLab, Bitbucket)
   }
 }
 ```
