@@ -123,6 +123,21 @@ describe("Main Module", function()
     assert.stub(url_builder.build_url).was_not_called()
   end)
 
+  it("handles missing format gracefully", function()
+    -- Add mapping without corresponding format to simulate edge case
+    config.options.mappings.missing = "<leader>cm"
+    -- Don't add format for it (this would normally be caught by validation)
+
+    -- This should not error, just use nil format_string
+    main.copy_with_context("missing", false)
+
+    -- Should not call build_url because format_string is nil
+    assert.stub(url_builder.build_url).was_not_called()
+
+    -- Cleanup
+    config.options.mappings.missing = nil
+  end)
+
   it("sets up key mappings for all defined mappings", function()
     main.setup()
 

@@ -35,6 +35,13 @@ describe("Config Module", function()
     }, config.options)
   end)
 
+  it("can be called without arguments", function()
+    config.setup()
+    -- Should not error and keep default options
+    assert.is_not_nil(config.options.mappings)
+    assert.is_not_nil(config.options.formats)
+  end)
+
   it("merges user options with defaults", function()
     config.setup({
       mappings = { relative = "<leader>new" },
