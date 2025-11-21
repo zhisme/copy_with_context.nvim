@@ -17,6 +17,7 @@ _G.vim = {
 
 -- Ensure fresh module loading
 package.loaded["copy_with_context.config"] = nil
+package.loaded["copy_with_context.user_config_validation"] = nil
 
 local config = require("copy_with_context.config")
 
@@ -27,9 +28,10 @@ describe("Config Module", function()
         relative = "<leader>cy",
         absolute = "<leader>cY",
       },
-      context_format = "# %s:%s",
+      formats = {
+        default = "# {filepath}:{line}",
+      },
       trim_lines = false,
-      include_remote_url = false,
     }, config.options)
   end)
 
@@ -44,9 +46,37 @@ describe("Config Module", function()
         relative = "<leader>new",
         absolute = "<leader>cY",
       },
-      context_format = "# %s:%s",
+      formats = {
+        default = "# {filepath}:{line}",
+      },
       trim_lines = true,
-      include_remote_url = false,
     }, config.options)
+  end)
+
+  it("validates configuration on setup", function()
+    local success = pcall(config.setup, {
+      mappings = {
+        custom = "<leader>cc",
+      },
+      formats = {
+        default = "# {filepath}:{line}",
+        -- missing 'custom' format
+      },
+    })
+
+    assert.is_false(success)
+  end)
+
+  it("validates format strings on setup", function()
+    local success = pcall(config.setup, {
+      mappings = {
+        relative = "<leader>cy",
+      },
+      formats = {
+        default = "# {invalid_variable}",
+      },
+    })
+
+    assert.is_false(success)
   end)
 end)

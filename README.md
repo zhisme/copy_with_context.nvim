@@ -71,12 +71,15 @@ use {
         -- Customize mappings
         mappings = {
           relative = '<leader>cy',
-          absolute = '<leader>cY'
+          absolute = '<leader>cY',
+          remote = '<leader>cyU',  -- Optional: Add custom mapping for remote URL only
+        },
+        formats = {
+          default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
+          remote = '# {remote_url}',  -- Custom format for remote mapping
         },
         -- whether to trim lines or not
         trim_lines = false,
-        context_format = '# %s:%s', -- Default format for context: "# Source file: filepath:line"
-        include_remote_url = true, -- Optional: Include repository URL (GitHub, GitLab, Bitbucket)
       })
     end
   }
@@ -91,12 +94,15 @@ use {
         -- Customize mappings
         mappings = {
           relative = '<leader>cy',
-          absolute = '<leader>cY'
+          absolute = '<leader>cY',
+          remote = '<leader>cyU',  -- Optional: Add custom mapping for remote URL only
+        },
+        formats = {
+          default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
+          remote = '# {remote_url}',  -- Custom format for remote mapping
         },
         -- whether to trim lines or not
         trim_lines = false,
-        context_format = '# %s:%s', -- Default format for context: "# Source file: filepath:line"
-        include_remote_url = true, -- Optional: Include repository URL (GitHub, GitLab, Bitbucket)
       })
     end
   },
@@ -168,34 +174,57 @@ require('copy_with_context').setup({
     -- Customize mappings
     mappings = {
       relative = '<leader>cy',
-      absolute = '<leader>cY'
+      absolute = '<leader>cY',
+    },
+    -- Define format strings for each mapping
+    formats = {
+      default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
     },
     -- whether to trim lines or not
     trim_lines = false,
-    context_format = '# %s:%s',  -- Default format for context: "# Source file: filepath:line"
-  -- context_format = '# Source file: %s:%s',
-  -- Other format for context: "# Source file: /path/to/file:123"
-    include_remote_url = false,  -- Include repository URL (GitHub, GitLab, Bitbucket) - disabled by default
 })
 ```
 
+### Format Variables
+
+You can use the following variables in format strings:
+
+- `{filepath}` - The file path (relative or absolute depending on mapping)
+- `{line}` - Line number or range (e.g., "42" or "10-20")
+- `{linenumber}` - Alias for `{line}`
+- `{remote_url}` - Repository URL (GitHub, GitLab, Bitbucket)
+
+### Custom Mappings and Formats
+
+You can define unlimited custom mappings with their own format strings:
+
+```lua
+require('copy_with_context').setup({
+  mappings = {
+    relative = '<leader>cy',
+    absolute = '<leader>cY',
+    remote = '<leader>cyU',        -- Custom mapping for URL only
+    full = '<leader>cyF',           -- Custom mapping with everything
+  },
+  formats = {
+    default = '# {filepath}:{line}',
+    remote = '# {remote_url}',
+    full = '# {filepath}:{line}\n# {remote_url}',
+  },
+})
+```
+
+**Important**: Every mapping name must have a matching format name. The special mappings `relative` and `absolute` use the `default` format.
+
 ### Repository URL Support
 
-When `include_remote_url` is enabled, the plugin automatically generates permalink URLs for your code snippets. This feature works with:
+When you use `{remote_url}` in a format string, the plugin automatically generates permalink URLs for your code snippets. This feature works with:
 
 - **GitHub** (github.com and GitHub Enterprise)
 - **GitLab** (gitlab.com and self-hosted instances containing "gitlab" in the domain)
 - **Bitbucket** (bitbucket.org and *.bitbucket.org)
 
-The URLs always use the current commit SHA for stable permalinks. If you're not in a git repository or the repository provider is not recognized, the URL will simply be omitted (graceful degradation).
-
-To enable repository URLs:
-
-```lua
-require('copy_with_context').setup({
-  include_remote_url = true,
-})
-```
+The URLs always use the current commit SHA for stable permalinks. If you're not in a git repository or the repository provider is not recognized, the URL will simply be omitted (graceful degradation)
 
 ## Development
 Want to contribute to `copy_with_context.nvim`? Here's how to set up your local development environment:
@@ -256,14 +285,15 @@ use {
               -- Customize mappings
               mappings = {
               relative = '<leader>cy',
-              absolute = '<leader>cY'
+              absolute = '<leader>cY',
+              remote = '<leader>cyU',
+              },
+              formats = {
+                default = '# {filepath}:{line}',
+                remote = '# {remote_url}',
               },
               -- whether to trim lines or not
               trim_lines = false,
-              context_format = '# %s:%s',  -- Default format for context: "# filepath:line"
-              -- context_format = '# Source file: %s:%s',
-              -- Other format for context: "# Source file: /path/to/file:123"
-              include_remote_url = true, -- Optional: Include repository URL (GitHub, GitLab, Bitbucket)
               })
   end
 }
@@ -278,14 +308,15 @@ With lazy.nvim:
   opts = {
       mappings = {
           relative = '<leader>cy',
-          absolute = '<leader>cY'
+          absolute = '<leader>cY',
+          remote = '<leader>cyU',
+      },
+      formats = {
+        default = '# {filepath}:{line}',
+        remote = '# {remote_url}',
       },
       -- whether to trim lines or not
       trim_lines = false,
-      context_format = '# %s:%s',  -- Default format for context: "# filepath:line"
-      -- context_format = '# Source file: %s:%s',
-      -- Other format for context: "# Source file: /path/to/file:123"
-      include_remote_url = true, -- Optional: Include repository URL (GitHub, GitLab, Bitbucket)
   }
 }
 ```
