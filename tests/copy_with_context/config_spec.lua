@@ -118,12 +118,19 @@ describe("Config Module", function()
   end)
 
   it("handles missing formats gracefully", function()
-    -- Setup with just mappings, no formats table
+    -- Manually reset config to have no formats
+    config.options = {
+      mappings = {
+        relative = "<leader>cy",
+      },
+      trim_lines = false,
+    }
+
+    -- Setup without providing formats - should fail because no default format
     local success = pcall(config.setup, {
       mappings = {
         relative = "<leader>cy",
       },
-      formats = nil, -- Explicitly nil
     })
 
     -- Should fail validation because no default format
