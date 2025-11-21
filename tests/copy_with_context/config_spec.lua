@@ -86,4 +86,35 @@ describe("Config Module", function()
 
     assert.is_false(success)
   end)
+
+  it("handles missing formats gracefully", function()
+    -- Setup with just mappings, no formats table
+    local success, err = pcall(config.setup, {
+      mappings = {
+        relative = "<leader>cy",
+      },
+      formats = nil, -- Explicitly nil
+    })
+
+    -- Should fail validation because no default format
+    assert.is_false(success)
+  end)
+
+  it("validates multiple format strings", function()
+    local success = pcall(config.setup, {
+      mappings = {
+        relative = "<leader>cy",
+        custom1 = "<leader>c1",
+        custom2 = "<leader>c2",
+      },
+      formats = {
+        default = "# {filepath}:{line}",
+        custom1 = "# {remote_url}",
+        custom2 = "# {filepath}",
+      },
+    })
+
+    -- All formats are valid, should succeed
+    assert.is_true(success)
+  end)
 end)

@@ -122,8 +122,18 @@ describe("Git utilities", function()
       assert.same({ provider = "github.com", owner = "user", repo = "repo" }, result)
     end)
 
+    it("parses HTTP URL with .git", function()
+      local result = git.parse_remote_url("http://github.com/user/repo.git")
+      assert.same({ provider = "github.com", owner = "user", repo = "repo" }, result)
+    end)
+
     it("parses HTTPS URL without .git", function()
       local result = git.parse_remote_url("https://github.com/user/repo")
+      assert.same({ provider = "github.com", owner = "user", repo = "repo" }, result)
+    end)
+
+    it("parses HTTP URL without .git", function()
+      local result = git.parse_remote_url("http://github.com/user/repo")
       assert.same({ provider = "github.com", owner = "user", repo = "repo" }, result)
     end)
 
@@ -189,6 +199,19 @@ describe("Git utilities", function()
 
       local result = git.get_file_git_path("/home/user/project/lua/copy_with_context/git.lua")
       assert.equals("lua/copy_with_context/git.lua", result)
+    end)
+
+    it("converts relative path to absolute before querying git", function()
+      vim.fn.system = function(_cmd)
+        return "lua/test.lua\n"
+      end
+      vim.fn.fnamemodify = function(path, _mod)
+        return "/home/user/project/" .. path
+      end
+      vim.v.shell_error = 0
+
+      local result = git.get_file_git_path("lua/test.lua")
+      assert.equals("lua/test.lua", result)
     end)
 
     it("converts Windows backslashes to forward slashes", function()
