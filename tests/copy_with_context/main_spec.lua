@@ -102,7 +102,9 @@ describe("Main Module", function()
     config.options.formats.remote = "# {remote_url}"
 
     url_builder.build_url:revert()
-    stub(url_builder, "build_url").returns("https://github.com/user/repo/blob/abc123/path.lua#L1-L2")
+    stub(url_builder, "build_url").returns(
+      "https://github.com/user/repo/blob/abc123/path.lua#L1-L2"
+    )
 
     main.copy_with_context("remote", false)
 
@@ -133,8 +135,12 @@ describe("Main Module", function()
       .was_called_with("n", config.options.mappings.absolute, match._, { silent = false })
 
     -- Should set up visual mode mappings
-    assert.stub(vim.keymap.set).was_called_with("x", config.options.mappings.relative, match._, { silent = true })
-    assert.stub(vim.keymap.set).was_called_with("x", config.options.mappings.absolute, match._, { silent = true })
+    assert
+      .stub(vim.keymap.set)
+      .was_called_with("x", config.options.mappings.relative, match._, { silent = true })
+    assert
+      .stub(vim.keymap.set)
+      .was_called_with("x", config.options.mappings.absolute, match._, { silent = true })
   end)
 
   it("sets up key mappings for custom mappings", function()

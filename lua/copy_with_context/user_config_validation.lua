@@ -31,7 +31,11 @@ function M.validate(config)
       -- All other mappings need matching format
       if not formats[mapping_name] then
         return false,
-          string.format("Mapping '%s' has no matching format. Add 'formats.%s'", mapping_name, mapping_name)
+          string.format(
+            "Mapping '%s' has no matching format. Add 'formats.%s'",
+            mapping_name,
+            mapping_name
+          )
       end
     end
   end

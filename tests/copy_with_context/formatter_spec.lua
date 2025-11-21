@@ -25,8 +25,12 @@ describe("Formatter", function()
     end)
 
     it("creates variables table with remote URL", function()
-      local vars =
-        formatter.get_variables("/path/to/file.lua", 5, 5, "https://github.com/user/repo/blob/abc123/file.lua#L5")
+      local vars = formatter.get_variables(
+        "/path/to/file.lua",
+        5,
+        5,
+        "https://github.com/user/repo/blob/abc123/file.lua#L5"
+      )
 
       assert.same({
         filepath = "/path/to/file.lua",

@@ -66,7 +66,10 @@ function M.setup()
     vim.keymap.set(
       "x",
       keymap,
-      string.format(':<C-u>lua require("copy_with_context.main").copy_with_context("%s", true)<CR>', mapping_name),
+      string.format(
+        ':<C-u>lua require("copy_with_context.main").copy_with_context("%s", true)<CR>',
+        mapping_name
+      ),
       { silent = true }
     )
   end
