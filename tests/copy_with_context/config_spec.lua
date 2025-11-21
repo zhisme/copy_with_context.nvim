@@ -22,6 +22,20 @@ package.loaded["copy_with_context.user_config_validation"] = nil
 local config = require("copy_with_context.config")
 
 describe("Config Module", function()
+  before_each(function()
+    -- Reset config.options to defaults before each test
+    config.options = {
+      mappings = {
+        relative = "<leader>cy",
+        absolute = "<leader>cY",
+      },
+      formats = {
+        default = "# {filepath}:{line}",
+      },
+      trim_lines = false,
+    }
+  end)
+
   it("has default options", function()
     assert.same({
       mappings = {
@@ -87,9 +101,25 @@ describe("Config Module", function()
     assert.is_false(success)
   end)
 
+  it("validates custom format strings with invalid variables", function()
+    -- This test covers the error on line 33 of config.lua
+    local success = pcall(config.setup, {
+      mappings = {
+        relative = "<leader>cy",
+        custom = "<leader>cc",
+      },
+      formats = {
+        default = "# {filepath}:{line}",
+        custom = "# {invalid_custom_var}", -- Invalid variable in custom format
+      },
+    })
+
+    assert.is_false(success)
+  end)
+
   it("handles missing formats gracefully", function()
     -- Setup with just mappings, no formats table
-    local success, err = pcall(config.setup, {
+    local success = pcall(config.setup, {
       mappings = {
         relative = "<leader>cy",
       },
