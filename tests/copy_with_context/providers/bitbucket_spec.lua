@@ -59,5 +59,20 @@ describe("Bitbucket provider", function()
         url
       )
     end)
+
+    it("builds URL for Bitbucket with nested project keys", function()
+      local nested_info = {
+        provider = "bitbucket.org",
+        owner = "company/engineering",
+        repo = "api",
+        commit = "abc123",
+        file_path = "handlers/auth.go",
+      }
+      local url = bitbucket.build_url(nested_info, 100, 120)
+      assert.equals(
+        "https://bitbucket.org/company/engineering/api/src/abc123/handlers/auth.go#lines-100:120",
+        url
+      )
+    end)
   end)
 end)

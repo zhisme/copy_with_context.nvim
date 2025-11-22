@@ -53,5 +53,17 @@ describe("GitHub provider", function()
       local url = github.build_url(enterprise_info, 5, 5)
       assert.equals("https://github.example.com/user/repo/blob/abc123/src/main.js#L5", url)
     end)
+
+    it("builds URL for GitHub with nested paths (org structure)", function()
+      local nested_info = {
+        provider = "github.com",
+        owner = "myorg/team",
+        repo = "project",
+        commit = "def456abc",
+        file_path = "packages/core/index.ts",
+      }
+      local url = github.build_url(nested_info, 15, 25)
+      assert.equals("https://github.com/myorg/team/project/blob/def456abc/packages/core/index.ts#L15-L25", url)
+    end)
   end)
 end)

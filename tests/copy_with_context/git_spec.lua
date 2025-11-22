@@ -157,6 +157,60 @@ describe("Git utilities", function()
       assert.same({ provider = "github.com", owner = "user", repo = "repo" }, result)
     end)
 
+    it("parses GitLab URL with nested groups (HTTPS with .git)", function()
+      local result = git.parse_remote_url("https://gitlab.example.com/frontend/web/dashboard.git")
+      assert.same({
+        provider = "gitlab.example.com",
+        owner = "frontend/web",
+        repo = "dashboard",
+      }, result)
+    end)
+
+    it("parses GitLab URL with nested groups (SSH with .git)", function()
+      local result = git.parse_remote_url("git@gitlab.example.com:backend/api/service.git")
+      assert.same({
+        provider = "gitlab.example.com",
+        owner = "backend/api",
+        repo = "service",
+      }, result)
+    end)
+
+    it("parses GitLab URL with nested groups (HTTPS without .git)", function()
+      local result = git.parse_remote_url("https://gitlab.company.com/team/subteam/project")
+      assert.same({
+        provider = "gitlab.company.com",
+        owner = "team/subteam",
+        repo = "project",
+      }, result)
+    end)
+
+    it("parses GitLab URL with nested groups (SSH without .git)", function()
+      local result = git.parse_remote_url("git@gitlab.company.com:team/subteam/project")
+      assert.same({
+        provider = "gitlab.company.com",
+        owner = "team/subteam",
+        repo = "project",
+      }, result)
+    end)
+
+    it("parses GitHub Enterprise URL with nested paths", function()
+      local result = git.parse_remote_url("https://github.enterprise.com/org/team/repo.git")
+      assert.same({
+        provider = "github.enterprise.com",
+        owner = "org/team",
+        repo = "repo",
+      }, result)
+    end)
+
+    it("parses deeply nested group paths", function()
+      local result = git.parse_remote_url("git@gitlab.com:group/subgroup/subsubgroup/project.git")
+      assert.same({
+        provider = "gitlab.com",
+        owner = "group/subgroup/subsubgroup",
+        repo = "project",
+      }, result)
+    end)
+
     it("returns nil for invalid URL", function()
       local result = git.parse_remote_url("invalid-url")
       assert.is_nil(result)

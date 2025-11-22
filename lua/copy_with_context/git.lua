@@ -30,47 +30,66 @@ end
 
 -- Parse remote URL to extract provider, owner, and repo
 -- Supports HTTPS, SSH, and git:// formats
+-- Handles nested groups (e.g., gitlab.com/group/subgroup/repo)
 function M.parse_remote_url(url)
   if not url then
     return nil
   end
 
-  local provider, owner, repo
+  local provider, path
 
-  -- HTTPS: https://github.com/user/repo.git
-  provider, owner, repo = url:match("https?://([^/]+)/([^/]+)/([^/]+)%.git")
-  if provider then
-    return { provider = provider, owner = owner, repo = repo }
+  -- HTTPS: https://github.com/user/repo.git or https://gitlab.com/group/subgroup/repo.git
+  provider, path = url:match("https?://([^/]+)/(.+)%.git$")
+  if provider and path then
+    local owner, repo = path:match("(.+)/([^/]+)$")
+    if owner and repo then
+      return { provider = provider, owner = owner, repo = repo }
+    end
   end
 
   -- HTTPS without .git: https://github.com/user/repo
-  provider, owner, repo = url:match("https?://([^/]+)/([^/]+)/([^/]+)$")
-  if provider then
-    return { provider = provider, owner = owner, repo = repo }
+  provider, path = url:match("https?://([^/]+)/(.+)$")
+  if provider and path then
+    local owner, repo = path:match("(.+)/([^/]+)$")
+    if owner and repo then
+      return { provider = provider, owner = owner, repo = repo }
+    end
   end
 
-  -- SSH: git@github.com:user/repo.git
-  provider, owner, repo = url:match("git@([^:]+):([^/]+)/([^/]+)%.git")
-  if provider then
-    return { provider = provider, owner = owner, repo = repo }
+  -- SSH: git@github.com:user/repo.git or git@gitlab.com:group/subgroup/repo.git
+  provider, path = url:match("git@([^:]+):(.+)%.git$")
+  if provider and path then
+    local owner, repo = path:match("(.+)/([^/]+)$")
+    if owner and repo then
+      return { provider = provider, owner = owner, repo = repo }
+    end
   end
 
   -- SSH without .git: git@github.com:user/repo
-  provider, owner, repo = url:match("git@([^:]+):([^/]+)/([^/]+)$")
-  if provider then
-    return { provider = provider, owner = owner, repo = repo }
+  provider, path = url:match("git@([^:]+):(.+)$")
+  if provider and path then
+    local owner, repo = path:match("(.+)/([^/]+)$")
+    if owner and repo then
+      return { provider = provider, owner = owner, repo = repo }
+    end
   end
 
   -- git protocol: git://github.com/user/repo.git
-  provider, owner, repo = url:match("git://([^/]+)/([^/]+)/([^/]+)%.git")
-  if provider then
-    return { provider = provider, owner = owner, repo = repo }
+  provider, path = url:match("git://([^/]+)/(.+)%.git$")
+  if provider and path then
+    local owner, repo = path:match("(.+)/([^/]+)$")
+    if owner and repo then
+      return { provider = provider, owner = owner, repo = repo }
+    end
   end
 
   -- git protocol without .git: git://github.com/user/repo
-  provider, owner, repo = url:match("git://([^/]+)/([^/]+)/([^/]+)$")
-  if provider then
-    return { provider = provider, owner = owner, repo = repo }
+  provider, path = url:match("git://([^/]+)/(.+)$")
+  if provider and path then
+    local owner, repo = path:match("(.+)/([^/]+)$")
+    if owner and repo then
+      return { provider = provider, owner = owner, repo = repo }
+    end
   end
 
   return nil

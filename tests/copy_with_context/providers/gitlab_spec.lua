@@ -47,5 +47,35 @@ describe("GitLab provider", function()
       local url = gitlab.build_url(selfhosted_info, 5, 5)
       assert.equals("https://gitlab.example.com/team/project/-/blob/xyz789/src/main.py#L5", url)
     end)
+
+    it("builds URL for nested groups (GitLab)", function()
+      local nested_info = {
+        provider = "gitlab.example.com",
+        owner = "frontend/web",
+        repo = "dashboard",
+        commit = "abc123def456",
+        file_path = "src/components/App.tsx",
+      }
+      local url = gitlab.build_url(nested_info, 42, 42)
+      assert.equals(
+        "https://gitlab.example.com/frontend/web/dashboard/-/blob/abc123def456/src/components/App.tsx#L42",
+        url
+      )
+    end)
+
+    it("builds URL for deeply nested groups", function()
+      local deeply_nested_info = {
+        provider = "gitlab.company.com",
+        owner = "org/team/subteam",
+        repo = "service",
+        commit = "xyz789abc",
+        file_path = "lib/utils.js",
+      }
+      local url = gitlab.build_url(deeply_nested_info, 10, 20)
+      assert.equals(
+        "https://gitlab.company.com/org/team/subteam/service/-/blob/xyz789abc/lib/utils.js#L10-20",
+        url
+      )
+    end)
   end)
 end)
