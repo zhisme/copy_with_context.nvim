@@ -322,6 +322,16 @@ With lazy.nvim:
 ```
 Then restart Neovim or run `:Lazy` sync to load the local version
 
+### Releasing
+
+For maintainers: see [RELEASING.md](./RELEASING.md) for the complete release process.
+
+The guide covers:
+- Version numbering (Semantic Versioning)
+- Generating release notes from git history
+- Creating and publishing releases
+- Publishing to LuaRocks
+
 ## Contributing
 Bug reports and pull requests are welcome on GitHub at https://github.com/zhisme/copy_with_context.nvim.
 Ensure to test your solution and provide a clear description of the problem you are solving.

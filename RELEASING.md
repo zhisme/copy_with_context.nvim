@@ -2,361 +2,365 @@
 
 This guide covers the process for releasing a new version of `copy_with_context.nvim`.
 
+## Prerequisites
+
+- Write access to the repository
+- [LuaRocks](https://luarocks.org/) account (optional, for publishing to LuaRocks)
+- Familiarity with [Semantic Versioning](https://semver.org/)
+- All CI checks passing on main branch
+
 ## Release Checklist
 
-### 1. Pre-Release Checks
+### 1. Pre-Release Verification
 
-Before releasing, ensure:
+Before starting the release process, ensure:
 
 - [ ] All tests pass: `make test`
 - [ ] No linting errors: `make lint`
 - [ ] Code is formatted: `make fmt-check`
 - [ ] All CI/CD checks are passing on the main branch
-- [ ] Documentation is up to date (README.md, etc.)
-- [ ] All PRs for the release are merged
+- [ ] Documentation is up to date (README.md)
+- [ ] All planned features/fixes for the release are merged
 
 ### 2. Determine Version Number
 
-Use [Semantic Versioning](https://semver.org/):
+Follow [Semantic Versioning](https://semver.org/) (MAJOR.MINOR.PATCH):
 
-- **Major version (X.0.0)**: Breaking changes (API changes, removed features)
+- **Major version (X.0.0)**: Breaking changes
+  - API changes
+  - Removed features
+  - Configuration structure changes
+
 - **Minor version (0.X.0)**: New features (backward compatible)
+  - New functionality
+  - New configuration options
+  - Performance improvements
+
 - **Patch version (0.0.X)**: Bug fixes (backward compatible)
+  - Bug fixes
+  - Documentation updates
+  - Internal refactoring
 
-**Current version:** 2.1.0
+**Examples:**
+- `2.1.0` → `3.0.0` (breaking change: API redesign)
+- `2.1.0` → `2.2.0` (new feature: added format variables)
+- `2.1.0` → `2.1.1` (bug fix: fixed URL parsing)
 
-**For this release (flexible mapping system):**
-- Breaking changes: Configuration API changed
-- Recommendation: **3.0.0** (major version bump)
+### 3. Generate Release Notes
 
-### 3. Generate Release Notes from Git History
+Use git commit history to generate release notes instead of maintaining a CHANGELOG.md file.
 
-Instead of maintaining a CHANGELOG.md, we generate release notes from commit messages.
-
-**Get commits since last release:**
+**Quick method:**
 ```bash
-# Get the last release tag
-LAST_TAG=$(git describe --tags --abbrev=0)
-
-# Generate release notes from commits
-git log ${LAST_TAG}..HEAD --pretty=format:"- %s (%h)" --reverse
+# Get commits since last release
+git log $(git describe --tags --abbrev=0)..HEAD --oneline
 ```
 
-**Better formatted with categories:**
+**Categorized method (recommended):**
 ```bash
-# Get commits since last tag
-LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-
-if [ -z "$LAST_TAG" ]; then
-  # No previous tag, get all commits
-  git log --pretty=format:"%s" --reverse
-else
-  # Get commits since last tag
-  echo "## Changes since ${LAST_TAG}"
-  echo ""
-
-  # Breaking changes
-  echo "### Breaking Changes"
-  git log ${LAST_TAG}..HEAD --grep="BREAKING" --pretty=format:"- %s (%h)" --reverse
-  echo ""
-
-  # Features
-  echo "### Features"
-  git log ${LAST_TAG}..HEAD --grep="^feat" --pretty=format:"- %s (%h)" --reverse
-  echo ""
-
-  # Bug fixes
-  echo "### Bug Fixes"
-  git log ${LAST_TAG}..HEAD --grep="^fix" --pretty=format:"- %s (%h)" --reverse
-  echo ""
-
-  # Other changes
-  echo "### Other Changes"
-  git log ${LAST_TAG}..HEAD --grep="^chore\|^docs\|^test\|^refactor" --pretty=format:"- %s (%h)" --reverse
-fi
-```
-
-**Or use GitHub's auto-generate feature:**
-When creating a release on GitHub, click "Generate release notes" button - it automatically creates notes from PRs and commits.
-
-**Save the script (optional):**
-```bash
-# Save as scripts/generate-release-notes.sh
-chmod +x scripts/generate-release-notes.sh
+# Use the provided script
 ./scripts/generate-release-notes.sh > release-notes.md
+
+# Or specify a tag to compare against
+./scripts/generate-release-notes.sh v2.0.0 > release-notes.md
 ```
+
+**GitHub auto-generate:**
+When creating a release on GitHub, click **"Generate release notes"** button. GitHub will automatically create notes from PRs and commits.
+
+The `scripts/generate-release-notes.sh` script categorizes commits by type:
+- ⚠️ Breaking Changes (commits with "BREAKING")
+- ✨ Features (commits starting with "feat")
+- 🐛 Bug Fixes (commits starting with "fix")
+- ♻️ Refactoring (commits starting with "refactor")
+- 📚 Documentation (commits starting with "docs")
+- ✅ Tests (commits starting with "test")
+- 🔧 Maintenance (commits starting with "chore")
 
 ### 4. Update Rockspec
 
 Create a new rockspec file for the version:
 
 ```bash
+# Determine new version (e.g., 3.0.0)
+NEW_VERSION="3.0.0"
+OLD_VERSION=$(ls copy_with_context-*.rockspec | head -1 | sed 's/copy_with_context-\(.*\)\.rockspec/\1/')
+
 # Copy the current rockspec
-cp copy_with_context-2.1.0-1.rockspec copy_with_context-3.0.0-1.rockspec
+cp copy_with_context-${OLD_VERSION}.rockspec copy_with_context-${NEW_VERSION}.rockspec
 ```
 
-Update `copy_with_context-3.0.0-1.rockspec`:
+Edit `copy_with_context-${NEW_VERSION}.rockspec`:
 
 ```lua
 package = "copy_with_context"
-version = "3.0.0-1"  -- Update version
+version = "X.Y.Z-1"  -- Update this
 source = {
-    url = "git://github.com/zhisme/copy_with_context.nvim.git",
-    tag = "v3.0.0"  -- Update tag
+  url = "git://github.com/zhisme/copy_with_context.nvim.git",
+  tag = "vX.Y.Z",  -- Update this
 }
-description = {
-    summary = "A Neovim plugin for copying with context",
-    detailed = [[
-        Copy lines with file path and line number metadata.
-        Supports flexible format strings and repository URL generation
-        for GitHub, GitLab, and Bitbucket.
-    ]],
-    homepage = "https://github.com/zhisme/copy_with_context.nvim",
-    license = "MIT"
-}
-dependencies = {
-    "lua >= 5.1"
-}
-build = {
-    type = "builtin",
-    modules = {
-        ["copy_with_context"] = "lua/copy_with_context/init.lua",
-        ["copy_with_context.config"] = "lua/copy_with_context/config.lua",
-        ["copy_with_context.formatter"] = "lua/copy_with_context/formatter.lua",
-        ["copy_with_context.git"] = "lua/copy_with_context/git.lua",
-        ["copy_with_context.main"] = "lua/copy_with_context/main.lua",
-        ["copy_with_context.url_builder"] = "lua/copy_with_context/url_builder.lua",
-        ["copy_with_context.user_config_validation"] = "lua/copy_with_context/user_config_validation.lua",
-        ["copy_with_context.utils"] = "lua/copy_with_context/utils.lua",
-        ["copy_with_context.providers.init"] = "lua/copy_with_context/providers/init.lua",
-        ["copy_with_context.providers.github"] = "lua/copy_with_context/providers/github.lua",
-        ["copy_with_context.providers.gitlab"] = "lua/copy_with_context/providers/gitlab.lua",
-        ["copy_with_context.providers.bitbucket"] = "lua/copy_with_context/providers/bitbucket.lua",
-    }
-}
+-- ... rest of the file
 ```
 
-**Note:** Removed `luacheck` and `busted` from dependencies (they're dev dependencies, not runtime).
+**Important:**
+- Update `version` field to match new version
+- Update `tag` field to match new version (with `v` prefix)
+- Verify all modules are listed in `build.modules` if you added new files
+- Dependencies should only include runtime dependencies (not luacheck, busted, etc.)
 
-### 5. Commit Version Updates
+### 5. Update Makefile
+
+Update the `ROCKSPEC` variable in `Makefile`:
+
+```makefile
+ROCKSPEC = copy_with_context-X.Y.Z-1.rockspec  # Update this
+```
+
+### 6. Commit Version Bump
 
 ```bash
 # Stage the changes
-git add copy_with_context-3.0.0-1.rockspec Makefile
+git add copy_with_context-*.rockspec Makefile
 
 # Commit with conventional commit message
-git commit -m "chore: bump version to 3.0.0"
+git commit -m "chore: bump version to X.Y.Z"
 
 # Push to main
 git push origin main
 ```
 
-### 6. Create Git Tag
+### 7. Create Git Tag
 
 ```bash
-# Create an annotated tag (recommended)
-git tag -a v3.0.0 -m "Release v3.0.0: Flexible mapping system
+# Create an annotated tag
+git tag -a vX.Y.Z -m "Release vX.Y.Z
 
-Major changes:
-- Flexible mapping system with custom format strings
-- Support for nested groups in repository URLs
-- Configuration validation
-- Breaking changes to configuration API
+Brief description of major changes in this release.
 
-See CHANGELOG.md for full details."
+Breaking changes (if any):
+- List breaking changes here
+
+New features:
+- List new features here
+
+Bug fixes:
+- List bug fixes here
+"
+
+# Verify the tag
+git tag -n9 vX.Y.Z
 
 # Push the tag to GitHub
-git push origin v3.0.0
+git push origin vX.Y.Z
 ```
 
-### 7. Create GitHub Release
+**Tag naming convention:**
+- Format: `vMAJOR.MINOR.PATCH`
+- Examples: `v3.0.0`, `v2.1.5`, `v1.0.0-rc.1`
+
+### 8. Create GitHub Release
 
 1. Go to https://github.com/zhisme/copy_with_context.nvim/releases
-2. Click "Draft a new release"
-3. Choose tag: `v3.0.0`
-4. Release title: `v3.0.0 - Flexible Mapping System`
-5. Click "Generate release notes" button (auto-generates from commits and PRs)
-6. Edit/enhance the generated notes, or write a custom summary:
+2. Click **"Draft a new release"**
+3. **Choose tag:** Select the tag you just pushed (e.g., `v3.0.0`)
+4. **Release title:** Format: `vX.Y.Z - Brief Description`
+   - Examples:
+     - `v3.0.0 - Flexible Mapping System`
+     - `v2.1.0 - Repository URL Support`
+     - `v2.0.1 - Bug Fixes`
+5. **Description:**
+   - Click **"Generate release notes"** button (recommended)
+   - Or paste from `release-notes.md` generated in step 3
+   - Or write manually using this template:
 
 ```markdown
-# 🎉 v3.0.0 - Flexible Mapping System
+# 🎉 vX.Y.Z - Release Title
 
-This is a major release with breaking changes that introduces a flexible mapping system.
+Brief summary of what this release is about.
 
 ## ⚠️ Breaking Changes
 
-**Configuration has changed!** Update your config:
+**If this is a major version (X.0.0), list breaking changes:**
+- Configuration change: explain what changed
+- API change: explain what changed
 
-### Before (v2.x)
-```lua
-require('copy_with_context').setup({
-  mappings = {
-    relative = '<leader>cy',
-    absolute = '<leader>cY'
-  },
-  context_format = '# %s:%s',
-  include_remote_url = true,
-})
-```
-
-### After (v3.0)
-```lua
-require('copy_with_context').setup({
-  mappings = {
-    relative = '<leader>cy',
-    absolute = '<leader>cY',
-    remote = '<leader>cyU',  -- New: custom mappings!
-  },
-  formats = {
-    default = '# {filepath}:{line}',
-    remote = '# {remote_url}',
-  },
-})
-```
+**Migration guide:**
+- Step-by-step instructions for users to upgrade
 
 ## ✨ New Features
 
-- 🎯 **Unlimited custom mappings** - Create as many format variations as you need
-- 🔧 **Format variables** - `{filepath}`, `{line}`, `{linenumber}`, `{remote_url}`
-- ✅ **Configuration validation** - Catch errors at setup time
-- 🌳 **Nested groups support** - GitLab `team/subgroup/project` URLs now work
+- Feature 1: description
+- Feature 2: description
 
 ## 🐛 Bug Fixes
 
-- Fixed GitLab nested groups parsing
-- Fixed GitHub Enterprise nested paths
-- Fixed Bitbucket nested project keys
+- Fix 1: description
+- Fix 2: description
 
 ## 📚 Documentation
 
 See commit history for full details:
 ```bash
-git log v2.1.0..v3.0.0 --oneline
+git log vPREV..vX.Y.Z --oneline
 ```
 
-## 🙏 Migration Guide
-
-No migration needed if you're using default configuration. If you customized:
-- Replace `context_format` with `formats.default`
-- Replace `include_remote_url: true` with a custom mapping that includes `{remote_url}`
-
-Full docs in [README.md](./README.md).
+Full documentation: [README.md](./README.md)
 ```
 
-6. Check "Set as the latest release"
-7. Click "Publish release"
+6. Check **"Set as the latest release"** (unless it's a pre-release)
+7. Click **"Publish release"**
 
-### 8. Publish to LuaRocks (Optional)
+### 9. Publish to LuaRocks (Optional)
 
 If you want to publish to [LuaRocks](https://luarocks.org/):
 
 ```bash
 # Install luarocks CLI if not already installed
-# https://github.com/luarocks/luarocks/wiki/Download
+# See: https://github.com/luarocks/luarocks/wiki/Download
+
+# Login to LuaRocks (first time only)
+luarocks login
 
 # Upload the rockspec
-luarocks upload copy_with_context-3.0.0-1.rockspec --api-key=YOUR_API_KEY
+luarocks upload copy_with_context-X.Y.Z-1.rockspec
 ```
 
-**Note:** You need a LuaRocks account and API key.
+**Note:** You need a LuaRocks account and to be a maintainer of the package.
 
-### 9. Post-Release
+### 10. Post-Release Tasks
 
-- [ ] Announce the release (if applicable):
+- [ ] Verify the release appears on GitHub Releases page
+- [ ] Verify the tag is visible: `git tag -l`
+- [ ] Test installation from the new tag:
+  ```bash
+  # In a test environment
+  cd /tmp
+  git clone https://github.com/zhisme/copy_with_context.nvim.git
+  cd copy_with_context.nvim
+  git checkout vX.Y.Z
+  make test
+  ```
+- [ ] (Optional) Announce the release:
   - Reddit: r/neovim
   - Twitter/X
   - Discord communities
-- [ ] Update any external documentation
 - [ ] Close the milestone (if using GitHub milestones)
-- [ ] Update project board (if using GitHub projects)
 
 ## Quick Reference
 
 ### Version Bumping Rules
 
-| Change Type | Example | Version Bump |
-|-------------|---------|--------------|
-| Breaking change | API change, removed config option | 2.1.0 → 3.0.0 |
-| New feature | New mapping variable | 2.1.0 → 2.2.0 |
-| Bug fix | Fix URL parsing | 2.1.0 → 2.1.1 |
+| Change Type | Example | Current | New Version |
+|-------------|---------|---------|-------------|
+| Breaking change | API redesign, config structure change | 2.1.0 | 3.0.0 |
+| New feature | Add format variables | 2.1.0 | 2.2.0 |
+| Bug fix | Fix URL parsing | 2.1.0 | 2.1.1 |
+| Multiple bug fixes | Several small fixes | 2.1.0 | 2.1.1 |
+| Feature + bug fix | Both in one release | 2.1.0 | 2.2.0 |
 
 ### Rockspec Naming Convention
 
 Format: `<package>-<version>-<revision>.rockspec`
 
-- Package: `copy_with_context`
-- Version: `3.0.0` (semantic version)
-- Revision: `1` (increment if republishing same version with rockspec changes)
+- **Package:** `copy_with_context`
+- **Version:** Semantic version (e.g., `3.0.0`)
+- **Revision:** Usually `1` (increment if republishing same version with rockspec-only changes)
 
-Example: `copy_with_context-3.0.0-1.rockspec`
+Examples:
+- `copy_with_context-3.0.0-1.rockspec` (first release of 3.0.0)
+- `copy_with_context-3.0.0-2.rockspec` (rockspec fix for 3.0.0)
 
 ### Tag Naming Convention
 
 Format: `v<version>`
 
 Examples:
-- `v3.0.0` (release)
+- `v3.0.0` (stable release)
 - `v3.0.0-rc.1` (release candidate)
-- `v3.0.0-beta.1` (beta)
+- `v3.0.0-beta.1` (beta release)
+- `v3.0.0-alpha.1` (alpha release)
+
+### Conventional Commit Prefixes
+
+Used for categorizing commits in release notes:
+
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `chore:` - Maintenance tasks
+- `refactor:` - Code refactoring
+- `test:` - Test updates
+- `perf:` - Performance improvements
 
 ## Troubleshooting
 
-### Tag already exists
+### Tag Already Exists
 
 ```bash
 # Delete local tag
-git tag -d v3.0.0
+git tag -d vX.Y.Z
 
 # Delete remote tag
-git push origin :refs/tags/v3.0.0
+git push origin :refs/tags/vX.Y.Z
 
 # Recreate tag
-git tag -a v3.0.0 -m "Release v3.0.0"
-git push origin v3.0.0
+git tag -a vX.Y.Z -m "Release vX.Y.Z"
+git push origin vX.Y.Z
 ```
 
-### Rockspec upload fails
+### Rockspec Validation Fails
 
 ```bash
 # Validate rockspec locally
-luarocks lint copy_with_context-3.0.0-1.rockspec
+luarocks lint copy_with_context-X.Y.Z-1.rockspec
 
 # Test local installation
-luarocks make copy_with_context-3.0.0-1.rockspec
+luarocks make copy_with_context-X.Y.Z-1.rockspec
 ```
 
-### Wrong version in Makefile
+### Wrong Rockspec in Makefile
 
-Update `Makefile` if it references the version:
+Make sure `Makefile` references the correct version:
 
 ```makefile
-ROCKSPEC = copy_with_context-3.0.0-1.rockspec  # Update this
+ROCKSPEC = copy_with_context-X.Y.Z-1.rockspec
 ```
+
+### Release Notes Script Not Working
+
+```bash
+# Make sure script is executable
+chmod +x scripts/generate-release-notes.sh
+
+# Run with bash explicitly
+bash scripts/generate-release-notes.sh
+
+# Check if git tags exist
+git tag -l
+```
+
+### GitHub Release Not Showing Up
+
+- Ensure the tag was pushed: `git ls-remote --tags origin`
+- Check if CI is passing for the tag
+- Verify you have write access to the repository
 
 ## Automation (Future)
 
-Consider automating releases with GitHub Actions:
+The release process can be automated with GitHub Actions. A workflow will be added in the future to:
 
-```yaml
-# .github/workflows/release.yml
-name: Release
+- Automatically create GitHub releases when tags are pushed
+- Run tests before releasing
+- Auto-generate release notes from commits
+- Optionally publish to LuaRocks
 
-on:
-  push:
-    tags:
-      - 'v*'
+## Additional Resources
 
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          generate_release_notes: true
-```
+- [Semantic Versioning](https://semver.org/)
+- [GitHub Releases Documentation](https://docs.github.com/en/repositories/releasing-projects-on-github)
+- [LuaRocks Documentation](https://github.com/luarocks/luarocks/wiki)
+- [Conventional Commits](https://www.conventionalcommits.org/)
 
 ---
 
-**Last Updated:** 2024-01-XX (update when creating releases)
+**Last Updated:** 2024-01 (update when making significant changes to this guide)
