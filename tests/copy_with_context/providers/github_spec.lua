@@ -63,7 +63,10 @@ describe("GitHub provider", function()
         file_path = "packages/core/index.ts",
       }
       local url = github.build_url(nested_info, 15, 25)
-      assert.equals("https://github.com/myorg/team/project/blob/def456abc/packages/core/index.ts#L15-L25", url)
+      assert.equals(
+        "https://github.com/myorg/team/project/blob/def456abc/packages/core/index.ts#L15-L25",
+        url
+      )
     end)
   end)
 end)
