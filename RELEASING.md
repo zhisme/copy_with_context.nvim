@@ -29,48 +29,62 @@ Use [Semantic Versioning](https://semver.org/):
 - Breaking changes: Configuration API changed
 - Recommendation: **3.0.0** (major version bump)
 
-### 3. Update CHANGELOG.md
+### 3. Generate Release Notes from Git History
 
-If `CHANGELOG.md` doesn't exist, create it:
+Instead of maintaining a CHANGELOG.md, we generate release notes from commit messages.
 
-```markdown
-# Changelog
+**Get commits since last release:**
+```bash
+# Get the last release tag
+LAST_TAG=$(git describe --tags --abbrev=0)
 
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
-## [3.0.0] - YYYY-MM-DD
-
-### Added
-- Flexible mapping system with unlimited custom mappings
-- Format string support with variables: `{filepath}`, `{line}`, `{linenumber}`, `{remote_url}`
-- Configuration validation with clear error messages
-- Support for nested groups in GitLab, GitHub, Bitbucket URLs
-
-### Changed
-- **BREAKING**: Replaced `context_format` and `include_remote_url` with `formats` table
-- **BREAKING**: Configuration structure now uses `formats` instead of single format string
-- Improved URL parsing to support deeply nested repository paths
-
-### Fixed
-- GitLab nested groups (e.g., `team/subgroup/project`) now parse correctly
-- URL generation for GitHub Enterprise with nested paths
-- Bitbucket nested project keys support
-
-### Removed
-- **BREAKING**: `context_format` configuration option (use `formats.default` instead)
-- **BREAKING**: `include_remote_url` boolean flag (use `{remote_url}` in format strings)
-
-## [2.1.0] - Previous release date
-
-...
+# Generate release notes from commits
+git log ${LAST_TAG}..HEAD --pretty=format:"- %s (%h)" --reverse
 ```
 
-**Update with today's date when releasing.**
+**Better formatted with categories:**
+```bash
+# Get commits since last tag
+LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+if [ -z "$LAST_TAG" ]; then
+  # No previous tag, get all commits
+  git log --pretty=format:"%s" --reverse
+else
+  # Get commits since last tag
+  echo "## Changes since ${LAST_TAG}"
+  echo ""
+
+  # Breaking changes
+  echo "### Breaking Changes"
+  git log ${LAST_TAG}..HEAD --grep="BREAKING" --pretty=format:"- %s (%h)" --reverse
+  echo ""
+
+  # Features
+  echo "### Features"
+  git log ${LAST_TAG}..HEAD --grep="^feat" --pretty=format:"- %s (%h)" --reverse
+  echo ""
+
+  # Bug fixes
+  echo "### Bug Fixes"
+  git log ${LAST_TAG}..HEAD --grep="^fix" --pretty=format:"- %s (%h)" --reverse
+  echo ""
+
+  # Other changes
+  echo "### Other Changes"
+  git log ${LAST_TAG}..HEAD --grep="^chore\|^docs\|^test\|^refactor" --pretty=format:"- %s (%h)" --reverse
+fi
+```
+
+**Or use GitHub's auto-generate feature:**
+When creating a release on GitHub, click "Generate release notes" button - it automatically creates notes from PRs and commits.
+
+**Save the script (optional):**
+```bash
+# Save as scripts/generate-release-notes.sh
+chmod +x scripts/generate-release-notes.sh
+./scripts/generate-release-notes.sh > release-notes.md
+```
 
 ### 4. Update Rockspec
 
@@ -128,7 +142,7 @@ build = {
 
 ```bash
 # Stage the changes
-git add CHANGELOG.md copy_with_context-3.0.0-1.rockspec
+git add copy_with_context-3.0.0-1.rockspec Makefile
 
 # Commit with conventional commit message
 git commit -m "chore: bump version to 3.0.0"
@@ -161,7 +175,8 @@ git push origin v3.0.0
 2. Click "Draft a new release"
 3. Choose tag: `v3.0.0`
 4. Release title: `v3.0.0 - Flexible Mapping System`
-5. Description: Copy from CHANGELOG.md or write a summary:
+5. Click "Generate release notes" button (auto-generates from commits and PRs)
+6. Edit/enhance the generated notes, or write a custom summary:
 
 ```markdown
 # 🎉 v3.0.0 - Flexible Mapping System
@@ -214,7 +229,10 @@ require('copy_with_context').setup({
 
 ## 📚 Documentation
 
-See [CHANGELOG.md](./CHANGELOG.md) for full details.
+See commit history for full details:
+```bash
+git log v2.1.0..v3.0.0 --oneline
+```
 
 ## 🙏 Migration Guide
 
