@@ -1,7 +1,7 @@
 LUA_VERSION = 5.1
 DEPS_DIR = deps
 TEST_DIR = tests
-ROCKSPEC = copy_with_context-2.1.0-1.rockspec
+ROCKSPEC = copy_with_context-3.0.0-1.rockspec
 BUSTED = $(DEPS_DIR)/bin/busted
 LUACHECK = $(DEPS_DIR)/bin/luacheck
 
