@@ -98,7 +98,7 @@ describe("Main Module", function()
 
   it("fetches remote URL only when format uses it", function()
     -- Add remote mapping that uses {remote_url}
-    config.options.mappings.remote = "<leader>cyU"
+    config.options.mappings.remote = "<leader>cr"
     config.options.formats.remote = "# {remote_url}"
 
     url_builder.build_url:revert()

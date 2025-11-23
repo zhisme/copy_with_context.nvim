@@ -72,7 +72,7 @@ use {
         mappings = {
           relative = '<leader>cy',
           absolute = '<leader>cY',
-          remote = '<leader>cyU',  -- Optional: Add custom mapping for remote URL only
+          remote = '<leader>cr',  -- Optional: Add custom mapping for remote URL only
         },
         formats = {
           default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
@@ -95,7 +95,7 @@ use {
         mappings = {
           relative = '<leader>cy',
           absolute = '<leader>cY',
-          remote = '<leader>cyU',  -- Optional: Add custom mapping for remote URL only
+          remote = '<leader>cr',  -- Optional: Add custom mapping for remote URL only
         },
         formats = {
           default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
@@ -203,8 +203,8 @@ require('copy_with_context').setup({
   mappings = {
     relative = '<leader>cy',
     absolute = '<leader>cY',
-    remote = '<leader>cyU',        -- Custom mapping for URL only
-    full = '<leader>cyF',           -- Custom mapping with everything
+    remote = '<leader>cr',        -- Custom mapping for URL only
+    full = '<leader>cx',           -- Custom mapping with everything
   },
   formats = {
     default = '# {filepath}:{line}',
@@ -286,7 +286,7 @@ use {
               mappings = {
               relative = '<leader>cy',
               absolute = '<leader>cY',
-              remote = '<leader>cyU',
+              remote = '<leader>cr',
               },
               formats = {
                 default = '# {filepath}:{line}',
@@ -309,7 +309,7 @@ With lazy.nvim:
       mappings = {
           relative = '<leader>cy',
           absolute = '<leader>cY',
-          remote = '<leader>cyU',
+          remote = '<leader>cr',
       },
       formats = {
         default = '# {filepath}:{line}',
