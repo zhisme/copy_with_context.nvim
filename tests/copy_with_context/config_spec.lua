@@ -17,19 +17,43 @@ _G.vim = {
 
 -- Ensure fresh module loading
 package.loaded["copy_with_context.config"] = nil
+package.loaded["copy_with_context.user_config_validation"] = nil
 
 local config = require("copy_with_context.config")
 
 describe("Config Module", function()
+  before_each(function()
+    -- Reset config.options to defaults before each test
+    config.options = {
+      mappings = {
+        relative = "<leader>cy",
+        absolute = "<leader>cY",
+      },
+      formats = {
+        default = "# {filepath}:{line}",
+      },
+      trim_lines = false,
+    }
+  end)
+
   it("has default options", function()
     assert.same({
       mappings = {
         relative = "<leader>cy",
         absolute = "<leader>cY",
       },
-      context_format = "# %s:%s",
+      formats = {
+        default = "# {filepath}:{line}",
+      },
       trim_lines = false,
     }, config.options)
+  end)
+
+  it("can be called without arguments", function()
+    config.setup()
+    -- Should not error and keep default options
+    assert.is_not_nil(config.options.mappings)
+    assert.is_not_nil(config.options.formats)
   end)
 
   it("merges user options with defaults", function()
@@ -43,8 +67,91 @@ describe("Config Module", function()
         relative = "<leader>new",
         absolute = "<leader>cY",
       },
-      context_format = "# %s:%s",
+      formats = {
+        default = "# {filepath}:{line}",
+      },
       trim_lines = true,
     }, config.options)
+  end)
+
+  it("validates configuration on setup", function()
+    local success = pcall(config.setup, {
+      mappings = {
+        custom = "<leader>cc",
+      },
+      formats = {
+        default = "# {filepath}:{line}",
+        -- missing 'custom' format
+      },
+    })
+
+    assert.is_false(success)
+  end)
+
+  it("validates format strings on setup", function()
+    local success = pcall(config.setup, {
+      mappings = {
+        relative = "<leader>cy",
+      },
+      formats = {
+        default = "# {invalid_variable}",
+      },
+    })
+
+    assert.is_false(success)
+  end)
+
+  it("validates custom format strings with invalid variables", function()
+    -- This test covers the error on line 33 of config.lua
+    local success = pcall(config.setup, {
+      mappings = {
+        relative = "<leader>cy",
+        custom = "<leader>cc",
+      },
+      formats = {
+        default = "# {filepath}:{line}",
+        custom = "# {invalid_custom_var}", -- Invalid variable in custom format
+      },
+    })
+
+    assert.is_false(success)
+  end)
+
+  it("handles missing formats gracefully", function()
+    -- Manually reset config to have no formats
+    config.options = {
+      mappings = {
+        relative = "<leader>cy",
+      },
+      trim_lines = false,
+    }
+
+    -- Setup without providing formats - should fail because no default format
+    local success = pcall(config.setup, {
+      mappings = {
+        relative = "<leader>cy",
+      },
+    })
+
+    -- Should fail validation because no default format
+    assert.is_false(success)
+  end)
+
+  it("validates multiple format strings", function()
+    local success = pcall(config.setup, {
+      mappings = {
+        relative = "<leader>cy",
+        custom1 = "<leader>c1",
+        custom2 = "<leader>c2",
+      },
+      formats = {
+        default = "# {filepath}:{line}",
+        custom1 = "# {remote_url}",
+        custom2 = "# {filepath}",
+      },
+    })
+
+    -- All formats are valid, should succeed
+    assert.is_true(success)
   end)
 end)

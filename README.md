@@ -6,7 +6,7 @@
 ![GitHub Tag](https://img.shields.io/github/v/tag/zhisme/copy_with_context.nvim)
 ![GitHub License](https://img.shields.io/github/license/zhisme/copy_with_context.nvim)
 
-Copy lines with file path and line number metadata. Perfect for sharing code snippets with context.
+Copy lines with file path, line number, and repository URL metadata. Perfect for sharing code snippets with context.
 
 ## Why?
 
@@ -42,11 +42,12 @@ Here's my login function:
     validate_credentials(user)
   end
   # app/controllers/auth_controller.rb:45-47
+  # https://github.com/user/repo/blob/abc123/app/controllers/auth_controller.rb#L45-L47
 
 How do I add OAuth?
 ```
 
-**Result**: The second prompt gives AI file location, line numbers, and project structure insight. AI provides OAuth integration that fits your exact architecture instead of generic advice.
+**Result**: The second prompt gives AI file location, line numbers, project structure insight, and a direct link to the code. AI provides OAuth integration that fits your exact architecture instead of generic advice.
 
 ## Installation
 
@@ -70,11 +71,15 @@ use {
         -- Customize mappings
         mappings = {
           relative = '<leader>cy',
-          absolute = '<leader>cY'
+          absolute = '<leader>cY',
+          remote = '<leader>cr',
+        },
+        formats = {
+          default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
+          remote = '# {remote_url}',  -- Custom format for remote mapping
         },
         -- whether to trim lines or not
         trim_lines = false,
-        context_format = '# %s:%s', -- Default format for context: "# Source file: filepath:line"
       })
     end
   }
@@ -89,17 +94,23 @@ use {
         -- Customize mappings
         mappings = {
           relative = '<leader>cy',
-          absolute = '<leader>cY'
+          absolute = '<leader>cY',
+          remote = '<leader>cr',
+        },
+        formats = {
+          default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
+          remote = '# {remote_url}',
         },
         -- whether to trim lines or not
         trim_lines = false,
-        context_format = '# %s:%s', -- Default format for context: "# Source file: filepath:line"
       })
     end
   },
 ```
 
 ## Usage
+
+### Default context
 
 1. Copy current line with relative path:
    - Press `<leader>cy` in normal mode.
@@ -151,6 +162,33 @@ Output example:
   # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4-6
 ```
 
+### Remote URL Support
+
+5. Copy current line with remote URL:
+   - Press `<leader>cr` in normal mode.
+   - Plugin copies line under cursor with repository URL into your unnamed register.
+   - Paste somewhere
+Output example:
+```
+    <% posts.each do |post| %>
+    # https://github.com/user/repo/blob/abc123def/app/views/widgets/show.html.erb#L4
+```
+
+6. Copy visual selection with remote URL:
+   - Select lines in visual mode.
+   - Press `<leader>cr`.
+   - Plugin copies the selected lines with repository URL into your unnamed register.
+   - Paste somewhere
+Output example:
+```
+    <% posts.each do |post| %>
+        <%= post.title %>
+    <% end %>
+    # https://github.com/user/repo/blob/abc123def/app/views/widgets/show.html.erb#L4-L6
+```
+
+
+
 ## Configuration
 
 There is no need to call setup if you are ok with the defaults.
@@ -161,15 +199,59 @@ require('copy_with_context').setup({
     -- Customize mappings
     mappings = {
       relative = '<leader>cy',
-      absolute = '<leader>cY'
+      absolute = '<leader>cY',
+    },
+    -- Define format strings for each mapping
+    formats = {
+      default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
     },
     -- whether to trim lines or not
     trim_lines = false,
-    context_format = '# %s:%s',  -- Default format for context: "# Source file: filepath:line"
-  -- context_format = '# Source file: %s:%s',
-  -- Other format for context: "# Source file: /path/to/file:123"
 })
 ```
+
+### Format Variables
+
+You can use the following variables in format strings:
+
+- `{filepath}` - The file path (relative or absolute depending on mapping)
+- `{line}` - Line number or range (e.g., "42" or "10-20")
+- `{linenumber}` - Alias for `{line}`
+- `{remote_url}` - Repository URL (GitHub, GitLab, Bitbucket)
+
+### Custom Mappings and Formats
+
+You can define unlimited custom mappings with their own format strings:
+
+```lua
+require('copy_with_context').setup({
+  mappings = {
+    relative = '<leader>cy',
+    absolute = '<leader>cY',
+    remote = '<leader>cr',
+    full = '<leader>cx', -- Custom mapping with everything
+  },
+  formats = {
+    default = '# {filepath}:{line}',
+    remote = '# {remote_url}',
+    full = '# {filepath}:{line}\n# {remote_url}',
+  },
+})
+```
+
+**Important**: Every mapping name must have a matching format name. The special mappings `relative` and `absolute` use the `default` format.
+
+In case it fails to find the format for a mapping, it will fail during config load time with an error message. Check your config if that happens, whether everything specified in mappings is also present in formats.
+
+### Repository URL Support
+
+When you use `{remote_url}` in a format string, the plugin automatically generates permalink URLs for your code snippets. This feature works with:
+
+- **GitHub** (github.com and GitHub Enterprise)
+- **GitLab** (gitlab.com and self-hosted instances containing "gitlab" in the domain)
+- **Bitbucket** (bitbucket.org and *.bitbucket.org)
+
+The URLs always use the current commit SHA for stable permalinks. If you're not in a git repository or the repository provider is not recognized, the URL will simply be omitted (graceful degradation)
 
 ## Development
 Want to contribute to `copy_with_context.nvim`? Here's how to set up your local development environment:
@@ -230,13 +312,15 @@ use {
               -- Customize mappings
               mappings = {
               relative = '<leader>cy',
-              absolute = '<leader>cY'
+              absolute = '<leader>cY',
+              remote = '<leader>cr',
+              },
+              formats = {
+                default = '# {filepath}:{line}',
+                remote = '# {remote_url}',
               },
               -- whether to trim lines or not
               trim_lines = false,
-              context_format = '# %s:%s',  -- Default format for context: "# filepath:line"
-              -- context_format = '# Source file: %s:%s',
-              -- Other format for context: "# Source file: /path/to/file:123"
               })
   end
 }
@@ -251,17 +335,29 @@ With lazy.nvim:
   opts = {
       mappings = {
           relative = '<leader>cy',
-          absolute = '<leader>cY'
+          absolute = '<leader>cY',
+          remote = '<leader>cr',
+      },
+      formats = {
+        default = '# {filepath}:{line}',
+        remote = '# {remote_url}',
       },
       -- whether to trim lines or not
       trim_lines = false,
-      context_format = '# %s:%s',  -- Default format for context: "# filepath:line"
-      -- context_format = '# Source file: %s:%s',
-      -- Other format for context: "# Source file: /path/to/file:123"
   }
 }
 ```
 Then restart Neovim or run `:Lazy` sync to load the local version
+
+### Releasing
+
+For maintainers: see [RELEASING.md](./RELEASING.md) for the complete release process.
+
+The guide covers:
+- Version numbering (Semantic Versioning)
+- Generating release notes from git history
+- Creating and publishing releases
+- Publishing to LuaRocks
 
 ## Contributing
 Bug reports and pull requests are welcome on GitHub at https://github.com/zhisme/copy_with_context.nvim.

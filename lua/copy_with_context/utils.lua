@@ -22,11 +22,6 @@ function M.get_file_path(absolute)
   return absolute and vim.fn.expand("%:p") or vim.fn.expand("%")
 end
 
-function M.format_line_range(start_line, end_line)
-  return start_line == end_line and tostring(start_line)
-    or string.format("%d-%d", start_line, end_line)
-end
-
 function M.process_lines(lines)
   local config = require("copy_with_context.config")
   local processed = {}
@@ -45,13 +40,6 @@ end
 function M.copy_to_clipboard(output)
   vim.fn.setreg("*", output)
   vim.fn.setreg("+", output)
-end
-
-function M.format_output(content, file_path, line_range)
-  local config = require("copy_with_context.config")
-  local comment_line = string.format(config.options.context_format, file_path, line_range)
-
-  return string.format("%s\n%s", content, comment_line)
 end
 
 return M

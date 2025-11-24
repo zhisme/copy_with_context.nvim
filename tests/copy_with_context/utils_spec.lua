@@ -91,18 +91,6 @@ describe("Utility Functions", function()
     end)
   end)
 
-  describe("format_line_range", function()
-    it("returns a single line number when start and end are the same", function()
-      local result = utils.format_line_range(5, 5)
-      assert.equals("5", result)
-    end)
-
-    it("returns a range when start and end are different", function()
-      local result = utils.format_line_range(2, 6)
-      assert.equals("2-6", result)
-    end)
-  end)
-
   describe("process_lines", function()
     local config_mock = {
       options = { trim_lines = false },
@@ -134,23 +122,6 @@ describe("Utility Functions", function()
       utils.copy_to_clipboard("copied text", false)
       assert.equals("copied text", setreg_calls["*"])
       assert.equals("copied text", setreg_calls["+"])
-    end)
-  end)
-
-  describe("format_output", function()
-    local config_mock = {
-      options = {
-        context_format = "-- %s (lines: %s)",
-      },
-    }
-
-    before_each(function()
-      package.loaded["copy_with_context.config"] = config_mock
-    end)
-
-    it("formats output correctly", function()
-      local result = utils.format_output("content here", "file.lua", "5-10")
-      assert.equals("content here\n-- file.lua (lines: 5-10)", result)
     end)
   end)
 end)
