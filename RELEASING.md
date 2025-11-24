@@ -108,19 +108,11 @@ source = {
 - Verify all modules are listed in `build.modules` if you added new files
 - Dependencies should only include runtime dependencies (not luacheck, busted, etc.)
 
-### 5. Update Makefile
-
-Update the `ROCKSPEC` variable in `Makefile`:
-
-```makefile
-ROCKSPEC = copy_with_context-X.Y.Z-1.rockspec  # Update this
-```
-
-### 6. Commit Version Bump
+### 5. Commit Version Bump
 
 ```bash
 # Stage the changes
-git add copy_with_context-*.rockspec Makefile
+git add copy_with_context-*.rockspec
 
 # Commit with conventional commit message
 git commit -m "chore: bump version to X.Y.Z"
@@ -129,7 +121,7 @@ git commit -m "chore: bump version to X.Y.Z"
 git push origin main
 ```
 
-### 7. Create Git Tag
+### 6. Create Git Tag
 
 ```bash
 # Create an annotated tag
@@ -158,7 +150,7 @@ git push origin vX.Y.Z
 - Format: `vMAJOR.MINOR.PATCH`
 - Examples: `v3.0.0`, `v2.1.5`, `v1.0.0-rc.1`
 
-### 8. Create GitHub Release
+### 7. Create GitHub Release
 
 1. Go to https://github.com/zhisme/copy_with_context.nvim/releases
 2. Click **"Draft a new release"**
@@ -210,7 +202,7 @@ Full documentation: [README.md](./README.md)
 6. Check **"Set as the latest release"** (unless it's a pre-release)
 7. Click **"Publish release"**
 
-### 9. Publish to LuaRocks (Optional)
+### 8. Publish to LuaRocks (Optional)
 
 If you want to publish to [LuaRocks](https://luarocks.org/):
 
@@ -224,7 +216,7 @@ luarocks upload copy_with_context-X.Y.Z-1.rockspec --api-key YOUR_API_KEY
 
 **Note:** You need a LuaRocks account and to be a maintainer of the package.
 
-### 10. Post-Release Tasks
+### 9. Post-Release Tasks
 
 - [ ] Verify the release appears on GitHub Releases page
 - [ ] Verify the tag is visible: `git tag -l`
@@ -315,14 +307,6 @@ luarocks lint copy_with_context-X.Y.Z-1.rockspec
 luarocks make copy_with_context-X.Y.Z-1.rockspec
 ```
 
-### Wrong Rockspec in Makefile
-
-Make sure `Makefile` references the correct version:
-
-```makefile
-ROCKSPEC = copy_with_context-X.Y.Z-1.rockspec
-```
-
 ### Release Notes Script Not Working
 
 ```bash
@@ -342,14 +326,15 @@ git tag -l
 - Check if CI is passing for the tag
 - Verify you have write access to the repository
 
-## Automation (Future)
+## Automation
 
-The release process can be automated with GitHub Actions. A workflow will be added in the future to:
+The release process is partially automated with GitHub Actions (`.github/workflows/release.yml`):
 
-- Automatically create GitHub releases when tags are pushed
-- Run tests before releasing
-- Auto-generate release notes from commits
-- Optionally publish to LuaRocks
+- ✅ Automatically creates GitHub releases when tags are pushed
+- ✅ Runs tests before releasing
+- ✅ Validates rockspec before releasing
+- ✅ Auto-generates release notes from commits
+- ❌ Publishing to LuaRocks (still manual - see step 8)
 
 ## Additional Resources
 
