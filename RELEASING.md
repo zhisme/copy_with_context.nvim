@@ -218,11 +218,8 @@ If you want to publish to [LuaRocks](https://luarocks.org/):
 # Install luarocks CLI if not already installed
 # See: https://github.com/luarocks/luarocks/wiki/Download
 
-# Login to LuaRocks (first time only)
-luarocks login
-
 # Upload the rockspec
-luarocks upload copy_with_context-X.Y.Z-1.rockspec
+luarocks upload copy_with_context-X.Y.Z-1.rockspec --api-key YOUR_API_KEY
 ```
 
 **Note:** You need a LuaRocks account and to be a maintainer of the package.
