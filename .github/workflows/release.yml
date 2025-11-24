@@ -1,0 +1,47 @@
+name: Release
+
+  on:
+    push:
+      tags:
+        - 'v*'
+
+  permissions:
+    contents: write  # Required to create releases
+
+  jobs:
+    release:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+
+        - name: Setup Lua
+          uses: leafo/gh-actions-lua@v10
+          with:
+            luaVersion: "5.1"
+
+        - name: Setup LuaRocks
+          uses: leafo/gh-actions-luarocks@v4
+
+        - name: Install dependencies
+          run: make deps
+
+        - name: Run tests
+          run: make test
+
+        - name: Run linter
+          run: make lint
+
+        - name: Validate rockspec
+          run: |
+            TAG_VERSION=${GITHUB_REF#refs/tags/v}
+            ROCKSPEC_FILE="copy_with_context-${TAG_VERSION}-1.rockspec"
+            if [ ! -f "$ROCKSPEC_FILE" ]; then
+              echo "Error: Rockspec $ROCKSPEC_FILE not found"
+              exit 1
+            fi
+            luarocks lint "$ROCKSPEC_FILE"
+
+        - name: Create Release
+          uses: softprops/action-gh-release@v1
+          with:
+            generate_release_notes: true
