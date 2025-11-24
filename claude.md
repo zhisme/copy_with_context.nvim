@@ -210,6 +210,7 @@ Contributions are welcome! Please:
 3. Run linters (`make lint`)
 4. Format code (`make fmt`)
 5. Provide clear descriptions in PRs
+6. Use conventional commit messages for consistency. Each commit message should contain the following (feat:, fix:, docs:, style:, refactor:, test:, chore:)
 
 ## License
 
