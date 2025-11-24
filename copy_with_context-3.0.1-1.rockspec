@@ -1,8 +1,8 @@
 package = "copy_with_context"
-version = "3.0.0-1"
+version = "3.0.1-1"
 source = {
   url = "git://github.com/zhisme/copy_with_context.nvim.git",
-  tag = "v3.0.0",
+  tag = "v3.0.1",
 }
 description = {
   summary = "A Neovim plugin for copying code with context",
