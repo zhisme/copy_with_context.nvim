@@ -80,14 +80,30 @@ describe("Utility Functions", function()
   end)
 
   describe("get_file_path", function()
-    it("returns the absolute file path", function()
+    it("returns the absolute file path using %:p", function()
+      local expand_calls = {}
+      stub(vim.fn, "expand", function(expr)
+        table.insert(expand_calls, expr)
+        assert.equals("%:p", expr, "Expected expand to be called with %:p")
+        return "/absolute/path/to/file.lua"
+      end)
+
       local path = utils.get_file_path(true)
-      assert.equals("absolute_test_file.lua", path)
+      assert.equals("/absolute/path/to/file.lua", path)
+      assert.same({ "%:p" }, expand_calls)
     end)
 
-    it("returns the relative file path", function()
+    it("returns the relative file path using %:.", function()
+      local expand_calls = {}
+      stub(vim.fn, "expand", function(expr)
+        table.insert(expand_calls, expr)
+        assert.equals("%:.", expr, "Expected expand to be called with %:.")
+        return "relative/path/to/file.lua"
+      end)
+
       local path = utils.get_file_path(false)
-      assert.equals("test_file.lua", path)
+      assert.equals("relative/path/to/file.lua", path)
+      assert.same({ "%:." }, expand_calls)
     end)
   end)
 
