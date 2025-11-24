@@ -1,14 +1,14 @@
 name: Release
 
-  on:
-    push:
-      tags:
-        - 'v*'
+on:
+  push:
+    tags:
+      - 'v*'
 
-  permissions:
-    contents: write  # Required to create releases
+permissions:
+  contents: write  # Required to create releases
 
-  jobs:
+jobs:
     release:
       runs-on: ubuntu-latest
       steps:
