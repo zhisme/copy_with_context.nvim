@@ -360,7 +360,3 @@ The release process can be automated with GitHub Actions. A workflow will be add
 - [GitHub Releases Documentation](https://docs.github.com/en/repositories/releasing-projects-on-github)
 - [LuaRocks Documentation](https://github.com/luarocks/luarocks/wiki)
 - [Conventional Commits](https://www.conventionalcommits.org/)
-
----
-
-**Last Updated:** 2024-01 (update when making significant changes to this guide)
