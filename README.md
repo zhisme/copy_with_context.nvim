@@ -72,7 +72,7 @@ use {
         mappings = {
           relative = '<leader>cy',
           absolute = '<leader>cY',
-          remote = '<leader>cr',  -- Optional: Add custom mapping for remote URL only
+          remote = '<leader>cr',
         },
         formats = {
           default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
@@ -95,11 +95,11 @@ use {
         mappings = {
           relative = '<leader>cy',
           absolute = '<leader>cY',
-          remote = '<leader>cr',  -- Optional: Add custom mapping for remote URL only
+          remote = '<leader>cr',
         },
         formats = {
           default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
-          remote = '# {remote_url}',  -- Custom format for remote mapping
+          remote = '# {remote_url}',
         },
         -- whether to trim lines or not
         trim_lines = false,
@@ -110,6 +110,8 @@ use {
 
 ## Usage
 
+### Default context
+
 1. Copy current line with relative path:
    - Press `<leader>cy` in normal mode.
    - Plugin copies line under cursor with relative path into your unnamed register.
@@ -119,7 +121,6 @@ Output example:
 ```
   <% posts.each do |post| %>
   # app/views/widgets/show.html.erb:4
-  # https://github.com/user/repo/blob/abc123def/app/views/widgets/show.html.erb#L4
 ```
 
 2. Copy current line with absolute path:
@@ -131,7 +132,6 @@ Output example:
 ```
   <% posts.each do |post| %>
   # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4
-  # https://github.com/user/repo/blob/abc123def/app/views/widgets/show.html.erb#L4
 ```
 
 3. Copy visual selection with relative path:
@@ -146,7 +146,6 @@ Output example:
     <%= post.title %>
   <% end %>
   # app/views/widgets/show.html.erb:4-6
-  # https://github.com/user/repo/blob/abc123def/app/views/widgets/show.html.erb#L4-L6
 ```
 
 4. Copy visual selection with absolute path:
@@ -161,8 +160,34 @@ Output example:
     <%= post.title %>
   <% end %>
   # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4-6
-  # https://github.com/user/repo/blob/abc123def/app/views/widgets/show.html.erb#L4-L6
 ```
+
+### Remote URL Support
+
+5. Copy current line with remote URL:
+   - Press `<leader>cr` in normal mode.
+   - Plugin copies line under cursor with repository URL into your unnamed register.
+   - Paste somewhere
+Output example:
+```
+    <% posts.each do |post| %>
+    # https://github.com/user/repo/blob/abc123def/app/views/widgets/show.html.erb#L4
+```
+
+6. Copy visual selection with remote URL:
+   - Select lines in visual mode.
+   - Press `<leader>cr`.
+   - Plugin copies the selected lines with repository URL into your unnamed register.
+   - Paste somewhere
+Output example:
+```
+    <% posts.each do |post| %>
+        <%= post.title %>
+    <% end %>
+    # https://github.com/user/repo/blob/abc123def/app/views/widgets/show.html.erb#L4-L6
+```
+
+
 
 ## Configuration
 
@@ -203,8 +228,8 @@ require('copy_with_context').setup({
   mappings = {
     relative = '<leader>cy',
     absolute = '<leader>cY',
-    remote = '<leader>cr',        -- Custom mapping for URL only
-    full = '<leader>cx',           -- Custom mapping with everything
+    remote = '<leader>cr',
+    full = '<leader>cx', -- Custom mapping with everything
   },
   formats = {
     default = '# {filepath}:{line}',
@@ -215,6 +240,8 @@ require('copy_with_context').setup({
 ```
 
 **Important**: Every mapping name must have a matching format name. The special mappings `relative` and `absolute` use the `default` format.
+
+In case it fails to find the format for a mapping, it will fail during config load time with an error message. Check your config if that happens, whether everything specified in mappings is also present in formats.
 
 ### Repository URL Support
 
