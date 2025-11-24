@@ -19,7 +19,7 @@ function M.get_lines(is_visual)
 end
 
 function M.get_file_path(absolute)
-  return absolute and vim.fn.expand("%:p") or vim.fn.expand("%")
+  return absolute and vim.fn.expand("%:p") or vim.fn.expand("%:.")
 end
 
 function M.process_lines(lines)
