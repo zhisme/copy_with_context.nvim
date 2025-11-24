@@ -84,10 +84,8 @@ describe("Utility Functions", function()
       local expand_calls = {}
       stub(vim.fn, "expand", function(expr)
         table.insert(expand_calls, expr)
-        if expr == "%:p" then
-          return "/absolute/path/to/file.lua"
-        end
-        return "file.lua"
+        assert.equals("%:p", expr, "Expected expand to be called with %:p")
+        return "/absolute/path/to/file.lua"
       end)
 
       local path = utils.get_file_path(true)
@@ -99,12 +97,8 @@ describe("Utility Functions", function()
       local expand_calls = {}
       stub(vim.fn, "expand", function(expr)
         table.insert(expand_calls, expr)
-        if expr == "%:." then
-          return "relative/path/to/file.lua"
-        elseif expr == "%:p" then
-          return "/absolute/path/to/file.lua"
-        end
-        return "file.lua"
+        assert.equals("%:.", expr, "Expected expand to be called with %:.")
+        return "relative/path/to/file.lua"
       end)
 
       local path = utils.get_file_path(false)
