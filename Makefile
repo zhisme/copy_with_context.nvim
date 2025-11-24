@@ -19,6 +19,9 @@ install-stylua:
 deps:
 	@echo "Installing dependencies from rockspec..."
 	@luarocks --tree=$(DEPS_DIR) make $(ROCKSPEC)
+	@echo "Installing dev dependencies..."
+	@luarocks --tree=$(DEPS_DIR) install busted
+	@luarocks --tree=$(DEPS_DIR) install luacheck
 	@echo "Dependencies installed."
 
 .PHONY: test
