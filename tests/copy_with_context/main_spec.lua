@@ -34,6 +34,7 @@ describe("Main Module", function()
       line = "1-2",
       linenumber = "1-2",
       remote_url = "",
+      code = "line 1\nline 2",
     })
     stub(formatter, "format").returns("# /fake/path.lua:1-2")
     stub(url_builder, "build_url").returns(nil)
@@ -172,5 +173,74 @@ describe("Main Module", function()
     -- Cleanup
     config.options.mappings.custom = nil
     config.options.formats.custom = nil
+  end)
+
+  it("uses output_formats when available (takes precedence over formats)", function()
+    -- Add output_formats
+    config.options.output_formats = {
+      default = "{code}\n\n# {filepath}:{line}",
+    }
+
+    main.copy_with_context("relative", false)
+
+    -- Should use output_format, not legacy format
+    assert.stub(formatter.format).was_called_with("{code}\n\n# {filepath}:{line}", match._)
+
+    -- Cleanup
+    config.options.output_formats = nil
+  end)
+
+  it("uses output_formats for custom mapping", function()
+    -- Add custom mapping with output_format
+    config.options.mappings.markdown = "<leader>cm"
+    config.options.output_formats = {
+      markdown = "```\n{code}\n```\n\n*{filepath}:{line}*",
+    }
+
+    main.copy_with_context("markdown", false)
+
+    -- Should use the output_format
+    assert.stub(formatter.format).was_called_with("```\n{code}\n```\n\n*{filepath}:{line}*", match._)
+
+    -- Cleanup
+    config.options.mappings.markdown = nil
+    config.options.output_formats = nil
+  end)
+
+  it("falls back to formats when output_formats not defined for mapping", function()
+    -- Add custom mapping with only legacy format
+    config.options.mappings.custom = "<leader>cc"
+    config.options.formats.custom = "# {filepath}"
+    config.options.output_formats = {} -- Empty output_formats
+
+    main.copy_with_context("custom", false)
+
+    -- Should use the legacy format
+    assert.stub(formatter.format).was_called_with("# {filepath}", match._)
+
+    -- Cleanup
+    config.options.mappings.custom = nil
+    config.options.formats.custom = nil
+    config.options.output_formats = nil
+  end)
+
+  it("fetches remote URL when output_format uses it", function()
+    -- Add output_format that uses {remote_url}
+    config.options.output_formats = {
+      default = "{code}\n\n# {remote_url}",
+    }
+
+    url_builder.build_url:revert()
+    stub(url_builder, "build_url").returns(
+      "https://github.com/user/repo/blob/abc123/path.lua#L1-L2"
+    )
+
+    main.copy_with_context("relative", false)
+
+    -- Should call build_url because output_format uses {remote_url}
+    assert.stub(url_builder.build_url).was_called()
+
+    -- Cleanup
+    config.options.output_formats = nil
   end)
 end)
