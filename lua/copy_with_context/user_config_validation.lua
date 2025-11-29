@@ -26,7 +26,10 @@ function M.validate(config)
     if default_mappings[mapping_name] then
       if not formats.default and not output_formats.default then
         return false,
-          string.format("Mapping '%s' requires 'formats.default' or 'output_formats.default' to be defined", mapping_name)
+          string.format(
+            "Mapping '%s' requires 'formats.default' or 'output_formats.default' to be defined",
+            mapping_name
+          )
       end
     else
       -- All other mappings need matching format in either formats or output_formats
@@ -75,7 +78,7 @@ end
 
 -- Validate format string has valid variables
 -- @param format_string string Format string to validate
--- @param is_output_format boolean Whether this is an output_format (requires {code})
+-- @param is_output_format boolean Whether this is an output_format
 -- @return boolean, string|nil Success status and error message
 function M.validate_format_string(format_string, is_output_format)
   if not format_string then

@@ -30,8 +30,8 @@ function M.copy_with_context(mapping_name, is_visual)
 
   -- Get format string (output_formats takes precedence over formats)
   local output_format = config.options.output_formats and config.options.output_formats[format_name]
-  local legacy_format = config.options.formats and config.options.formats[format_name]
-  local format_string = output_format or legacy_format
+  local format = config.options.formats and config.options.formats[format_name]
+  local format_string = output_format or format
 
   -- Get remote URL if needed (check if format uses {remote_url})
   local remote_url = nil
@@ -47,9 +47,9 @@ function M.copy_with_context(mapping_name, is_visual)
   if output_format then
     -- New full output format - formatter controls entire output
     output = formatter.format(output_format, vars)
-  elseif legacy_format then
-    -- Legacy format - auto-prepend code with newline
-    local context = formatter.format(legacy_format, vars)
+  elseif format then
+    -- format - auto-prepend code with newline
+    local context = formatter.format(format, vars)
     output = content .. "\n" .. context
   else
     -- Fallback if no format found

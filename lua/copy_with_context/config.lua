@@ -8,7 +8,7 @@ M.options = {
     relative = "<leader>cy",
     absolute = "<leader>cY",
   },
-  -- Legacy formats: code is automatically prepended with a newline
+  -- Formats: code is automatically prepended with a newline
   formats = {
     default = "# {filepath}:{line}",
   },
@@ -30,9 +30,10 @@ function M.setup(opts)
     error(string.format("Invalid configuration: %s", err))
   end
 
-  -- Validate each legacy format string (is_output_format = false)
+  -- Validate each format string (is_output_format = false)
   for format_name, format_string in pairs(M.options.formats or {}) do
-    local format_valid, format_err = user_config_validation.validate_format_string(format_string, false)
+    local format_valid, format_err =
+      user_config_validation.validate_format_string(format_string, false)
     if not format_valid then
       error(string.format("Invalid format '%s': %s", format_name, format_err))
     end
@@ -40,7 +41,8 @@ function M.setup(opts)
 
   -- Validate each output_format string (is_output_format = true, requires {code})
   for format_name, format_string in pairs(M.options.output_formats or {}) do
-    local format_valid, format_err = user_config_validation.validate_format_string(format_string, true)
+    local format_valid, format_err =
+      user_config_validation.validate_format_string(format_string, true)
     if not format_valid then
       error(string.format("Invalid output_format '%s': %s", format_name, format_err))
     end
