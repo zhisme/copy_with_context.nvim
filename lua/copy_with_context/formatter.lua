@@ -7,8 +7,9 @@ local M = {}
 -- @param line_start number Starting line number
 -- @param line_end number|nil Ending line number (nil for single line)
 -- @param remote_url string|nil Remote repository URL (nil if not available)
+-- @param code string|nil Code content (visual selection or current line)
 -- @return table Variables table
-function M.get_variables(file_path, line_start, line_end, remote_url)
+function M.get_variables(file_path, line_start, line_end, remote_url, code)
   local line_range
   if line_end and line_end ~= line_start then
     line_range = string.format("%d-%d", line_start, line_end)
@@ -21,6 +22,7 @@ function M.get_variables(file_path, line_start, line_end, remote_url)
     line = line_range,
     linenumber = line_range, -- alias for 'line'
     remote_url = remote_url or "",
+    code = code or "",
   }
 end
 
