@@ -12,9 +12,9 @@ M.options = {
   formats = {
     default = "# {filepath}:{line}",
   },
-  -- Full output formats: must include {code} token for complete control
+  -- Full output formats: use {code} token for complete control over output
   -- Example: output_formats = { default = "{code}\n\n# {filepath}:{line}" }
-  output_formats = nil,
+  output_formats = {},
   trim_lines = false,
 }
 

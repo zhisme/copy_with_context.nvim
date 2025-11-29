@@ -278,7 +278,7 @@ require('copy_with_context').setup({
     default = '# {filepath}:{line}',  -- Code is auto-prepended
   },
   output_formats = {
-    markdown = "```\n{code}\n```\n\n*{filepath}:{line}*",  -- Code token must be specified
+    markdown = "```{code}```\n\n{remote_url}",  -- Code token must be specified
   },
 })
 ```
