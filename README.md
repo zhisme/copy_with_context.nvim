@@ -273,12 +273,15 @@ require('copy_with_context').setup({
   mappings = {
     relative = '<leader>cy',
     markdown = '<leader>cm',
+    verbose = '<leader>cl',
   },
   formats = {
     default = '# {filepath}:{line}',  -- {copied_text} is auto-prepended
+    verbose = '(from {filepath}:{line})', -- will be ignored because the format of the same name in output_formats takes precedence
   },
   output_formats = {
     markdown = "```{copied_text}```\n\n{remote_url}",  -- {copied_text} token must be specified or it will not be included
+    verbose = 'This glorious example:\n\n```{copied_text}```\n\n(from {filepath}:{line})', -- This is the format used because output_formats take precedence over formats of the same name
   },
 })
 ```
