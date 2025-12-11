@@ -218,7 +218,7 @@ You can use the following variables in format strings:
 - `{line}` - Line number or range (e.g., "42" or "10-20")
 - `{linenumber}` - Alias for `{line}`
 - `{remote_url}` - Repository URL (GitHub, GitLab, Bitbucket)
-- `{code}` - The selected code content (used with `output_formats`)
+- `{copied_text}` - The selected text (used with `output_formats`)READ
 
 ### Custom Mappings and Formats
 
@@ -246,7 +246,7 @@ In case it fails to find the format for a mapping, it will fail during config lo
 
 ### Full Output Control with `output_formats`
 
-For complete control over the output structure, use `output_formats` instead of `formats`. The `output_formats` option allows you to place the code content anywhere in your output using the `{code}` variable.
+For complete control over the output structure, use `output_formats` instead of `formats`. The `output_formats` option allows you to place the code content anywhere in your output using the `{copied_text}` variable.
 
 ```lua
 require('copy_with_context').setup({
@@ -255,15 +255,15 @@ require('copy_with_context').setup({
     markdown = '<leader>cm',
   },
   output_formats = {
-    default = "{code}\n\n# {filepath}:{line}",  -- Code first, then context
-    markdown = "```lua\n{code}\n```\n\n*{filepath}:{line}*",  -- Wrap in markdown code block
+    default = "{copied_text}\n\n# {filepath}:{line}",  -- Code first, then context
+    markdown = "```lua\n{copied_text}\n```\n\n*{filepath}:{line}*",  -- Wrap in markdown code block
   },
 })
 ```
 
 **Key differences:**
-- `formats`: The code is automatically prepended with a newline. Format string only controls the context line.
-- `output_formats`: You control the entire output. Typically includes `{code}` token, but it's optional (omit it if you only want to copy metadata without the code content).
+- `formats`: The copied text is automatically prepended with a newline. Format string only controls the context line.
+- `output_formats`: You control the entire output. Typically includes `{copied_text}` token, but it's optional (omit it if you only want to copy metadata without the copied content).
 
 When both `formats` and `output_formats` define the same format name, `output_formats` takes precedence.
 
@@ -275,10 +275,10 @@ require('copy_with_context').setup({
     markdown = '<leader>cm',
   },
   formats = {
-    default = '# {filepath}:{line}',  -- Code is auto-prepended
+    default = '# {filepath}:{line}',  -- {copied_text} is auto-prepended
   },
   output_formats = {
-    markdown = "```{code}```\n\n{remote_url}",  -- Code token must be specified
+    markdown = "```{copied_text}```\n\n{remote_url}",  -- {copied_text} token must be specified or it will not be included
   },
 })
 ```

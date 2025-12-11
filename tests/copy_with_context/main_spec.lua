@@ -34,7 +34,7 @@ describe("Main Module", function()
       line = "1-2",
       linenumber = "1-2",
       remote_url = "",
-      code = "line 1\nline 2",
+      copied_text = "line 1\nline 2",
     })
     stub(formatter, "format").returns("# /fake/path.lua:1-2")
     stub(url_builder, "build_url").returns(nil)
@@ -178,13 +178,13 @@ describe("Main Module", function()
   it("uses output_formats when available (takes precedence over formats)", function()
     -- Add output_formats
     config.options.output_formats = {
-      default = "{code}\n\n# {filepath}:{line}",
+      default = "{copied_text}\n\n# {filepath}:{line}",
     }
 
     main.copy_with_context("relative", false)
 
     -- Should use output_format, not legacy format
-    assert.stub(formatter.format).was_called_with("{code}\n\n# {filepath}:{line}", match._)
+    assert.stub(formatter.format).was_called_with("{copied_text}\n\n# {filepath}:{line}", match._)
 
     -- Cleanup
     config.options.output_formats = nil
@@ -194,13 +194,13 @@ describe("Main Module", function()
     -- Add custom mapping with output_format
     config.options.mappings.markdown = "<leader>cm"
     config.options.output_formats = {
-      markdown = "```\n{code}\n```\n\n*{filepath}:{line}*",
+      markdown = "```\n{copied_text}\n```\n\n*{filepath}:{line}*",
     }
 
     main.copy_with_context("markdown", false)
 
     -- Should use the output_format
-    assert.stub(formatter.format).was_called_with("```\n{code}\n```\n\n*{filepath}:{line}*", match._)
+    assert.stub(formatter.format).was_called_with("```\n{copied_text}\n```\n\n*{filepath}:{line}*", match._)
 
     -- Cleanup
     config.options.mappings.markdown = nil
@@ -227,7 +227,7 @@ describe("Main Module", function()
   it("fetches remote URL when output_format uses it", function()
     -- Add output_format that uses {remote_url}
     config.options.output_formats = {
-      default = "{code}\n\n# {remote_url}",
+      default = "{copied_text}\n\n# {remote_url}",
     }
 
     url_builder.build_url:revert()

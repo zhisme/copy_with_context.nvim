@@ -8,12 +8,12 @@ M.options = {
     relative = "<leader>cy",
     absolute = "<leader>cY",
   },
-  -- Formats: code is automatically prepended with a newline
+  -- Formats: copied_text is automatically prepended with a newline
   formats = {
     default = "# {filepath}:{line}",
   },
-  -- Full output formats: use {code} token for complete control over output
-  -- Example: output_formats = { default = "{code}\n\n# {filepath}:{line}" }
+  -- Full output formats: use {copied_text} token for complete control over output
+  -- Example: output_formats = { default = "{copied_text}\n\n# {filepath}:{line}" }
   output_formats = {},
   trim_lines = false,
 }
@@ -39,7 +39,8 @@ function M.setup(opts)
     end
   end
 
-  -- Validate each output_format string (is_output_format = true, requires {code})
+  -- Validate each output_format string (is_output_format = true, requires
+  -- {copied_text})
   for format_name, format_string in pairs(M.options.output_formats or {}) do
     local format_valid, format_err =
       user_config_validation.validate_format_string(format_string, true)

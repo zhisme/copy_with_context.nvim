@@ -90,7 +90,7 @@ function M.validate_format_string(format_string, is_output_format)
     line = true,
     linenumber = true,
     remote_url = true,
-    code = true,
+    copied_text = true,
   }
 
   -- Extract all variables from format string
@@ -98,7 +98,7 @@ function M.validate_format_string(format_string, is_output_format)
     if not valid_vars[var] then
       return false,
         string.format(
-          "Unknown variable '{%s}' in format string. Valid variables: filepath, line, linenumber, remote_url, code",
+          "Unknown variable '{%s}' in format string. Valid variables: filepath, line, linenumber, remote_url, copied_text",
           var
         )
     end

@@ -156,8 +156,8 @@ describe("User Config Validation", function()
       assert.is_nil(err)
     end)
 
-    it("accepts valid format with code", function()
-      local valid, err = validation.validate_format_string("{code}\n# {filepath}", false)
+    it("accepts valid format with copied_text", function()
+      local valid, err = validation.validate_format_string("{copied_text}\n# {filepath}", false)
       assert.is_true(valid)
       assert.is_nil(err)
     end)
@@ -202,14 +202,8 @@ describe("User Config Validation", function()
     end)
 
     -- output_format specific tests
-    it("accepts output_format with code", function()
-      local valid, err = validation.validate_format_string("{code}\n# {filepath}:{line}", true)
-      assert.is_true(valid)
-      assert.is_nil(err)
-    end)
-
-    it("accepts output_format without code (code is optional)", function()
-      local valid, err = validation.validate_format_string("# {filepath}:{line}", true)
+    it("accepts output_format with copied_text", function()
+      local valid, err = validation.validate_format_string("{copied_text}\n# {filepath}:{line}", true)
       assert.is_true(valid)
       assert.is_nil(err)
     end)
@@ -222,7 +216,7 @@ describe("User Config Validation", function()
           relative = "<leader>cy",
         },
         output_formats = {
-          default = "{code}\n# {filepath}:{line}",
+          default = "{copied_text}\n# {filepath}:{line}",
         },
       }
 
@@ -241,7 +235,7 @@ describe("User Config Validation", function()
           default = "# {filepath}:{line}",
         },
         output_formats = {
-          custom = "{code}\n\n# {remote_url}",
+          custom = "{copied_text}\n\n# {remote_url}",
         },
       }
 
@@ -259,7 +253,7 @@ describe("User Config Validation", function()
           default = "# {filepath}:{line}",
         },
         output_formats = {
-          orphan = "{code}\n# {filepath}",
+          orphan = "{copied_text}\n# {filepath}",
         },
       }
 
