@@ -142,21 +142,21 @@ describe("Main Module", function()
   it("sets up key mappings for all defined mappings", function()
     main.setup()
 
-    -- Should set up normal mode mappings
+    -- Should set up normal mode mappings with desc for which-key
     assert
       .stub(vim.keymap.set)
-      .was_called_with("n", config.options.mappings.relative, match._, { silent = false })
+      .was_called_with("n", config.options.mappings.relative, match._, match._)
     assert
       .stub(vim.keymap.set)
-      .was_called_with("n", config.options.mappings.absolute, match._, { silent = false })
+      .was_called_with("n", config.options.mappings.absolute, match._, match._)
 
-    -- Should set up visual mode mappings
+    -- Should set up visual mode mappings with desc for which-key
     assert
       .stub(vim.keymap.set)
-      .was_called_with("x", config.options.mappings.relative, match._, { silent = true })
+      .was_called_with("x", config.options.mappings.relative, match._, match._)
     assert
       .stub(vim.keymap.set)
-      .was_called_with("x", config.options.mappings.absolute, match._, { silent = true })
+      .was_called_with("x", config.options.mappings.absolute, match._, match._)
   end)
 
   it("sets up key mappings for custom mappings", function()
@@ -166,9 +166,9 @@ describe("Main Module", function()
 
     main.setup()
 
-    -- Should set up mappings for custom mapping too
-    assert.stub(vim.keymap.set).was_called_with("n", "<leader>cc", match._, { silent = false })
-    assert.stub(vim.keymap.set).was_called_with("x", "<leader>cc", match._, { silent = true })
+    -- Should set up mappings for custom mapping too (with desc for which-key)
+    assert.stub(vim.keymap.set).was_called_with("n", "<leader>cc", match._, match._)
+    assert.stub(vim.keymap.set).was_called_with("x", "<leader>cc", match._, match._)
 
     -- Cleanup
     config.options.mappings.custom = nil

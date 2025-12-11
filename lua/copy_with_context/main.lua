@@ -65,15 +65,22 @@ function M.copy_with_context(mapping_name, is_visual)
   )
 end
 
+-- Generate description for a mapping
+local function get_mapping_desc(mapping_name)
+  return string.format("Copy with context (%s)", mapping_name)
+end
+
 function M.setup()
   local config = require("copy_with_context.config")
 
   -- Set up keymaps for all defined mappings
   for mapping_name, keymap in pairs(config.options.mappings) do
+    local desc = get_mapping_desc(mapping_name)
+
     -- Normal mode mapping
     vim.keymap.set("n", keymap, function()
       M.copy_with_context(mapping_name, false)
-    end, { silent = false })
+    end, { silent = false, desc = desc })
 
     -- Visual mode mapping
     vim.keymap.set(
@@ -83,7 +90,7 @@ function M.setup()
         ':<C-u>lua require("copy_with_context.main").copy_with_context("%s", true)<CR>',
         mapping_name
       ),
-      { silent = true }
+      { silent = true, desc = desc }
     )
   end
 end
