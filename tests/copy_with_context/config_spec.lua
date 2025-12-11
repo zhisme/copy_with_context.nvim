@@ -154,4 +154,64 @@ describe("Config Module", function()
     -- All formats are valid, should succeed
     assert.is_true(success)
   end)
+
+  it("validates output_formats with valid variables", function()
+    local success = pcall(config.setup, {
+      mappings = {
+        relative = "<leader>cy",
+      },
+      output_formats = {
+        default = "{copied_text}\n\n# {filepath}:{line}",
+      },
+    })
+
+    assert.is_true(success)
+  end)
+
+  it("validates output_formats with invalid variables", function()
+    local success = pcall(config.setup, {
+      mappings = {
+        relative = "<leader>cy",
+      },
+      output_formats = {
+        default = "{copied_text}\n# {invalid_var}",
+      },
+    })
+
+    assert.is_false(success)
+  end)
+
+  it("validates custom output_format with invalid variables", function()
+    local success = pcall(config.setup, {
+      mappings = {
+        relative = "<leader>cy",
+        markdown = "<leader>cm",
+      },
+      formats = {
+        default = "# {filepath}:{line}",
+      },
+      output_formats = {
+        markdown = "{copied_text}\n# {bad_variable}",
+      },
+    })
+
+    assert.is_false(success)
+  end)
+
+  it("validates multiple output_formats", function()
+    local success = pcall(config.setup, {
+      mappings = {
+        relative = "<leader>cy",
+        markdown = "<leader>cm",
+        full = "<leader>cf",
+      },
+      output_formats = {
+        default = "{copied_text}\n# {filepath}:{line}",
+        markdown = "```\n{copied_text}\n```\n\n_{filepath}:{line}_",
+        full = "{copied_text}\n\n# {filepath}:{line}\n# {remote_url}",
+      },
+    })
+
+    assert.is_true(success)
+  end)
 end)
