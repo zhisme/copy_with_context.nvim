@@ -57,7 +57,13 @@ describe("Formatter", function()
     end)
 
     it("creates variables table with copied_text content", function()
-      local vars = formatter.get_variables("/path/to/file.lua", 10, 12, nil, "function hello()\n  print('hello')\nend")
+      local vars = formatter.get_variables(
+        "/path/to/file.lua",
+        10,
+        12,
+        nil,
+        "function hello()\n  print('hello')\nend"
+      )
 
       assert.same({
         filepath = "/path/to/file.lua",

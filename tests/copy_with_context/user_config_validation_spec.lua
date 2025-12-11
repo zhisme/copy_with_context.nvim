@@ -163,7 +163,8 @@ describe("User Config Validation", function()
     end)
 
     it("accepts valid format with multiple variables", function()
-      local valid, err = validation.validate_format_string("# {filepath}:{line} - {remote_url}", false)
+      local valid, err =
+        validation.validate_format_string("# {filepath}:{line} - {remote_url}", false)
       assert.is_true(valid)
       assert.is_nil(err)
     end)
@@ -188,7 +189,8 @@ describe("User Config Validation", function()
     end)
 
     it("rejects format with multiple unknown variables", function()
-      local valid, err = validation.validate_format_string("# {filepath} {unknown1} {unknown2}", false)
+      local valid, err =
+        validation.validate_format_string("# {filepath} {unknown1} {unknown2}", false)
       assert.is_false(valid)
       assert.is_not_nil(err)
       -- Should error on first unknown variable
@@ -203,7 +205,8 @@ describe("User Config Validation", function()
 
     -- output_format specific tests
     it("accepts output_format with copied_text", function()
-      local valid, err = validation.validate_format_string("{copied_text}\n# {filepath}:{line}", true)
+      local valid, err =
+        validation.validate_format_string("{copied_text}\n# {filepath}:{line}", true)
       assert.is_true(valid)
       assert.is_nil(err)
     end)

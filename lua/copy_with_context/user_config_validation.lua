@@ -78,9 +78,9 @@ end
 
 -- Validate format string has valid variables
 -- @param format_string string Format string to validate
--- @param is_output_format boolean Whether this is an output_format
+-- @param _is_output_format boolean Whether this is an output_format (reserved for future use)
 -- @return boolean, string|nil Success status and error message
-function M.validate_format_string(format_string, is_output_format)
+function M.validate_format_string(format_string, _is_output_format)
   if not format_string then
     return false, "Format string cannot be nil"
   end
@@ -98,7 +98,7 @@ function M.validate_format_string(format_string, is_output_format)
     if not valid_vars[var] then
       return false,
         string.format(
-          "Unknown variable '{%s}' in format string. Valid variables: filepath, line, linenumber, remote_url, copied_text",
+          "Unknown variable '{%s}'. Valid: filepath, line, linenumber, remote_url, copied_text",
           var
         )
     end

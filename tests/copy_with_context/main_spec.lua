@@ -200,7 +200,9 @@ describe("Main Module", function()
     main.copy_with_context("markdown", false)
 
     -- Should use the output_format
-    assert.stub(formatter.format).was_called_with("```\n{copied_text}\n```\n\n*{filepath}:{line}*", match._)
+    assert
+      .stub(formatter.format)
+      .was_called_with("```\n{copied_text}\n```\n\n*{filepath}:{line}*", match._)
 
     -- Cleanup
     config.options.mappings.markdown = nil
