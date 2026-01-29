@@ -133,56 +133,66 @@ describe("User Config Validation", function()
 
   describe("validate_format_string", function()
     it("accepts valid format with filepath", function()
-      local valid, err = validation.validate_format_string("# {filepath}")
+      local valid, err = validation.validate_format_string("# {filepath}", false)
       assert.is_true(valid)
       assert.is_nil(err)
     end)
 
     it("accepts valid format with line", function()
-      local valid, err = validation.validate_format_string("# {line}")
+      local valid, err = validation.validate_format_string("# {line}", false)
       assert.is_true(valid)
       assert.is_nil(err)
     end)
 
     it("accepts valid format with linenumber", function()
-      local valid, err = validation.validate_format_string("# {linenumber}")
+      local valid, err = validation.validate_format_string("# {linenumber}", false)
       assert.is_true(valid)
       assert.is_nil(err)
     end)
 
     it("accepts valid format with remote_url", function()
-      local valid, err = validation.validate_format_string("# {remote_url}")
+      local valid, err = validation.validate_format_string("# {remote_url}", false)
       assert.is_true(valid)
       assert.is_nil(err)
     end)
 
+    it("rejects copied_text in regular formats", function()
+      local valid, err = validation.validate_format_string("{copied_text}\n# {filepath}", false)
+      assert.is_false(valid)
+      assert.is_not_nil(err)
+      assert.matches("copied_text", err)
+      assert.matches("output_formats", err)
+    end)
+
     it("accepts valid format with multiple variables", function()
-      local valid, err = validation.validate_format_string("# {filepath}:{line} - {remote_url}")
+      local valid, err =
+        validation.validate_format_string("# {filepath}:{line} - {remote_url}", false)
       assert.is_true(valid)
       assert.is_nil(err)
     end)
 
     it("accepts format with no variables", function()
-      local valid, err = validation.validate_format_string("# No variables here")
+      local valid, err = validation.validate_format_string("# No variables here", false)
       assert.is_true(valid)
       assert.is_nil(err)
     end)
 
     it("rejects nil format string", function()
-      local valid, err = validation.validate_format_string(nil)
+      local valid, err = validation.validate_format_string(nil, false)
       assert.is_false(valid)
       assert.is_not_nil(err)
     end)
 
     it("rejects unknown variable", function()
-      local valid, err = validation.validate_format_string("# {invalid_var}")
+      local valid, err = validation.validate_format_string("# {invalid_var}", false)
       assert.is_false(valid)
       assert.is_not_nil(err)
       assert.matches("invalid_var", err)
     end)
 
     it("rejects format with multiple unknown variables", function()
-      local valid, err = validation.validate_format_string("# {filepath} {unknown1} {unknown2}")
+      local valid, err =
+        validation.validate_format_string("# {filepath} {unknown1} {unknown2}", false)
       assert.is_false(valid)
       assert.is_not_nil(err)
       -- Should error on first unknown variable
@@ -190,9 +200,81 @@ describe("User Config Validation", function()
     end)
 
     it("accepts repeated valid variables", function()
-      local valid, err = validation.validate_format_string("# {filepath} - {filepath}")
+      local valid, err = validation.validate_format_string("# {filepath} - {filepath}", false)
       assert.is_true(valid)
       assert.is_nil(err)
+    end)
+
+    -- output_format specific tests
+    it("accepts output_format with copied_text", function()
+      local valid, err =
+        validation.validate_format_string("{copied_text}\n# {filepath}:{line}", true)
+      assert.is_true(valid)
+      assert.is_nil(err)
+    end)
+
+    it("rejects output_format without copied_text", function()
+      local valid, err =
+        validation.validate_format_string("```lua\n```\n\n# {filepath}:{line}", true)
+      assert.is_false(valid)
+      assert.is_not_nil(err)
+      assert.matches("copied_text", err)
+      assert.matches("output_formats", err)
+    end)
+  end)
+
+  describe("validate with output_formats", function()
+    it("accepts config with output_formats instead of formats", function()
+      local config = {
+        mappings = {
+          relative = "<leader>cy",
+        },
+        output_formats = {
+          default = "{copied_text}\n# {filepath}:{line}",
+        },
+      }
+
+      local valid, err = validation.validate(config)
+      assert.is_true(valid)
+      assert.is_nil(err)
+    end)
+
+    it("accepts config with both formats and output_formats", function()
+      local config = {
+        mappings = {
+          relative = "<leader>cy",
+          custom = "<leader>cc",
+        },
+        formats = {
+          default = "# {filepath}:{line}",
+        },
+        output_formats = {
+          custom = "{copied_text}\n\n# {remote_url}",
+        },
+      }
+
+      local valid, err = validation.validate(config)
+      assert.is_true(valid)
+      assert.is_nil(err)
+    end)
+
+    it("rejects orphan output_format without mapping", function()
+      local config = {
+        mappings = {
+          relative = "<leader>cy",
+        },
+        formats = {
+          default = "# {filepath}:{line}",
+        },
+        output_formats = {
+          orphan = "{copied_text}\n# {filepath}",
+        },
+      }
+
+      local valid, err = validation.validate(config)
+      assert.is_false(valid)
+      assert.is_not_nil(err)
+      assert.matches("orphan", err)
     end)
   end)
 end)

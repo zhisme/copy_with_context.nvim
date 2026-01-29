@@ -218,6 +218,7 @@ You can use the following variables in format strings:
 - `{line}` - Line number or range (e.g., "42" or "10-20")
 - `{linenumber}` - Alias for `{line}`
 - `{remote_url}` - Repository URL (GitHub, GitLab, Bitbucket)
+- `{copied_text}` - The selected text (used with `output_formats`)
 
 ### Custom Mappings and Formats
 
@@ -242,6 +243,48 @@ require('copy_with_context').setup({
 **Important**: Every mapping name must have a matching format name. The special mappings `relative` and `absolute` use the `default` format.
 
 In case it fails to find the format for a mapping, it will fail during config load time with an error message. Check your config if that happens, whether everything specified in mappings is also present in formats.
+
+### Full Output Control with `output_formats`
+
+For complete control over the output structure, use `output_formats` instead of `formats`. The `output_formats` option allows you to place the code content anywhere in your output using the `{copied_text}` variable.
+
+```lua
+require('copy_with_context').setup({
+  mappings = {
+    relative = '<leader>cy',
+    markdown = '<leader>cm',
+  },
+  output_formats = {
+    default = "{copied_text}\n\n# {filepath}:{line}",  -- Code first, then context
+    markdown = "```lua\n{copied_text}\n```\n\n*{filepath}:{line}*",  -- Wrap in markdown code block
+  },
+})
+```
+
+**Key differences:**
+- `formats`: The copied text is automatically prepended with a newline. Format string only controls the context line.
+- `output_formats`: You control the entire output. Typically includes `{copied_text}` token, but it's optional (omit it if you only want to copy metadata without the copied content).
+
+When both `formats` and `output_formats` define the same format name, `output_formats` takes precedence.
+
+Example with mixed configuration:
+```lua
+require('copy_with_context').setup({
+  mappings = {
+    relative = '<leader>cy',
+    markdown = '<leader>cm',
+    verbose = '<leader>cl',
+  },
+  formats = {
+    default = '# {filepath}:{line}',  -- {copied_text} is auto-prepended
+    verbose = '(from {filepath}:{line})', -- will be ignored because the format of the same name in output_formats takes precedence
+  },
+  output_formats = {
+    markdown = "```{copied_text}```\n\n{remote_url}",  -- {copied_text} token must be specified or it will not be included
+    verbose = 'This glorious example:\n\n```{copied_text}```\n\n(from {filepath}:{line})', -- This is the format used because output_formats take precedence over formats of the same name
+  },
+})
+```
 
 ### Repository URL Support
 

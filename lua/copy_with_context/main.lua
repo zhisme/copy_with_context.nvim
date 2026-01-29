@@ -22,26 +22,39 @@ function M.copy_with_context(mapping_name, is_visual)
     file_path = utils.get_file_path(false)
   end
 
-  -- Get remote URL if needed (check if format uses {remote_url})
+  -- Determine format name (relative/absolute use "default")
   local format_name = mapping_name
   if mapping_name == "relative" or mapping_name == "absolute" then
     format_name = "default"
   end
 
-  local format_string = config.options.formats[format_name]
-  local remote_url = nil
+  -- Get format string (output_formats takes precedence over formats)
+  local output_format = config.options.output_formats and config.options.output_formats[format_name]
+  local format = config.options.formats and config.options.formats[format_name]
+  local format_string = output_format or format
 
-  -- Only fetch remote URL if format string uses it
+  -- Get remote URL if needed (check if format uses {remote_url})
+  local remote_url = nil
   if format_string and format_string:match("{remote_url}") then
     remote_url = url_builder.build_url(file_path, start_lnum, end_lnum)
   end
 
-  -- Build variables and format output
-  local vars = formatter.get_variables(file_path, start_lnum, end_lnum, remote_url)
-  local context = formatter.format(format_string, vars)
+  -- Build variables (include code for full output control)
+  local vars = formatter.get_variables(file_path, start_lnum, end_lnum, remote_url, content)
 
-  -- Combine content and context
-  local output = content .. "\n" .. context
+  -- Generate output based on format type
+  local output
+  if output_format then
+    -- New full output format - formatter controls entire output
+    output = formatter.format(output_format, vars)
+  elseif format then
+    -- format - auto-prepend code with newline
+    local context = formatter.format(format, vars)
+    output = content .. "\n" .. context
+  else
+    -- Fallback if no format found
+    output = content
+  end
 
   utils.copy_to_clipboard(output)
 
@@ -52,15 +65,22 @@ function M.copy_with_context(mapping_name, is_visual)
   )
 end
 
+-- Generate description for a mapping
+local function get_mapping_desc(mapping_name)
+  return string.format("Copy with context (%s)", mapping_name)
+end
+
 function M.setup()
   local config = require("copy_with_context.config")
 
   -- Set up keymaps for all defined mappings
   for mapping_name, keymap in pairs(config.options.mappings) do
+    local desc = get_mapping_desc(mapping_name)
+
     -- Normal mode mapping
     vim.keymap.set("n", keymap, function()
       M.copy_with_context(mapping_name, false)
-    end, { silent = false })
+    end, { silent = false, desc = desc })
 
     -- Visual mode mapping
     vim.keymap.set(
@@ -70,7 +90,7 @@ function M.setup()
         ':<C-u>lua require("copy_with_context.main").copy_with_context("%s", true)<CR>',
         mapping_name
       ),
-      { silent = true }
+      { silent = true, desc = desc }
     )
   end
 end
