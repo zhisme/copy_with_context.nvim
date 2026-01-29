@@ -87,7 +87,7 @@ NEW_VERSION="3.0.0"
 OLD_VERSION=$(ls copy_with_context-*.rockspec | head -1 | sed 's/copy_with_context-\(.*\)\.rockspec/\1/')
 
 # Copy the current rockspec
-cp copy_with_context-${OLD_VERSION}.rockspec copy_with_context-${NEW_VERSION}.rockspec
+cp copy_with_context-${OLD_VERSION}.rockspec copy_with_context-${NEW_VERSION}-1.rockspec
 ```
 
 Edit `copy_with_context-${NEW_VERSION}.rockspec`:
