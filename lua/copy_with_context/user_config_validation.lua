@@ -78,9 +78,9 @@ end
 
 -- Validate format string has valid variables
 -- @param format_string string Format string to validate
--- @param _is_output_format boolean Whether this is an output_format (reserved for future use)
+-- @param is_output_format boolean Whether this is an output_format (requires {copied_text})
 -- @return boolean, string|nil Success status and error message
-function M.validate_format_string(format_string, _is_output_format)
+function M.validate_format_string(format_string, is_output_format)
   if not format_string then
     return false, "Format string cannot be nil"
   end
@@ -102,6 +102,18 @@ function M.validate_format_string(format_string, _is_output_format)
           var
         )
     end
+  end
+
+  local has_copied_text = format_string:match("{copied_text}") ~= nil
+
+  -- output_formats MUST contain {copied_text}
+  if is_output_format and not has_copied_text then
+    return false, "output_formats must contain '{copied_text}' to include the copied code"
+  end
+
+  -- regular formats must NOT contain {copied_text} (it's auto-prepended)
+  if not is_output_format and has_copied_text then
+    return false, "'{copied_text}' can only be used in 'output_formats', not 'formats'"
   end
 
   return true, nil

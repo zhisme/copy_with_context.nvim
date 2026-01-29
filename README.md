@@ -218,7 +218,7 @@ You can use the following variables in format strings:
 - `{line}` - Line number or range (e.g., "42" or "10-20")
 - `{linenumber}` - Alias for `{line}`
 - `{remote_url}` - Repository URL (GitHub, GitLab, Bitbucket)
-- `{copied_text}` - The selected text (used with `output_formats`)READ
+- `{copied_text}` - The selected text (used with `output_formats`)
 
 ### Custom Mappings and Formats
 
