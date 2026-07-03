@@ -16,11 +16,19 @@ function M.get_variables(file_path, line_start, line_end, remote_url, copied_tex
   else
     line_range = tostring(line_start)
   end
+  -- GitHub-style line fragment: L5 or L5-L8
+  local github_line
+  if line_end and line_end ~= line_start then
+    github_line = string.format("L%d-L%d", line_start, line_end)
+  else
+    github_line = "L" .. tostring(line_start)
+  end
 
   return {
     filepath = file_path,
     line = line_range,
     linenumber = line_range, -- alias for 'line'
+    github_line = github_line,
     remote_url = remote_url or "",
     copied_text = copied_text or "",
   }

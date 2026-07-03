@@ -7,14 +7,17 @@ M.options = {
   mappings = {
     relative = "<leader>cy",
     absolute = "<leader>cY",
+    ghpath = "<leader>cp",
   },
   -- Formats: copied_text is automatically prepended with a newline
   formats = {
     default = "# {filepath}:{line}",
   },
   -- Full output formats: use {copied_text} token for complete control over output
-  -- Example: output_formats = { default = "{copied_text}\n\n# {filepath}:{line}" }
-  output_formats = {},
+  -- ghpath: absolute path + GitHub-style line fragment (L5 / L5-L8) on top, content below
+  output_formats = {
+    ghpath = "{filepath}#{github_line}\n{copied_text}",
+  },
   trim_lines = false,
 }
 

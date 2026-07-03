@@ -15,7 +15,7 @@ function M.copy_with_context(mapping_name, is_visual)
   local file_path
   if mapping_name == "relative" then
     file_path = utils.get_file_path(false)
-  elseif mapping_name == "absolute" then
+  elseif mapping_name == "absolute" or mapping_name == "ghpath" then
     file_path = utils.get_file_path(true)
   else
     -- For custom mappings, default to relative path

@@ -189,6 +189,34 @@ Output example:
 
 
 
+### GitHub Path Format (ghpath)
+
+7. Copy current line with absolute path and GitHub line fragment:
+   - Press `<leader>cp` in normal mode.
+   - Plugin copies line under cursor with absolute path + GitHub-style `#L{line}` on top.
+   - Paste somewhere
+
+Output example:
+```
+    /Users/zh/dev/project_name/app/views/widgets/show.html.erb#L4
+    <% posts.each do |post| %>
+```
+
+8. Copy visual selection with absolute path and GitHub line range:
+   - Select lines in visual mode.
+   - Press `<leader>cp`.
+   - Plugin copies the selected lines with absolute path + GitHub-style `#L{start}-L{end}` on top.
+
+Output example:
+```
+    /Users/zh/dev/project_name/app/views/widgets/show.html.erb#L4-L6
+    <% posts.each do |post| %>
+        <%= post.title %>
+    <% end %>
+```
+
+This format is useful for sharing code in GitHub issues, PRs, or AI assistants where the path + line number gives precise context.
+
 ## Configuration
 
 There is no need to call setup if you are ok with the defaults.
@@ -200,10 +228,17 @@ require('copy_with_context').setup({
     mappings = {
       relative = '<leader>cy',
       absolute = '<leader>cY',
+      remote = '<leader>cr',
+      ghpath = '<leader>cp',
     },
     -- Define format strings for each mapping
     formats = {
       default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
+      remote = '# {remote_url}',
+    },
+    -- Full output formats: use {copied_text} token for complete control over output
+    output_formats = {
+      ghpath = '{filepath}#{github_line}\n{copied_text}',
     },
     -- whether to trim lines or not
     trim_lines = false,
@@ -217,6 +252,7 @@ You can use the following variables in format strings:
 - `{filepath}` - The file path (relative or absolute depending on mapping)
 - `{line}` - Line number or range (e.g., "42" or "10-20")
 - `{linenumber}` - Alias for `{line}`
+- `{github_line}` - GitHub-style line fragment (e.g., "L42" or "L10-L20")
 - `{remote_url}` - Repository URL (GitHub, GitLab, Bitbucket)
 - `{copied_text}` - The selected text (used with `output_formats`)
 

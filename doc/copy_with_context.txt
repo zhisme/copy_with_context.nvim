@@ -1,7 +1,7 @@
 *copy_with_context.txt* Copy lines with file context
 
 Author: Evgeny Zhdanov
-Version: 1.0
+Version: 2.0
 
 ==============================================================================
 CONTENTS                                 *copy_with_context-contents*
@@ -9,7 +9,8 @@ CONTENTS                                 *copy_with_context-contents*
 1. Overview .......................... |copy_with_context-overview|
 2. Mappings .......................... |copy_with_context-mappings|
 3. Configuration ..................... |copy_with_context-configuration|
-4. Examples .......................... |copy_with_context-examples|
+4. Format Variables ................. |copy_with_context-format-variables|
+5. Examples .......................... |copy_with_context-examples|
 
 ==============================================================================
 1. OVERVIEW                                   *copy_with_context-overview*
@@ -24,6 +25,8 @@ By default, the following mappings are provided:
 
 <leader>cy  - Copy with relative path (normal/visual mode)
 <leader>cY  - Copy with absolute path (normal/visual mode)
+<leader>cr  - Copy with remote repository URL (normal/visual mode)
+<leader>cp  - Copy with absolute path + GitHub line fragment (normal/visual mode)
 
 ==============================================================================
 3. CONFIGURATION                        *copy_with_context-configuration*
@@ -32,26 +35,40 @@ There is no need to call setup if you are ok with the defaults.
 
 >
   require('copy_with_context').setup({
-    -- Customize mappings
     mappings = {
       relative = '<leader>cy',
-      absolute = '<leader>cY'
+      absolute = '<leader>cY',
+      remote   = '<leader>cr',
+      ghpath   = '<leader>cp',
     },
-    -- whether to trim lines or not
+    formats = {
+      default = '# {filepath}:{line}',
+      remote  = '# {remote_url}',
+    },
+    output_formats = {
+      ghpath = '{filepath}#{github_line}\n{copied_text}',
+    },
     trim_lines = false,
-    context_format = '# %s:%s',  -- format for context: "# filepath:line", example: "# /path/to/file:123"
-    -- context_format = '# Source file: %s:%s',
-    -- Other format for context: "# Source file: /path/to/file:123"
   })
 <
 
 ==============================================================================
-4. EXAMPLES                                   *copy_with_context-examples*
+4. FORMAT VARIABLES                   *copy_with_context-format-variables*
+
+You can use the following variables in format strings:
+
+{filepath}      - The file path (relative or absolute depending on mapping)
+{line}          - Line number or range (e.g., "42" or "10-20")
+{linenumber}    - Alias for {line}
+{github_line}   - GitHub-style line fragment (e.g., "L42" or "L10-L20")
+{remote_url}    - Repository URL (GitHub, GitLab, Bitbucket)
+{copied_text}   - The selected text (used with output_formats)
+
+==============================================================================
+5. EXAMPLES                                 *copy_with_context-examples*
 
 1. Copy current line with relative path:
    - Press `<leader>cy` in normal mode.
-   - Plugin copies line under cursor with relative path into your unnamed register.
-   - Paste somewhere
 
 Output example:
 >
@@ -61,8 +78,6 @@ Output example:
 
 2. Copy current line with absolute path:
    - Press `<leader>cY` in normal mode.
-   - Plugin copies line under cursor with absolute path into your unnamed register.
-   - Paste somewhere
 
 Output example:
 >
@@ -70,27 +85,23 @@ Output example:
   # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4
 <
 
-3. Copy visual selection with relative path:
-   - Select lines in visual mode.
-   - Press `<leader>cY`.
-   - Plugin copies the selected lines with relative path into your unnamed register.
-   - Paste somewhere
+3. Copy with GitHub line fragment (ghpath):
+   - Press `<leader>cp` in normal mode.
 
 Output example:
 >
+  /Users/zh/dev/project_name/app/views/widgets/show.html.erb#L4
   <% posts.each do |post| %>
-  # app/views/widgets/show.html.erb:4-6
 <
 
-4. Copy visual selection with absolute path:
+4. Visual selection with GitHub line range:
    - Select lines in visual mode.
-   - Press `<leader>cY`.
-   - Plugin copies the selected lines with absolute path into your unnamed register.
-   - Paste somewhere
+   - Press `<leader>cp`.
 
+Output example:
 >
+  /Users/zh/dev/project_name/app/views/widgets/show.html.erb#L4-L6
   <% posts.each do |post| %>
-    <%= post.title %>
+      <%= post.title %>
   <% end %>
-  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4-6
 <
