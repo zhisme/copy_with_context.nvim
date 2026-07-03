@@ -9,6 +9,7 @@ describe("Formatter", function()
         filepath = "/path/to/file.lua",
         line = "42",
         linenumber = "42",
+        github_line = "L42",
         remote_url = "",
         copied_text = "",
       }, vars)
@@ -21,6 +22,7 @@ describe("Formatter", function()
         filepath = "/path/to/file.lua",
         line = "10-20",
         linenumber = "10-20",
+        github_line = "L10-L20",
         remote_url = "",
         copied_text = "",
       }, vars)
@@ -39,6 +41,7 @@ describe("Formatter", function()
         filepath = "/path/to/file.lua",
         line = "5",
         linenumber = "5",
+        github_line = "L5",
         remote_url = "https://github.com/user/repo/blob/abc123/file.lua#L5",
         copied_text = "",
       }, vars)
@@ -51,6 +54,7 @@ describe("Formatter", function()
         filepath = "/path/to/file.lua",
         line = "7",
         linenumber = "7",
+        github_line = "L7",
         remote_url = "",
         copied_text = "",
       }, vars)
@@ -69,6 +73,7 @@ describe("Formatter", function()
         filepath = "/path/to/file.lua",
         line = "10-12",
         linenumber = "10-12",
+        github_line = "L10-L12",
         remote_url = "",
         copied_text = "function hello()\n  print('hello')\nend",
       }, vars)
