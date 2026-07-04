@@ -245,4 +245,26 @@ describe("Main Module", function()
     -- Cleanup
     config.options.output_formats = nil
   end)
+
+  it("fetches line fragment when output_format uses {line_fragment}", function()
+    -- Set up ghpath mapping in config
+    config.options.mappings.ghpath = "<leader>cp"
+    config.options.output_formats = {
+      ghpath = "{filepath}#{line_fragment}\n{copied_text}",
+    }
+
+    url_builder.build_url:revert()
+    stub(url_builder, "build_url").returns(nil)
+    stub(url_builder, "get_line_fragment").returns("L1-L2")
+
+    main.copy_with_context("ghpath", false)
+
+    -- Should call get_line_fragment because output_format uses {line_fragment}
+    assert.stub(url_builder.get_line_fragment).was_called()
+
+    -- Cleanup
+    config.options.mappings.ghpath = nil
+    config.options.output_formats = nil
+    url_builder.get_line_fragment:revert()
+  end)
 end)
