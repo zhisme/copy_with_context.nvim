@@ -26,7 +26,7 @@ By default, the following mappings are provided:
 <leader>cy  - Copy with relative path (normal/visual mode)
 <leader>cY  - Copy with absolute path (normal/visual mode)
 <leader>cr  - Copy with remote repository URL (normal/visual mode)
-<leader>cp  - Copy with absolute path + GitHub line fragment (normal/visual mode)
+<leader>cp  - Copy with absolute path + line fragment (normal/visual mode)
 
 ==============================================================================
 3. CONFIGURATION                        *copy_with_context-configuration*
@@ -46,7 +46,7 @@ There is no need to call setup if you are ok with the defaults.
       remote  = '# {remote_url}',
     },
     output_formats = {
-      ghpath = '{filepath}#{github_line}\n{copied_text}',
+      ghpath = '{filepath}#{line_fragment}\n{copied_text}',
     },
     trim_lines = false,
   })
@@ -60,7 +60,7 @@ You can use the following variables in format strings:
 {filepath}      - The file path (relative or absolute depending on mapping)
 {line}          - Line number or range (e.g., "42" or "10-20")
 {linenumber}    - Alias for {line}
-{github_line}   - GitHub-style line fragment (e.g., "L42" or "L10-L20")
+{line_fragment}  - Provider-specific line fragment (e.g., "L42" or "L10-L20")
 {remote_url}    - Repository URL (GitHub, GitLab, Bitbucket)
 {copied_text}   - The selected text (used with output_formats)
 
@@ -85,7 +85,7 @@ Output example:
   # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4
 <
 
-3. Copy with GitHub line fragment (ghpath):
+3. Copy with line fragment (ghpath):
    - Press `<leader>cp` in normal mode.
 
 Output example:
@@ -94,7 +94,7 @@ Output example:
   <% posts.each do |post| %>
 <
 
-4. Visual selection with GitHub line range:
+4. Visual selection with line range:
    - Select lines in visual mode.
    - Press `<leader>cp`.
 

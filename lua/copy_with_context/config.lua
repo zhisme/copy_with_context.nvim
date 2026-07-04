@@ -14,9 +14,9 @@ M.options = {
     default = "# {filepath}:{line}",
   },
   -- Full output formats: use {copied_text} token for complete control over output
-  -- ghpath: absolute path + GitHub-style line fragment (L5 / L5-L8) on top, content below
+  -- ghpath: absolute path + provider-specific line fragment (L5 / L5-L8, L5-8, etc.)
   output_formats = {
-    ghpath = "{filepath}#{github_line}\n{copied_text}",
+    ghpath = "{filepath}#{line_fragment}\n{copied_text}",
   },
   trim_lines = false,
 }

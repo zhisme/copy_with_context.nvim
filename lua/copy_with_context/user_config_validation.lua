@@ -89,7 +89,7 @@ function M.validate_format_string(format_string, is_output_format)
     filepath = true,
     line = true,
     linenumber = true,
-    github_line = true,
+    line_fragment = true,
     remote_url = true,
     copied_text = true,
   }
@@ -99,7 +99,7 @@ function M.validate_format_string(format_string, is_output_format)
     if not valid_vars[var] then
       return false,
         string.format(
-          "Unknown variable '{%s}'. Valid: filepath, line, linenumber, github_line, remote_url, copied_text",
+          "Unknown variable '{%s}'. Valid: filepath, line, linenumber, line_fragment, remote_url, copied_text",
           var
         )
     end
