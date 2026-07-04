@@ -46,7 +46,8 @@ function M.copy_with_context(mapping_name, is_visual)
   end
 
   -- Build variables (include code for full output control)
-  local vars = formatter.get_variables(file_path, start_lnum, end_lnum, remote_url, content, line_fragment)
+  local vars =
+    formatter.get_variables(file_path, start_lnum, end_lnum, remote_url, content, line_fragment)
 
   -- Generate output based on format type
   local output
