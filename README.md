@@ -231,18 +231,13 @@ require('copy_with_context').setup({
     mappings = {
       relative = '<leader>cy',
       absolute = '<leader>cY',
-      remote = '<leader>cr',
-      pathmap = '<leader>cp',
     },
     -- Define format strings for each mapping
     formats = {
       default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
-      remote = '# {remote_url}',
     },
     -- Full output formats: use {copied_text} token for complete control over output
-    output_formats = {
-      pathmap = '{filepath}#{line_fragment}\n{copied_text}',
-    },
+    output_formats = {},
     -- whether to trim lines or not
     trim_lines = false,
 })
@@ -255,7 +250,7 @@ You can use the following variables in format strings:
 - `{filepath}` - The file path (relative or absolute depending on mapping)
 - `{line}` - Line number or range (e.g., "42" or "10-20")
 - `{linenumber}` - Alias for `{line}`
-- `{line_fragment}` - Provider-specific line fragment (e.g., "L42" or "L10-L20")
+- `{line_url_fragment}` - Provider-specific line fragment (e.g., "L42" or "L10-L20")
 - `{remote_url}` - Repository URL (GitHub, GitLab, Bitbucket)
 - `{copied_text}` - The selected text (used with `output_formats`)
 

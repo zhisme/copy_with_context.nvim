@@ -246,11 +246,11 @@ describe("Main Module", function()
     config.options.output_formats = nil
   end)
 
-  it("fetches line fragment when output_format uses {line_fragment}", function()
+  it("fetches line fragment when output_format uses {line_url_fragment}", function()
     -- Set up pathmap mapping in config
     config.options.mappings.pathmap = "<leader>cp"
     config.options.output_formats = {
-      pathmap = "{filepath}#{line_fragment}\n{copied_text}",
+      pathmap = "{filepath}#{line_url_fragment}\n{copied_text}",
     }
 
     url_builder.build_url:revert()
@@ -259,7 +259,7 @@ describe("Main Module", function()
 
     main.copy_with_context("pathmap", false)
 
-    -- Should call get_line_fragment because output_format uses {line_fragment}
+    -- Should call get_line_fragment because output_format uses {line_url_fragment}
     assert.stub(url_builder.get_line_fragment).was_called()
 
     -- Cleanup

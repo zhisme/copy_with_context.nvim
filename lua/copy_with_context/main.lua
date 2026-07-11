@@ -39,9 +39,9 @@ function M.copy_with_context(mapping_name, is_visual)
     remote_url = url_builder.build_url(file_path, start_lnum, end_lnum)
   end
 
-  -- Get provider-specific line fragment if needed (check if format uses {line_fragment})
+  -- Get provider-specific line fragment if needed (check if format uses {line_url_fragment})
   local line_fragment = nil
-  if format_string and format_string:match("{line_fragment}") then
+  if format_string and format_string:match("{line_url_fragment}") then
     line_fragment = url_builder.get_line_fragment(file_path, start_lnum, end_lnum)
   end
 

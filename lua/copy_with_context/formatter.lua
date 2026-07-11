@@ -31,7 +31,7 @@ function M.get_variables(file_path, line_start, line_end, remote_url, copied_tex
     filepath = file_path,
     line = line_range,
     linenumber = line_range, -- alias for 'line'
-    line_fragment = line_fragment,
+    line_url_fragment = line_fragment,
     remote_url = remote_url or "",
     copied_text = copied_text or "",
   }

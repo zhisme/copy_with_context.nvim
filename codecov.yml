@@ -1,3 +1,7 @@
+# Relax patch coverage checks to avoid CI noise on small PRs.
+# target: auto — infers the base coverage level from the project.
+# threshold: 1% — allows a 1% drop before failing (avoids blocking
+#   PRs where a few uncovered lines are acceptable).
 coverage:
   status:
     patch:

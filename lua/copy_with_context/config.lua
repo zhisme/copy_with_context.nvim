@@ -7,17 +7,13 @@ M.options = {
   mappings = {
     relative = "<leader>cy",
     absolute = "<leader>cY",
-    pathmap = "<leader>cp",
   },
   -- Formats: copied_text is automatically prepended with a newline
   formats = {
     default = "# {filepath}:{line}",
   },
   -- Full output formats: use {copied_text} token for complete control over output
-  -- pathmap: absolute path + provider-specific line fragment (L5 / L5-L8, L5-8, etc.)
-  output_formats = {
-    pathmap = "{filepath}#{line_fragment}\n{copied_text}",
-  },
+  output_formats = {},
   trim_lines = false,
 }
 
