@@ -189,7 +189,7 @@ Output example:
 
 
 
-### GitHub Path Format (ghpath)
+### Absolute Path with Line Fragment (pathmap)
 
 7. Copy current line with absolute path and line fragment:
    - Press `<leader>cp` in normal mode.
@@ -232,7 +232,7 @@ require('copy_with_context').setup({
       relative = '<leader>cy',
       absolute = '<leader>cY',
       remote = '<leader>cr',
-      ghpath = '<leader>cp',
+      pathmap = '<leader>cp',
     },
     -- Define format strings for each mapping
     formats = {
@@ -241,7 +241,7 @@ require('copy_with_context').setup({
     },
     -- Full output formats: use {copied_text} token for complete control over output
     output_formats = {
-      ghpath = '{filepath}#{line_fragment}\n{copied_text}',
+      pathmap = '{filepath}#{line_fragment}\n{copied_text}',
     },
     -- whether to trim lines or not
     trim_lines = false,

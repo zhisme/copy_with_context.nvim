@@ -75,4 +75,18 @@ describe("Bitbucket provider", function()
       )
     end)
   end)
+
+  describe("line_fragment", function()
+    it("returns lines-{line} for single line", function()
+      assert.equals("lines-42", bitbucket.line_fragment(42, 42))
+    end)
+
+    it("returns lines-{start}:{end} for line range", function()
+      assert.equals("lines-10:20", bitbucket.line_fragment(10, 20))
+    end)
+
+    it("returns lines-{start} when start equals end", function()
+      assert.equals("lines-5", bitbucket.line_fragment(5, 5))
+    end)
+  end)
 end)

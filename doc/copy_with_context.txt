@@ -39,14 +39,14 @@ There is no need to call setup if you are ok with the defaults.
       relative = '<leader>cy',
       absolute = '<leader>cY',
       remote   = '<leader>cr',
-      ghpath   = '<leader>cp',
+      pathmap   = '<leader>cp',
     },
     formats = {
       default = '# {filepath}:{line}',
       remote  = '# {remote_url}',
     },
     output_formats = {
-      ghpath = '{filepath}#{line_fragment}\n{copied_text}',
+      pathmap = '{filepath}#{line_fragment}\n{copied_text}',
     },
     trim_lines = false,
   })
@@ -69,6 +69,8 @@ You can use the following variables in format strings:
 
 1. Copy current line with relative path:
    - Press `<leader>cy` in normal mode.
+   - Plugin copies line under cursor with relative path into your unnamed register.
+   - Paste somewhere
 
 Output example:
 >
@@ -78,6 +80,8 @@ Output example:
 
 2. Copy current line with absolute path:
    - Press `<leader>cY` in normal mode.
+   - Plugin copies line under cursor with absolute path into your unnamed register.
+   - Paste somewhere
 
 Output example:
 >
@@ -85,8 +89,10 @@ Output example:
   # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4
 <
 
-3. Copy with line fragment (ghpath):
+3. Copy with line fragment (pathmap):
    - Press `<leader>cp` in normal mode.
+   - Plugin copies line under cursor with absolute path + auto-detected `#L{line}` fragment on top.
+   - Paste somewhere
 
 Output example:
 >
@@ -97,6 +103,8 @@ Output example:
 4. Visual selection with line range:
    - Select lines in visual mode.
    - Press `<leader>cp`.
+   - Plugin copies the selected lines with absolute path + auto-detected line range fragment on top.
+   - Paste somewhere
 
 Output example:
 >
