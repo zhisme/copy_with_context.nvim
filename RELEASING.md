@@ -19,7 +19,7 @@ Before starting the release process, ensure:
 - [ ] No linting errors: `make lint`
 - [ ] Code is formatted: `make fmt-check`
 - [ ] All CI/CD checks are passing on the main branch
-- [ ] Documentation is up to date (README.md)
+- [ ] Documentation is up to date (README.md) and vimdoc (doc/copy_with_context.txt)
 - [ ] All planned features/fixes for the release are merged
 
 ### 2. Determine Version Number
