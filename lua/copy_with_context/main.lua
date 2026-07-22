@@ -79,6 +79,15 @@ end
 
 function M.setup()
   local config = require("copy_with_context.config")
+  local git = require("copy_with_context.git")
+
+  -- Clear git info cache when working directory changes
+  vim.api.nvim_create_autocmd("DirChanged", {
+    group = vim.api.nvim_create_augroup("CopyWithContext", { clear = true }),
+    callback = function()
+      git.invalidate_cache()
+    end,
+  })
 
   -- Set up keymaps for all defined mappings
   for mapping_name, keymap in pairs(config.options.mappings) do
