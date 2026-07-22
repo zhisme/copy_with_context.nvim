@@ -38,6 +38,7 @@ describe("Main Module", function()
     })
     stub(formatter, "format").returns("# /fake/path.lua:1-2")
     stub(url_builder, "build_url").returns(nil)
+    stub(url_builder, "get_line_fragment").returns("L1-L2")
     stub(vim.api, "nvim_echo")
     stub(vim.keymap, "set")
   end)
@@ -51,6 +52,7 @@ describe("Main Module", function()
     formatter.get_variables:revert()
     formatter.format:revert()
     url_builder.build_url:revert()
+    url_builder.get_line_fragment:revert()
     vim.api.nvim_echo:revert()
     vim.keymap.set:revert()
   end)
@@ -246,25 +248,21 @@ describe("Main Module", function()
     config.options.output_formats = nil
   end)
 
-  it("fetches line fragment when output_format uses {line_url_fragment}", function()
-    -- Set up pathmap mapping in config
-    config.options.mappings.pathmap = "<leader>cp"
-    config.options.output_formats = {
-      pathmap = "{filepath}#{line_url_fragment}\n{copied_text}",
-    }
-
+  it("fetches line fragment when default format uses {line_url_fragment}", function()
     url_builder.build_url:revert()
     stub(url_builder, "build_url").returns(nil)
+    url_builder.get_line_fragment:revert()
     stub(url_builder, "get_line_fragment").returns("L1-L2")
 
-    main.copy_with_context("pathmap", false)
+    main.copy_with_context("relative", false)
 
-    -- Should call get_line_fragment because output_format uses {line_url_fragment}
+    -- Should call get_line_fragment because default format uses {line_url_fragment}
     assert.stub(url_builder.get_line_fragment).was_called()
 
     -- Cleanup
-    config.options.mappings.pathmap = nil
-    config.options.output_formats = nil
+    url_builder.build_url:revert()
+    stub(url_builder, "build_url").returns(nil)
     url_builder.get_line_fragment:revert()
+    stub(url_builder, "get_line_fragment").returns("L1-L2")
   end)
 end)

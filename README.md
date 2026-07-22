@@ -75,7 +75,7 @@ use {
           remote = '<leader>cr',
         },
         formats = {
-          default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
+          default = '# {filepath}:{line_url_fragment}',  -- Used by relative and absolute mappings
           remote = '# {remote_url}',  -- Custom format for remote mapping
         },
         -- whether to trim lines or not
@@ -98,7 +98,7 @@ use {
           remote = '<leader>cr',
         },
         formats = {
-          default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
+          default = '# {filepath}:{line_url_fragment}',  -- Used by relative and absolute mappings
           remote = '# {remote_url}',
         },
         -- whether to trim lines or not
@@ -120,7 +120,7 @@ use {
 Output example:
 ```
   <% posts.each do |post| %>
-  # app/views/widgets/show.html.erb:4
+  # app/views/widgets/show.html.erb:L4
 ```
 
 2. Copy current line with absolute path:
@@ -131,12 +131,12 @@ Output example:
 Output example:
 ```
   <% posts.each do |post| %>
-  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4
+  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:L4
 ```
 
 3. Copy visual selection with relative path:
    - Select lines in visual mode.
-   - Press `<leader>cY`.
+   - Press `<leader>cy`.
    - Plugin copies the selected lines with relative path into your unnamed register.
    - Paste somewhere
 
@@ -145,7 +145,7 @@ Output example:
   <% posts.each do |post| %>
     <%= post.title %>
   <% end %>
-  # app/views/widgets/show.html.erb:4-6
+  # app/views/widgets/show.html.erb:L4-L6
 ```
 
 4. Copy visual selection with absolute path:
@@ -159,7 +159,7 @@ Output example:
   <% posts.each do |post| %>
     <%= post.title %>
   <% end %>
-  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4-6
+  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:L4-L6
 ```
 
 ### Remote URL Support
@@ -187,39 +187,6 @@ Output example:
     # https://github.com/user/repo/blob/abc123def/app/views/widgets/show.html.erb#L4-L6
 ```
 
-
-
-### Absolute Path with Line Fragment (pathmap)
-
-7. Copy current line with absolute path and line fragment:
-   - Press `<leader>cp` in normal mode.
-   - Plugin copies line under cursor with absolute path + auto-detected `#L{line}` fragment on top.
-   - Paste somewhere
-
-Output example:
-```
-    /Users/zh/dev/project_name/app/views/widgets/show.html.erb#L4
-    <% posts.each do |post| %>
-```
-
-8. Copy visual selection with absolute path and line range:
-   - Select lines in visual mode.
-   - Press `<leader>cp`.
-   - Plugin copies the selected lines with absolute path + auto-detected line range fragment on top.
-
-Output example:
-```
-    /Users/zh/dev/project_name/app/views/widgets/show.html.erb#L4-L6
-    <% posts.each do |post| %>
-        <%= post.title %>
-    <% end %>
-```
-
-The line fragment adapts to your project's git remote — GitHub (`L5-L8`),
-GitLab (`L5-8`), Bitbucket (`lines-5:8`), with GitHub-style as default
-when no remote is detected. Useful for sharing code in issues, PRs, or
-AI assistants where the path + line number gives precise context.
-
 ## Configuration
 
 There is no need to call setup if you are ok with the defaults.
@@ -234,7 +201,7 @@ require('copy_with_context').setup({
     },
     -- Define format strings for each mapping
     formats = {
-      default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
+      default = '# {filepath}:{line_url_fragment}',  -- Used by relative and absolute mappings
     },
     -- Full output formats: use {copied_text} token for complete control over output
     output_formats = {},
@@ -250,7 +217,7 @@ You can use the following variables in format strings:
 - `{filepath}` - The file path (relative or absolute depending on mapping)
 - `{line}` - Line number or range (e.g., "42" or "10-20")
 - `{linenumber}` - Alias for `{line}`
-- `{line_url_fragment}` - Provider-specific line fragment (e.g., "L42" or "L10-L20")
+- `{line_url_fragment}` - Provider-specific line fragment (e.g., "L42" or "L10-L20"). Adapts to your project's git remote — GitHub (`L5-L8`), GitLab (`L5-8`), Bitbucket (`lines-5:8`), with GitHub-style as default when no remote is detected.
 - `{remote_url}` - Repository URL (GitHub, GitLab, Bitbucket)
 - `{copied_text}` - The selected text (used with `output_formats`)
 
@@ -267,7 +234,7 @@ require('copy_with_context').setup({
     full = '<leader>cx', -- Custom mapping with everything
   },
   formats = {
-    default = '# {filepath}:{line}',
+    default = '# {filepath}:{line_url_fragment}',
     remote = '# {remote_url}',
     full = '# {filepath}:{line}\n# {remote_url}',
   },
@@ -289,8 +256,8 @@ require('copy_with_context').setup({
     markdown = '<leader>cm',
   },
   output_formats = {
-    default = "{copied_text}\n\n# {filepath}:{line}",  -- Code first, then context
-    markdown = "```lua\n{copied_text}\n```\n\n*{filepath}:{line}*",  -- Wrap in markdown code block
+    default = "{copied_text}\n\n# {filepath}:{line_url_fragment}",  -- Code first, then context
+    markdown = "```lua\n{copied_text}\n```\n\n*{filepath}:{line_url_fragment}*",  -- Wrap in markdown code block
   },
 })
 ```
@@ -310,7 +277,7 @@ require('copy_with_context').setup({
     verbose = '<leader>cl',
   },
   formats = {
-    default = '# {filepath}:{line}',  -- {copied_text} is auto-prepended
+    default = '# {filepath}:{line_url_fragment}',  -- {copied_text} is auto-prepended
     verbose = '(from {filepath}:{line})', -- will be ignored because the format of the same name in output_formats takes precedence
   },
   output_formats = {
@@ -393,7 +360,7 @@ use {
               remote = '<leader>cr',
               },
               formats = {
-                default = '# {filepath}:{line}',
+                default = '# {filepath}:{line_url_fragment}',
                 remote = '# {remote_url}',
               },
               -- whether to trim lines or not
@@ -416,7 +383,7 @@ With lazy.nvim:
           remote = '<leader>cr',
       },
       formats = {
-        default = '# {filepath}:{line}',
+        default = '# {filepath}:{line_url_fragment}',
         remote = '# {remote_url}',
       },
       -- whether to trim lines or not

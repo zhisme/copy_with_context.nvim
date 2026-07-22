@@ -10,7 +10,7 @@ M.options = {
   },
   -- Formats: copied_text is automatically prepended with a newline
   formats = {
-    default = "# {filepath}:{line}",
+    default = "# {filepath}:{line_url_fragment}",
   },
   -- Full output formats: use {copied_text} token for complete control over output
   output_formats = {},

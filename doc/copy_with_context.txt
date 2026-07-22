@@ -28,7 +28,6 @@ By default, the following mappings are provided:
 
 Additional optional mappings can be configured (see |copy_with_context-configuration|):
 <leader>cr  - Copy with remote repository URL
-<leader>cp  - Copy with absolute path + line fragment
 
 ==============================================================================
 3. CONFIGURATION                        *copy_with_context-configuration*
@@ -42,7 +41,7 @@ There is no need to call setup if you are ok with the defaults.
       absolute = '<leader>cY',
     },
     formats = {
-      default = '# {filepath}:{line}',
+      default = '# {filepath}:{line_url_fragment}',
     },
     output_formats = {},
     trim_lines = false,
@@ -54,12 +53,15 @@ There is no need to call setup if you are ok with the defaults.
 
 You can use the following variables in format strings:
 
-{filepath}      - The file path (relative or absolute depending on mapping)
-{line}          - Line number or range (e.g., "42" or "10-20")
-{linenumber}    - Alias for {line}
-{line_url_fragment}  - Provider-specific line fragment (e.g., "L42" or "L10-L20")
-{remote_url}    - Repository URL (GitHub, GitLab, Bitbucket)
-{copied_text}   - The selected text (used with output_formats)
+{filepath}              - The file path (relative or absolute depending on mapping)
+{line}                  - Line number or range (e.g., "42" or "10-20")
+{linenumber}            - Alias for {line}
+{line_url_fragment}     - Provider-specific line fragment (e.g., "L42" or "L10-L20").
+                          Adapts to git remote: GitHub (L5-L8), GitLab (L5-8),
+                          Bitbucket (lines-5:8). Falls back to GitHub-style when
+                          no remote is detected.
+{remote_url}            - Repository URL (GitHub, GitLab, Bitbucket)
+{copied_text}           - The selected text (used with output_formats)
 
 ==============================================================================
 5. EXAMPLES                                 *copy_with_context-examples*
@@ -72,7 +74,7 @@ You can use the following variables in format strings:
 Output example:
 >
   <% posts.each do |post| %>
-  # app/views/widgets/show.html.erb:4
+  # app/views/widgets/show.html.erb:L4
 <
 
 2. Copy current line with absolute path:
@@ -83,12 +85,12 @@ Output example:
 Output example:
 >
   <% posts.each do |post| %>
-  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4
+  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:L4
 <
 
 3. Copy visual selection with relative path:
    - Select lines in visual mode.
-   - Press `<leader>cY`.
+   - Press `<leader>cy`.
    - Plugin copies the selected lines with relative path into your unnamed register.
    - Paste somewhere
 
@@ -97,7 +99,7 @@ Output example:
   <% posts.each do |post| %>
     <%= post.title %>
   <% end %>
-  # app/views/widgets/show.html.erb:4-6
+  # app/views/widgets/show.html.erb:L4-L6
 <
 
 4. Copy visual selection with absolute path:
@@ -111,30 +113,5 @@ Output example:
   <% posts.each do |post| %>
     <%= post.title %>
   <% end %>
-  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4-6
-<
-
-5. Copy with line fragment (pathmap):
-   - Press `<leader>cp` in normal mode.
-   - Plugin copies line under cursor with absolute path + auto-detected `#L{line}` fragment on top.
-   - Paste somewhere
-
-Output example:
->
-  /Users/zh/dev/project_name/app/views/widgets/show.html.erb#L4
-  <% posts.each do |post| %>
-<
-
-6. Visual selection with line range:
-   - Select lines in visual mode.
-   - Press `<leader>cp`.
-   - Plugin copies the selected lines with absolute path + auto-detected line range fragment on top.
-   - Paste somewhere
-
-Output example:
->
-  /Users/zh/dev/project_name/app/views/widgets/show.html.erb#L4-L6
-  <% posts.each do |post| %>
-      <%= post.title %>
-  <% end %>
+  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:L4-L6
 <
