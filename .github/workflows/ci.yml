@@ -63,3 +63,19 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: zhisme/copy_with_context.nvim
+
+  startup-time:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Neovim
+        run: sudo apt-get update && sudo apt-get install -y neovim
+      - name: Symlink plugin for startup test
+        run: |
+          mkdir -p ~/.local/share/nvim/site/pack/opts/opt
+          ln -s $(pwd) ~/.local/share/nvim/site/pack/opts/opt/copy_with_context
+      - name: Check startup time budget
+        run: |
+          nvim --headless -u NONE --startuptime /tmp/st -c qa
+          bash scripts/startuptime.sh /tmp/st
