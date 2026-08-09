@@ -252,9 +252,6 @@ describe("URL Builder", function()
       package.loaded["copy_with_context.git"] = git_mock
 
       local provider_mock = {
-        build_url = function()
-          return "url"
-        end,
         -- no line_fragment method
       }
       local providers_mock = {
