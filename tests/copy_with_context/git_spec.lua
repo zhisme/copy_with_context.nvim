@@ -18,9 +18,6 @@ describe("Git utilities", function()
   local original_system, original_trim, original_shellescape, original_fnamemodify
 
   before_each(function()
-    -- Clear git info cache
-    git.invalidate_cache()
-
     -- Save originals
     original_system = vim.fn.system
     original_trim = vim.fn.trim
@@ -401,66 +398,6 @@ describe("Git utilities", function()
 
       local result = git.get_git_info("/home/user/project/file.lua")
       assert.is_nil(result)
-    end)
-
-    describe("caching", function()
-      local call_count
-
-      before_each(function()
-        git.invalidate_cache()
-        call_count = { is_git_repo = 0, remote_url = 0, commit = 0, file_path = 0 }
-        git.is_git_repo = function()
-          call_count.is_git_repo = call_count.is_git_repo + 1
-          return true
-        end
-        git.get_remote_url = function()
-          call_count.remote_url = call_count.remote_url + 1
-          return "https://github.com/user/repo.git"
-        end
-        git.get_current_commit = function()
-          call_count.commit = call_count.commit + 1
-          return "abc123def456"
-        end
-        git.get_file_git_path = function(_path)
-          call_count.file_path = call_count.file_path + 1
-          return "lua/file.lua"
-        end
-      end)
-
-      it("caches result and avoids repeat subprocess calls", function()
-        local result1 = git.get_git_info("/home/user/project/lua/file.lua")
-        assert.equals(1, call_count.is_git_repo)
-        assert.equals(1, call_count.remote_url)
-        assert.equals(1, call_count.commit)
-        assert.equals(1, call_count.file_path)
-
-        -- Second call should use cache
-        local result2 = git.get_git_info("/home/user/project/lua/file.lua")
-        assert.same(result1, result2)
-        assert.equals(1, call_count.is_git_repo) -- unchanged
-        assert.equals(1, call_count.remote_url) -- unchanged
-        assert.equals(1, call_count.commit) -- unchanged
-        assert.equals(1, call_count.file_path) -- unchanged
-      end)
-
-      it("invalidates cache and re-fetches", function()
-        git.get_git_info("/home/user/project/lua/file.lua")
-        assert.equals(1, call_count.is_git_repo)
-
-        git.invalidate_cache()
-
-        git.get_git_info("/home/user/project/lua/file.lua")
-        assert.equals(2, call_count.is_git_repo) -- re-fetched
-      end)
-
-      it("caches different files separately", function()
-        git.get_git_info("/home/user/project/lua/file_a.lua")
-        assert.equals(1, call_count.file_path)
-
-        -- Different file should still call get_file_git_path
-        git.get_git_info("/home/user/project/lua/file_b.lua")
-        assert.equals(2, call_count.file_path)
-      end)
     end)
   end)
 

@@ -1,8 +1,6 @@
 _G.vim = {
   api = {
     nvim_echo = function() end,
-    nvim_create_autocmd = function() end,
-    nvim_create_augroup = function() end,
   },
   keymap = {
     set = function() end,

@@ -127,69 +127,41 @@ function M.get_file_git_path(file_path)
   return git_path
 end
 
--- Cache for get_git_info results (keyed by absolute file path)
--- Cleared on DirChanged to handle repo switches
-local git_info_cache = {}
-
--- Clear the git info cache (called on DirChanged)
-function M.invalidate_cache()
-  git_info_cache = {}
-end
-
 -- Aggregate function to get all git info for a file
 -- Returns: {provider="github.com", owner="user", repo="repo", commit="abc123", file_path="path/to/file"}
 -- Returns nil if not in git repo or any step fails
--- Results are cached by absolute file path; call invalidate_cache() to clear
 function M.get_git_info(file_path)
-  -- Normalize to absolute path for cache key
-  local abs_path = file_path
-  if not file_path:match("^/") and not file_path:match("^%a:") then
-    abs_path = vim.fn.fnamemodify(file_path, ":p")
-  end
-
-  -- Check cache
-  if git_info_cache[abs_path] ~= nil then
-    return git_info_cache[abs_path]
-  end
-
   if not M.is_git_repo() then
-    git_info_cache[abs_path] = nil
     return nil
   end
 
   local remote_url = M.get_remote_url()
   if not remote_url then
-    git_info_cache[abs_path] = nil
     return nil
   end
 
   local parsed = M.parse_remote_url(remote_url)
   if not parsed then
-    git_info_cache[abs_path] = nil
     return nil
   end
 
   local commit = M.get_current_commit()
   if not commit then
-    git_info_cache[abs_path] = nil
     return nil
   end
 
   local git_path = M.get_file_git_path(file_path)
   if not git_path then
-    git_info_cache[abs_path] = nil
     return nil
   end
 
-  local result = {
+  return {
     provider = parsed.provider,
     owner = parsed.owner,
     repo = parsed.repo,
     commit = commit,
     file_path = git_path,
   }
-  git_info_cache[abs_path] = result
-  return result
 end
 
 return M
