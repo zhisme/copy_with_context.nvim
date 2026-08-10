@@ -39,8 +39,15 @@ function M.copy_with_context(mapping_name, is_visual)
     remote_url = url_builder.build_url(file_path, start_lnum, end_lnum)
   end
 
+  -- Get provider-specific line fragment if needed (check if format uses {line_url_fragment})
+  local line_fragment = nil
+  if format_string and format_string:match("{line_url_fragment}") then
+    line_fragment = url_builder.get_line_fragment(file_path, start_lnum, end_lnum)
+  end
+
   -- Build variables (include code for full output control)
-  local vars = formatter.get_variables(file_path, start_lnum, end_lnum, remote_url, content)
+  local vars =
+    formatter.get_variables(file_path, start_lnum, end_lnum, remote_url, content, line_fragment)
 
   -- Generate output based on format type
   local output

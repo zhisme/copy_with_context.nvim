@@ -1,7 +1,7 @@
 *copy_with_context.txt* Copy lines with file context
 
 Author: Evgeny Zhdanov
-Version: 1.0
+Version: 3.1
 
 ==============================================================================
 CONTENTS                                 *copy_with_context-contents*
@@ -9,7 +9,8 @@ CONTENTS                                 *copy_with_context-contents*
 1. Overview .......................... |copy_with_context-overview|
 2. Mappings .......................... |copy_with_context-mappings|
 3. Configuration ..................... |copy_with_context-configuration|
-4. Examples .......................... |copy_with_context-examples|
+4. Format Variables .................. |copy_with_context-format-variables|
+5. Examples .......................... |copy_with_context-examples|
 
 ==============================================================================
 1. OVERVIEW                                   *copy_with_context-overview*
@@ -25,6 +26,11 @@ By default, the following mappings are provided:
 <leader>cy  - Copy with relative path (normal/visual mode)
 <leader>cY  - Copy with absolute path (normal/visual mode)
 
+Additional optional mappings can be configured
+(see |copy_with_context-configuration|):
+
+<leader>cr  - Copy with remote repository URL
+
 ==============================================================================
 3. CONFIGURATION                        *copy_with_context-configuration*
 
@@ -32,21 +38,60 @@ There is no need to call setup if you are ok with the defaults.
 
 >
   require('copy_with_context').setup({
-    -- Customize mappings
     mappings = {
       relative = '<leader>cy',
-      absolute = '<leader>cY'
+      absolute = '<leader>cY',
     },
-    -- whether to trim lines or not
+    formats = {
+      default = '# {filepath}:{line}',
+    },
+    output_formats = {},
     trim_lines = false,
-    context_format = '# %s:%s',  -- format for context: "# filepath:line", example: "# /path/to/file:123"
-    -- context_format = '# Source file: %s:%s',
-    -- Other format for context: "# Source file: /path/to/file:123"
   })
 <
 
 ==============================================================================
-4. EXAMPLES                                   *copy_with_context-examples*
+4. FORMAT VARIABLES                   *copy_with_context-format-variables*
+
+You can use the following variables in format strings:
+
+{filepath}            - The file path (relative or absolute per mapping)
+{line}                - Line number or range (e.g., "42" or "10-20")
+{linenumber}          - Alias for {line}
+{line_url_fragment}   - Line reference including its own separator, adapted
+                        to the git remote: GitHub (#L5-L8), GitLab (#L5-8),
+                        Bitbucket (#lines-5:8). Falls back to plain :5-8
+                        when no remote is detected. Since the separator is
+                        part of the value, write {filepath}{line_url_fragment}
+                        without a colon of your own; a ':' or '#' in front of
+                        it is rejected at setup time.
+{remote_url}          - Repository URL (GitHub, GitLab, Bitbucket)
+{copied_text}         - The selected text (used with output_formats)
+
+{line_url_fragment} is opt-in: the default format uses plain {line}. Add the
+variable to a format string yourself when you want it:
+
+>
+  require('copy_with_context').setup({
+    formats = {
+      default = '# {filepath}{line_url_fragment}',
+    },
+  })
+<
+
+Output, depending on the detected remote:
+>
+  # app/views/widgets/show.html.erb#L4-L6     -- GitHub
+  # app/views/widgets/show.html.erb#L4-6      -- GitLab
+  # app/views/widgets/show.html.erb#lines-4:6 -- Bitbucket
+  # app/views/widgets/show.html.erb:4-6       -- no remote detected
+<
+
+Note that {line_url_fragment} and {remote_url} shell out to git to detect the
+remote, so formats using them are slower than plain {line}.
+
+==============================================================================
+5. EXAMPLES                                 *copy_with_context-examples*
 
 1. Copy current line with relative path:
    - Press `<leader>cy` in normal mode.
@@ -72,13 +117,15 @@ Output example:
 
 3. Copy visual selection with relative path:
    - Select lines in visual mode.
-   - Press `<leader>cY`.
+   - Press `<leader>cy`.
    - Plugin copies the selected lines with relative path into your unnamed register.
    - Paste somewhere
 
 Output example:
 >
   <% posts.each do |post| %>
+    <%= post.title %>
+  <% end %>
   # app/views/widgets/show.html.erb:4-6
 <
 
@@ -88,6 +135,7 @@ Output example:
    - Plugin copies the selected lines with absolute path into your unnamed register.
    - Paste somewhere
 
+Output example:
 >
   <% posts.each do |post| %>
     <%= post.title %>

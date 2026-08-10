@@ -78,4 +78,18 @@ describe("GitLab provider", function()
       )
     end)
   end)
+
+  describe("line_fragment", function()
+    it("returns #L{line} for single line", function()
+      assert.equals("#L42", gitlab.line_fragment(42, 42))
+    end)
+
+    it("returns #L{start}-{end} for line range", function()
+      assert.equals("#L10-20", gitlab.line_fragment(10, 20))
+    end)
+
+    it("returns #L{start} when start equals end", function()
+      assert.equals("#L5", gitlab.line_fragment(5, 5))
+    end)
+  end)
 end)

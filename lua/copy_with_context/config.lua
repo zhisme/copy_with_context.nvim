@@ -13,7 +13,6 @@ M.options = {
     default = "# {filepath}:{line}",
   },
   -- Full output formats: use {copied_text} token for complete control over output
-  -- Example: output_formats = { default = "{copied_text}\n\n# {filepath}:{line}" }
   output_formats = {},
   trim_lines = false,
 }

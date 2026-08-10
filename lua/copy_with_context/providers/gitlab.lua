@@ -10,6 +10,18 @@ function M.matches(domain)
   return domain == "gitlab.com" or domain:match("gitlab") ~= nil
 end
 
+-- Generate GitLab-style line fragment, including the leading separator
+-- @param line_start number Starting line number
+-- @param line_end number|nil Ending line number (nil for single line)
+-- @return string Line fragment (e.g., "#L5" or "#L5-8")
+function M.line_fragment(line_start, line_end)
+  if not line_end or line_start == line_end then
+    return "#L" .. line_start
+  else
+    return "#L" .. line_start .. "-" .. line_end
+  end
+end
+
 -- Build URL for GitLab
 -- Format: https://gitlab.com/{owner}/{repo}/-/blob/{commit_sha}/{file_path}#L{start}[-{end}]
 function M.build_url(git_info, line_start, line_end)
@@ -22,12 +34,7 @@ function M.build_url(git_info, line_start, line_end)
     git_info.file_path
   )
 
-  -- Add line fragment
-  if line_start == line_end then
-    return base_url .. "#L" .. line_start
-  else
-    return base_url .. "#L" .. line_start .. "-" .. line_end
-  end
+  return base_url .. M.line_fragment(line_start, line_end)
 end
 
 return M

@@ -89,6 +89,7 @@ function M.validate_format_string(format_string, is_output_format)
     filepath = true,
     line = true,
     linenumber = true,
+    line_url_fragment = true,
     remote_url = true,
     copied_text = true,
   }
@@ -98,10 +99,17 @@ function M.validate_format_string(format_string, is_output_format)
     if not valid_vars[var] then
       return false,
         string.format(
-          "Unknown variable '{%s}'. Valid: filepath, line, linenumber, remote_url, copied_text",
+          "Unknown variable '{%s}'. Valid: filepath, line, linenumber, line_url_fragment, remote_url, copied_text",
           var
         )
     end
+  end
+
+  -- {line_url_fragment} carries its own separator ("#L4-L6", ":4-6"), so a
+  -- separator in front of it would produce "foo.rb:#L4-L6"
+  if format_string:match("[:#]{line_url_fragment}") then
+    return false,
+      "'{line_url_fragment}' already includes its separator, remove the ':' or '#' before it"
   end
 
   local has_copied_text = format_string:match("{copied_text}") ~= nil
