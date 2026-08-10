@@ -217,7 +217,7 @@ You can use the following variables in format strings:
 - `{filepath}` - The file path (relative or absolute depending on mapping)
 - `{line}` - Line number or range (e.g., "42" or "10-20")
 - `{linenumber}` - Alias for `{line}`
-- `{line_url_fragment}` - Line reference including its own separator, adapted to your project's git remote: GitHub (`#L5-L8`), GitLab (`#L5-8`), Bitbucket (`#lines-5:8`). Falls back to plain `:5-8` when no remote is detected. Because the separator is part of the value, write `{filepath}{line_url_fragment}` — no colon of your own.
+- `{line_url_fragment}` - Line reference including its own separator, adapted to your project's git remote: GitHub (`#L5-L8`), GitLab (`#L5-8`), Bitbucket (`#lines-5:8`). Falls back to plain `:5-8` when no remote is detected. Because the separator is part of the value, write `{filepath}{line_url_fragment}` — no colon of your own. A `:` or `#` in front of it is rejected at setup time.
 - `{remote_url}` - Repository URL (GitHub, GitLab, Bitbucket)
 - `{copied_text}` - The selected text (used with `output_formats`)
 

@@ -9,7 +9,7 @@ CONTENTS                                 *copy_with_context-contents*
 1. Overview .......................... |copy_with_context-overview|
 2. Mappings .......................... |copy_with_context-mappings|
 3. Configuration ..................... |copy_with_context-configuration|
-4. Format Variables ................. |copy_with_context-format-variables|
+4. Format Variables .................. |copy_with_context-format-variables|
 5. Examples .......................... |copy_with_context-examples|
 
 ==============================================================================
@@ -26,7 +26,9 @@ By default, the following mappings are provided:
 <leader>cy  - Copy with relative path (normal/visual mode)
 <leader>cY  - Copy with absolute path (normal/visual mode)
 
-Additional optional mappings can be configured (see |copy_with_context-configuration|):
+Additional optional mappings can be configured
+(see |copy_with_context-configuration|):
+
 <leader>cr  - Copy with remote repository URL
 
 ==============================================================================
@@ -53,17 +55,18 @@ There is no need to call setup if you are ok with the defaults.
 
 You can use the following variables in format strings:
 
-{filepath}              - The file path (relative or absolute depending on mapping)
-{line}                  - Line number or range (e.g., "42" or "10-20")
-{linenumber}            - Alias for {line}
-{line_url_fragment}     - Line reference including its own separator, adapted to
-                          the git remote: GitHub (#L5-L8), GitLab (#L5-8),
-                          Bitbucket (#lines-5:8). Falls back to plain :5-8 when
-                          no remote is detected. Since the separator is part of
-                          the value, write {filepath}{line_url_fragment} without
-                          a colon of your own.
-{remote_url}            - Repository URL (GitHub, GitLab, Bitbucket)
-{copied_text}           - The selected text (used with output_formats)
+{filepath}            - The file path (relative or absolute per mapping)
+{line}                - Line number or range (e.g., "42" or "10-20")
+{linenumber}          - Alias for {line}
+{line_url_fragment}   - Line reference including its own separator, adapted
+                        to the git remote: GitHub (#L5-L8), GitLab (#L5-8),
+                        Bitbucket (#lines-5:8). Falls back to plain :5-8
+                        when no remote is detected. Since the separator is
+                        part of the value, write {filepath}{line_url_fragment}
+                        without a colon of your own; a ':' or '#' in front of
+                        it is rejected at setup time.
+{remote_url}          - Repository URL (GitHub, GitLab, Bitbucket)
+{copied_text}         - The selected text (used with output_formats)
 
 {line_url_fragment} is opt-in: the default format uses plain {line}. Add the
 variable to a format string yourself when you want it:
