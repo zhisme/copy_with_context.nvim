@@ -8,8 +8,8 @@ local M = {}
 -- @param line_end number|nil Ending line number (nil for single line)
 -- @param remote_url string|nil Remote repository URL (nil if not available)
 -- @param copied_text string|nil Copied text content (visual selection or current line)
--- @param line_fragment string|nil Provider-specific line fragment (e.g., "L5-L8", "L5-8", "lines-5:8").
---   Falls back to GitHub-style "L5" or "L5-L8" when nil.
+-- @param line_fragment string|nil Provider-specific line fragment, separator included
+--   (e.g., "#L5-L8", "#L5-8", "#lines-5:8"). Falls back to plain ":5" / ":5-8" when nil.
 -- @return table Variables table
 function M.get_variables(file_path, line_start, line_end, remote_url, copied_text, line_fragment)
   local line_range
@@ -18,13 +18,9 @@ function M.get_variables(file_path, line_start, line_end, remote_url, copied_tex
   else
     line_range = tostring(line_start)
   end
-  -- Provider-specific line fragment with GitHub-style fallback
+  -- Provider-specific line fragment, falling back to plain "file:line" style
   if not line_fragment then
-    if line_end and line_end ~= line_start then
-      line_fragment = string.format("L%d-L%d", line_start, line_end)
-    else
-      line_fragment = "L" .. tostring(line_start)
-    end
+    line_fragment = ":" .. line_range
   end
 
   return {

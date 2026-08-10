@@ -217,7 +217,7 @@ You can use the following variables in format strings:
 - `{filepath}` - The file path (relative or absolute depending on mapping)
 - `{line}` - Line number or range (e.g., "42" or "10-20")
 - `{linenumber}` - Alias for `{line}`
-- `{line_url_fragment}` - Provider-specific line fragment (e.g., "L42" or "L10-L20"). Adapts to your project's git remote — GitHub (`L5-L8`), GitLab (`L5-8`), Bitbucket (`lines-5:8`), with GitHub-style as default when no remote is detected.
+- `{line_url_fragment}` - Line reference including its own separator, adapted to your project's git remote: GitHub (`#L5-L8`), GitLab (`#L5-8`), Bitbucket (`#lines-5:8`). Falls back to plain `:5-8` when no remote is detected. Because the separator is part of the value, write `{filepath}{line_url_fragment}` — no colon of your own.
 - `{remote_url}` - Repository URL (GitHub, GitLab, Bitbucket)
 - `{copied_text}` - The selected text (used with `output_formats`)
 
@@ -227,9 +227,18 @@ variable to a format string yourself when you want it:
 ```lua
 require('copy_with_context').setup({
   formats = {
-    default = '# {filepath}:{line_url_fragment}',  -- "# app/foo.rb:L4"
+    default = '# {filepath}{line_url_fragment}',
   },
 })
+```
+
+Output, depending on the detected remote:
+
+```
+# app/views/widgets/show.html.erb#L4-L6     -- GitHub
+# app/views/widgets/show.html.erb#L4-6      -- GitLab
+# app/views/widgets/show.html.erb#lines-4:6 -- Bitbucket
+# app/views/widgets/show.html.erb:4-6       -- no remote detected
 ```
 
 Note that `{line_url_fragment}` and `{remote_url}` shell out to git to detect the

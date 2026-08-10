@@ -183,7 +183,7 @@ describe("URL Builder", function()
   end)
 
   describe("get_line_fragment", function()
-    it("returns GitHub-style fragment when git info is not available", function()
+    it("returns plain fragment when git info is not available", function()
       local git_mock = {
         get_git_info = function(_file_path)
           return nil
@@ -192,10 +192,10 @@ describe("URL Builder", function()
       package.loaded["copy_with_context.git"] = git_mock
 
       local fragment = url_builder.get_line_fragment("lua/test.lua", 5, 5)
-      assert.equals("L5", fragment)
+      assert.equals(":5", fragment)
     end)
 
-    it("returns GitHub-style fragment for range when git info is not available", function()
+    it("returns plain fragment for range when git info is not available", function()
       local git_mock = {
         get_git_info = function(_file_path)
           return nil
@@ -204,7 +204,7 @@ describe("URL Builder", function()
       package.loaded["copy_with_context.git"] = git_mock
 
       local fragment = url_builder.get_line_fragment("lua/test.lua", 10, 20)
-      assert.equals("L10-L20", fragment)
+      assert.equals(":10-20", fragment)
     end)
 
     it("returns provider-specific fragment when git info and provider are available", function()
@@ -223,7 +223,7 @@ describe("URL Builder", function()
 
       local provider_mock = {
         line_fragment = function(start, end_line)
-          return "L" .. start .. "-L" .. end_line
+          return "#L" .. start .. "-L" .. end_line
         end,
       }
       local providers_mock = {
@@ -234,10 +234,10 @@ describe("URL Builder", function()
       package.loaded["copy_with_context.providers"] = providers_mock
 
       local fragment = url_builder.get_line_fragment("lua/test.lua", 10, 20)
-      assert.equals("L10-L20", fragment)
+      assert.equals("#L10-L20", fragment)
     end)
 
-    it("returns GitHub-style fallback when provider has no line_fragment method", function()
+    it("returns plain fallback when provider has no line_fragment method", function()
       local git_mock = {
         get_git_info = function(_file_path)
           return {
@@ -262,10 +262,10 @@ describe("URL Builder", function()
       package.loaded["copy_with_context.providers"] = providers_mock
 
       local fragment = url_builder.get_line_fragment("lua/test.lua", 5, 5)
-      assert.equals("L5", fragment)
+      assert.equals(":5", fragment)
     end)
 
-    it("returns GitHub-style fallback when provider is nil", function()
+    it("returns plain fallback when provider is nil", function()
       local git_mock = {
         get_git_info = function(_file_path)
           return {
@@ -287,10 +287,10 @@ describe("URL Builder", function()
       package.loaded["copy_with_context.providers"] = providers_mock
 
       local fragment = url_builder.get_line_fragment("lua/test.lua", 15, 25)
-      assert.equals("L15-L25", fragment)
+      assert.equals(":15-25", fragment)
     end)
 
-    it("returns GitHub-style single line when no git info and same start/end", function()
+    it("returns plain single line when no git info and same start/end", function()
       local git_mock = {
         get_git_info = function(_file_path)
           return nil
@@ -299,7 +299,7 @@ describe("URL Builder", function()
       package.loaded["copy_with_context.git"] = git_mock
 
       local fragment = url_builder.get_line_fragment("lua/test.lua", 42, 42)
-      assert.equals("L42", fragment)
+      assert.equals(":42", fragment)
     end)
   end)
 end)

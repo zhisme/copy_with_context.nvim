@@ -9,15 +9,15 @@ function M.matches(domain)
   return domain == "bitbucket.org" or domain:match("%.bitbucket%.org$") ~= nil
 end
 
--- Generate Bitbucket-style line fragment (lines-5 or lines-5:8)
+-- Generate Bitbucket-style line fragment, including the leading separator
 -- @param line_start number Starting line number
 -- @param line_end number|nil Ending line number (nil for single line)
--- @return string Line fragment (e.g., "lines-5" or "lines-5:8")
+-- @return string Line fragment (e.g., "#lines-5" or "#lines-5:8")
 function M.line_fragment(line_start, line_end)
-  if line_start == line_end then
-    return "lines-" .. line_start
+  if not line_end or line_start == line_end then
+    return "#lines-" .. line_start
   else
-    return "lines-" .. line_start .. ":" .. line_end
+    return "#lines-" .. line_start .. ":" .. line_end
   end
 end
 
@@ -33,7 +33,7 @@ function M.build_url(git_info, line_start, line_end)
     git_info.file_path
   )
 
-  return base_url .. "#" .. M.line_fragment(line_start, line_end)
+  return base_url .. M.line_fragment(line_start, line_end)
 end
 
 return M

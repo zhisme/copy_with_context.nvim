@@ -25,11 +25,12 @@ function M.build_url(file_path, line_start, line_end)
 end
 
 -- Get a provider-specific line fragment for the given file and line range
--- Falls back to GitHub-style (L5 / L5-L8) when no git/provider is detected
+-- The fragment includes its own separator, so formats use "{filepath}{line_url_fragment}"
+-- Falls back to plain ":5" / ":5-8" when no git/provider is detected
 -- @param file_path string File path (relative or absolute)
 -- @param line_start number Starting line number
 -- @param line_end number|nil Ending line number (nil for single line)
--- @return string Line fragment (e.g., "L5", "L5-L8", "L5-8", or "lines-5:8")
+-- @return string Line fragment (e.g., ":5-8", "#L5-L8", "#L5-8", or "#lines-5:8")
 function M.get_line_fragment(file_path, line_start, line_end)
   local git = require("copy_with_context.git")
   local git_info = git.get_git_info(file_path)
@@ -41,11 +42,11 @@ function M.get_line_fragment(file_path, line_start, line_end)
     end
   end
 
-  -- Fallback: GitHub-style fragment
+  -- Fallback: plain "file:line" style
   if line_end and line_end ~= line_start then
-    return string.format("L%d-L%d", line_start, line_end)
+    return string.format(":%d-%d", line_start, line_end)
   else
-    return "L" .. tostring(line_start)
+    return ":" .. tostring(line_start)
   end
 end
 
