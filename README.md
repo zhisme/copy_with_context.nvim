@@ -75,7 +75,7 @@ use {
           remote = '<leader>cr',
         },
         formats = {
-          default = '# {filepath}:{line_url_fragment}',  -- Used by relative and absolute mappings
+          default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
           remote = '# {remote_url}',  -- Custom format for remote mapping
         },
         -- whether to trim lines or not
@@ -98,7 +98,7 @@ use {
           remote = '<leader>cr',
         },
         formats = {
-          default = '# {filepath}:{line_url_fragment}',  -- Used by relative and absolute mappings
+          default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
           remote = '# {remote_url}',
         },
         -- whether to trim lines or not
@@ -120,7 +120,7 @@ use {
 Output example:
 ```
   <% posts.each do |post| %>
-  # app/views/widgets/show.html.erb:L4
+  # app/views/widgets/show.html.erb:4
 ```
 
 2. Copy current line with absolute path:
@@ -131,7 +131,7 @@ Output example:
 Output example:
 ```
   <% posts.each do |post| %>
-  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:L4
+  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4
 ```
 
 3. Copy visual selection with relative path:
@@ -145,7 +145,7 @@ Output example:
   <% posts.each do |post| %>
     <%= post.title %>
   <% end %>
-  # app/views/widgets/show.html.erb:L4-L6
+  # app/views/widgets/show.html.erb:4-6
 ```
 
 4. Copy visual selection with absolute path:
@@ -159,7 +159,7 @@ Output example:
   <% posts.each do |post| %>
     <%= post.title %>
   <% end %>
-  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:L4-L6
+  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4-6
 ```
 
 ### Remote URL Support
@@ -201,7 +201,7 @@ require('copy_with_context').setup({
     },
     -- Define format strings for each mapping
     formats = {
-      default = '# {filepath}:{line_url_fragment}',  -- Used by relative and absolute mappings
+      default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
     },
     -- Full output formats: use {copied_text} token for complete control over output
     output_formats = {},
@@ -221,6 +221,20 @@ You can use the following variables in format strings:
 - `{remote_url}` - Repository URL (GitHub, GitLab, Bitbucket)
 - `{copied_text}` - The selected text (used with `output_formats`)
 
+`{line_url_fragment}` is opt-in: the default format uses plain `{line}`. Add the
+variable to a format string yourself when you want it:
+
+```lua
+require('copy_with_context').setup({
+  formats = {
+    default = '# {filepath}:{line_url_fragment}',  -- "# app/foo.rb:L4"
+  },
+})
+```
+
+Note that `{line_url_fragment}` and `{remote_url}` shell out to git to detect the
+remote, so formats using them are slower than plain `{line}`.
+
 ### Custom Mappings and Formats
 
 You can define unlimited custom mappings with their own format strings:
@@ -234,7 +248,7 @@ require('copy_with_context').setup({
     full = '<leader>cx', -- Custom mapping with everything
   },
   formats = {
-    default = '# {filepath}:{line_url_fragment}',
+    default = '# {filepath}:{line}',
     remote = '# {remote_url}',
     full = '# {filepath}:{line}\n# {remote_url}',
   },
@@ -256,8 +270,8 @@ require('copy_with_context').setup({
     markdown = '<leader>cm',
   },
   output_formats = {
-    default = "{copied_text}\n\n# {filepath}:{line_url_fragment}",  -- Code first, then context
-    markdown = "```lua\n{copied_text}\n```\n\n*{filepath}:{line_url_fragment}*",  -- Wrap in markdown code block
+    default = "{copied_text}\n\n# {filepath}:{line}",  -- Code first, then context
+    markdown = "```lua\n{copied_text}\n```\n\n*{filepath}:{line}*",  -- Wrap in markdown code block
   },
 })
 ```
@@ -277,7 +291,7 @@ require('copy_with_context').setup({
     verbose = '<leader>cl',
   },
   formats = {
-    default = '# {filepath}:{line_url_fragment}',  -- {copied_text} is auto-prepended
+    default = '# {filepath}:{line}',  -- {copied_text} is auto-prepended
     verbose = '(from {filepath}:{line})', -- will be ignored because the format of the same name in output_formats takes precedence
   },
   output_formats = {
@@ -360,7 +374,7 @@ use {
               remote = '<leader>cr',
               },
               formats = {
-                default = '# {filepath}:{line_url_fragment}',
+                default = '# {filepath}:{line}',
                 remote = '# {remote_url}',
               },
               -- whether to trim lines or not
@@ -383,7 +397,7 @@ With lazy.nvim:
           remote = '<leader>cr',
       },
       formats = {
-        default = '# {filepath}:{line_url_fragment}',
+        default = '# {filepath}:{line}',
         remote = '# {remote_url}',
       },
       -- whether to trim lines or not

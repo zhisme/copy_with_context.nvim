@@ -41,7 +41,7 @@ There is no need to call setup if you are ok with the defaults.
       absolute = '<leader>cY',
     },
     formats = {
-      default = '# {filepath}:{line_url_fragment}',
+      default = '# {filepath}:{line}',
     },
     output_formats = {},
     trim_lines = false,
@@ -63,6 +63,20 @@ You can use the following variables in format strings:
 {remote_url}            - Repository URL (GitHub, GitLab, Bitbucket)
 {copied_text}           - The selected text (used with output_formats)
 
+{line_url_fragment} is opt-in: the default format uses plain {line}. Add the
+variable to a format string yourself when you want it:
+
+>
+  require('copy_with_context').setup({
+    formats = {
+      default = '# {filepath}:{line_url_fragment}',  -- "# app/foo.rb:L4"
+    },
+  })
+<
+
+Note that {line_url_fragment} and {remote_url} shell out to git to detect the
+remote, so formats using them are slower than plain {line}.
+
 ==============================================================================
 5. EXAMPLES                                 *copy_with_context-examples*
 
@@ -74,7 +88,7 @@ You can use the following variables in format strings:
 Output example:
 >
   <% posts.each do |post| %>
-  # app/views/widgets/show.html.erb:L4
+  # app/views/widgets/show.html.erb:4
 <
 
 2. Copy current line with absolute path:
@@ -85,7 +99,7 @@ Output example:
 Output example:
 >
   <% posts.each do |post| %>
-  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:L4
+  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4
 <
 
 3. Copy visual selection with relative path:
@@ -99,7 +113,7 @@ Output example:
   <% posts.each do |post| %>
     <%= post.title %>
   <% end %>
-  # app/views/widgets/show.html.erb:L4-L6
+  # app/views/widgets/show.html.erb:4-6
 <
 
 4. Copy visual selection with absolute path:
@@ -113,5 +127,5 @@ Output example:
   <% posts.each do |post| %>
     <%= post.title %>
   <% end %>
-  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:L4-L6
+  # /Users/zh/dev/project_name/app/views/widgets/show.html.erb:4-6
 <

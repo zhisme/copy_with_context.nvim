@@ -248,21 +248,27 @@ describe("Main Module", function()
     config.options.output_formats = nil
   end)
 
-  it("fetches line fragment when default format uses {line_url_fragment}", function()
-    url_builder.build_url:revert()
-    stub(url_builder, "build_url").returns(nil)
-    url_builder.get_line_fragment:revert()
-    stub(url_builder, "get_line_fragment").returns("L1-L2")
+  it("fetches line fragment when format uses {line_url_fragment}", function()
+    local original_formats = config.options.formats
+    config.options.formats = { default = "# {filepath}:{line_url_fragment}" }
 
     main.copy_with_context("relative", false)
 
-    -- Should call get_line_fragment because default format uses {line_url_fragment}
     assert.stub(url_builder.get_line_fragment).was_called()
 
     -- Cleanup
-    url_builder.build_url:revert()
-    stub(url_builder, "build_url").returns(nil)
-    url_builder.get_line_fragment:revert()
-    stub(url_builder, "get_line_fragment").returns("L1-L2")
+    config.options.formats = original_formats
+  end)
+
+  it("does not shell out for a line fragment when format uses plain {line}", function()
+    local original_formats = config.options.formats
+    config.options.formats = { default = "# {filepath}:{line}" }
+
+    main.copy_with_context("relative", false)
+
+    assert.stub(url_builder.get_line_fragment).was_not_called()
+
+    -- Cleanup
+    config.options.formats = original_formats
   end)
 end)
