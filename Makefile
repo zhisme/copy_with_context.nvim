@@ -3,6 +3,7 @@ DEPS_DIR = deps
 TEST_DIR = tests
 ROCKSPEC = $(shell ls copy_with_context-*.rockspec | head -1)
 BUSTED = $(DEPS_DIR)/bin/busted
+LUACOV = $(DEPS_DIR)/bin/luacov
 LUACHECK = $(DEPS_DIR)/bin/luacheck
 
 .PHONY: install-stylua
@@ -22,12 +23,21 @@ deps:
 	@echo "Installing dev dependencies..."
 	@luarocks --tree=$(DEPS_DIR) install busted
 	@luarocks --tree=$(DEPS_DIR) install luacheck
+	@luarocks --tree=$(DEPS_DIR) install luacov
 	@echo "Dependencies installed."
 
 .PHONY: test
 test: deps
 	@echo "Running tests..."
 	@$(BUSTED) $(TEST_DIR)
+
+.PHONY: coverage
+coverage: deps
+	@echo "Running tests with coverage..."
+	@rm -f luacov.stats.out luacov.report.out
+	@$(BUSTED) --coverage --lpath="./lua/?.lua;./lua/?/init.lua" $(TEST_DIR)
+	@$(LUACOV)
+	@sed -n '/^Summary/,$$p' luacov.report.out
 
 .PHONY: fmt
 fmt:
