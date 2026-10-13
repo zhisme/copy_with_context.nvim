@@ -155,18 +155,14 @@ git push origin vX.Y.Z
 1. Go to https://github.com/zhisme/copy_with_context.nvim/releases
 2. Click **"Draft a new release"**
 3. **Choose tag:** Select the tag you just pushed (e.g., `v3.0.0`)
-4. **Release title:** Format: `vX.Y.Z - Brief Description`
-   - Examples:
-     - `v3.0.0 - Flexible Mapping System`
-     - `v2.1.0 - Repository URL Support`
-     - `v2.0.1 - Bug Fixes`
+4. **Release title:** Format: `vX.Y.Z` (e.g., `v3.0.0`)
 5. **Description:**
    - Click **"Generate release notes"** button (recommended)
    - Or paste from `release-notes.md` generated in step 3
    - Or write manually using this template:
 
 ```markdown
-# 🎉 vX.Y.Z - Release Title
+# 🎉 vX.Y.Z
 
 Brief summary of what this release is about.
 
