@@ -38,6 +38,7 @@ describe("Main Module", function()
     })
     stub(formatter, "format").returns("# /fake/path.lua:1-2")
     stub(url_builder, "build_url").returns(nil)
+    stub(url_builder, "get_line_fragment").returns("#L1-L2")
     stub(vim.api, "nvim_echo")
     stub(vim.keymap, "set")
   end)
@@ -51,6 +52,7 @@ describe("Main Module", function()
     formatter.get_variables:revert()
     formatter.format:revert()
     url_builder.build_url:revert()
+    url_builder.get_line_fragment:revert()
     vim.api.nvim_echo:revert()
     vim.keymap.set:revert()
   end)
@@ -244,5 +246,29 @@ describe("Main Module", function()
 
     -- Cleanup
     config.options.output_formats = nil
+  end)
+
+  it("fetches line fragment when format uses {line_url_fragment}", function()
+    local original_formats = config.options.formats
+    config.options.formats = { default = "# {filepath}{line_url_fragment}" }
+
+    main.copy_with_context("relative", false)
+
+    assert.stub(url_builder.get_line_fragment).was_called()
+
+    -- Cleanup
+    config.options.formats = original_formats
+  end)
+
+  it("does not shell out for a line fragment when format uses plain {line}", function()
+    local original_formats = config.options.formats
+    config.options.formats = { default = "# {filepath}:{line}" }
+
+    main.copy_with_context("relative", false)
+
+    assert.stub(url_builder.get_line_fragment).was_not_called()
+
+    -- Cleanup
+    config.options.formats = original_formats
   end)
 end)

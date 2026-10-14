@@ -164,6 +164,49 @@ describe("User Config Validation", function()
       assert.matches("output_formats", err)
     end)
 
+    it("accepts line_url_fragment without a preceding separator", function()
+      local valid, err = validation.validate_format_string("# {filepath}{line_url_fragment}", false)
+      assert.is_true(valid)
+      assert.is_nil(err)
+    end)
+
+    it("rejects a colon before line_url_fragment", function()
+      local valid, err =
+        validation.validate_format_string("# {filepath}:{line_url_fragment}", false)
+      assert.is_false(valid)
+      assert.is_not_nil(err)
+      assert.matches("line_url_fragment", err)
+    end)
+
+    it("rejects a hash before line_url_fragment", function()
+      local valid, err =
+        validation.validate_format_string("# {filepath}#{line_url_fragment}", false)
+      assert.is_false(valid)
+      assert.is_not_nil(err)
+      assert.matches("line_url_fragment", err)
+    end)
+
+    it("rejects a separator before line_url_fragment in output_formats too", function()
+      local valid, err =
+        validation.validate_format_string("{copied_text}\n# {filepath}:{line_url_fragment}", true)
+      assert.is_false(valid)
+      assert.is_not_nil(err)
+      assert.matches("line_url_fragment", err)
+    end)
+
+    it("accepts a colon before line when line_url_fragment is absent", function()
+      local valid, err = validation.validate_format_string("# {filepath}:{line}", false)
+      assert.is_true(valid)
+      assert.is_nil(err)
+    end)
+
+    it("accepts a leading comment hash unrelated to line_url_fragment", function()
+      local valid, err =
+        validation.validate_format_string("# see {filepath}{line_url_fragment}", false)
+      assert.is_true(valid)
+      assert.is_nil(err)
+    end)
+
     it("accepts valid format with multiple variables", function()
       local valid, err =
         validation.validate_format_string("# {filepath}:{line} - {remote_url}", false)

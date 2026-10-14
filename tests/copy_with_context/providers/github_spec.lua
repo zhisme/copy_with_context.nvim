@@ -69,4 +69,18 @@ describe("GitHub provider", function()
       )
     end)
   end)
+
+  describe("line_fragment", function()
+    it("returns #L{line} for single line", function()
+      assert.equals("#L42", github.line_fragment(42, 42))
+    end)
+
+    it("returns #L{start}-L{end} for line range", function()
+      assert.equals("#L10-L20", github.line_fragment(10, 20))
+    end)
+
+    it("returns #L{start} when start equals end", function()
+      assert.equals("#L5", github.line_fragment(5, 5))
+    end)
+  end)
 end)

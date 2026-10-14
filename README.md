@@ -136,7 +136,7 @@ Output example:
 
 3. Copy visual selection with relative path:
    - Select lines in visual mode.
-   - Press `<leader>cY`.
+   - Press `<leader>cy`.
    - Plugin copies the selected lines with relative path into your unnamed register.
    - Paste somewhere
 
@@ -187,8 +187,6 @@ Output example:
     # https://github.com/user/repo/blob/abc123def/app/views/widgets/show.html.erb#L4-L6
 ```
 
-
-
 ## Configuration
 
 There is no need to call setup if you are ok with the defaults.
@@ -205,6 +203,8 @@ require('copy_with_context').setup({
     formats = {
       default = '# {filepath}:{line}',  -- Used by relative and absolute mappings
     },
+    -- Full output formats: use {copied_text} token for complete control over output
+    output_formats = {},
     -- whether to trim lines or not
     trim_lines = false,
 })
@@ -217,8 +217,32 @@ You can use the following variables in format strings:
 - `{filepath}` - The file path (relative or absolute depending on mapping)
 - `{line}` - Line number or range (e.g., "42" or "10-20")
 - `{linenumber}` - Alias for `{line}`
+- `{line_url_fragment}` - Line reference including its own separator, adapted to your project's git remote: GitHub (`#L5-L8`), GitLab (`#L5-8`), Bitbucket (`#lines-5:8`). Falls back to plain `:5-8` when no remote is detected. Because the separator is part of the value, write `{filepath}{line_url_fragment}` — no colon of your own. A `:` or `#` in front of it is rejected at setup time.
 - `{remote_url}` - Repository URL (GitHub, GitLab, Bitbucket)
 - `{copied_text}` - The selected text (used with `output_formats`)
+
+`{line_url_fragment}` is opt-in: the default format uses plain `{line}`. Add the
+variable to a format string yourself when you want it:
+
+```lua
+require('copy_with_context').setup({
+  formats = {
+    default = '# {filepath}{line_url_fragment}',
+  },
+})
+```
+
+Output, depending on the detected remote:
+
+```
+# app/views/widgets/show.html.erb#L4-L6     -- GitHub
+# app/views/widgets/show.html.erb#L4-6      -- GitLab
+# app/views/widgets/show.html.erb#lines-4:6 -- Bitbucket
+# app/views/widgets/show.html.erb:4-6       -- no remote detected
+```
+
+Note that `{line_url_fragment}` and `{remote_url}` shell out to git to detect the
+remote, so formats using them are slower than plain `{line}`.
 
 ### Custom Mappings and Formats
 
